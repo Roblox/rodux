@@ -1,7 +1,7 @@
 return function()
 	describe("Rodux", function()
 		it("should load", function()
-			require(script.Parent.init)
+			require(script.Parent)
 		end)
 	end)
 end
