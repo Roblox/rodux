@@ -19,10 +19,7 @@ install:
   - luarocks install luacov
   - luarocks install luacov-coveralls
   - luarocks install luacheck
-  - git clone --depth=1 https://github.com/LPGhatguy/lemur.git modules/lemur
-  - cp -r modules/lemur/src/lemur .
-  - git clone --depth=1 https://github.com/Roblox/TestEZ.git modules/testez
-  - cp -r modules/testez/src/testez .
+  - ./install-dependencies
 
 script:
   - luacheck src
