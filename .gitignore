@@ -1,5 +1,5 @@
 /modules
 /luacov.*
 /rodux-installer.lua
-/src/lemur
-/src/testez
+/lemur
+/testez

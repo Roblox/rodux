@@ -40,6 +40,6 @@ ignore = {
 
 std = "lua51+roblox"
 
-files["src/rodux/**/*.spec.lua"] = {
+files["src/**/*.spec.lua"] = {
 	std = "+testez",
 }

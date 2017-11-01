@@ -20,13 +20,13 @@ install:
   - luarocks install luacov-coveralls
   - luarocks install luacheck
   - git clone --depth=1 https://github.com/LPGhatguy/lemur.git modules/lemur
-  - cp -r modules/lemur/src/lemur ./src
+  - cp -r modules/lemur/src/lemur .
   - git clone --depth=1 https://github.com/Roblox/TestEZ.git modules/testez
-  - cp -r modules/testez/src/testez ./src
+  - cp -r modules/testez/src/testez .
 
 script:
-  - luacheck src/rodux
-  - busted --verbose --coverage
+  - luacheck src
+  - lua spec.lua
 
 after_success:
   - luacov-coveralls -e $TRAVIS_BUILD_DIR/lua_install

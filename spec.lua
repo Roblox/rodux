@@ -1,4 +1,4 @@
-local lemur = require("src.lemur")
+local lemur = require("lemur")
 
 local habitat = lemur.Habitat.new()
 
@@ -21,7 +21,7 @@ end
 
 local TestEZ = lemur.Instance.new("Folder")
 TestEZ.Name = "TestEZ"
-habitat:loadFromFs("src/testez", TestEZ)
+habitat:loadFromFs("testez", TestEZ)
 
 local TestBootstrap = habitat:require(TestEZ.TestBootstrap)
 local TextReporter = habitat:require(TestEZ.Reporters.TextReporter)
