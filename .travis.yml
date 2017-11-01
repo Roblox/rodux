@@ -23,7 +23,7 @@ install:
 
 script:
   - luacheck src
-  - lua spec.lua
+  - lua -lluacov spec.lua
 
 after_success:
   - luacov-coveralls -e $TRAVIS_BUILD_DIR/lua_install
