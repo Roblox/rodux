@@ -1,0 +1,3 @@
+#!/bin/sh
+
+rbxpacker --exclude **/*.spec.lua --folder Rodux --name Rodux src/rodux > rodux-installer.lua

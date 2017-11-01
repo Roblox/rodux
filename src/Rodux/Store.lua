@@ -1,14 +1,9 @@
 local RunService = game:GetService("RunService")
 
-local Common = script.Parent
-local Signal = require(Common.Signal)
-local NoYield = require(Common.NoYield)
-
-local Rodux = {}
+local Signal = require(script.Parent.Signal)
+local NoYield = require(script.Parent.NoYield)
 
 local Store = {}
-
-Rodux.Store = Store
 
 -- This value is exposed as a private value so that the test code can stay in
 -- sync with what event we listen to for dispatching the Changed event.
@@ -115,4 +110,4 @@ function Store:Flush()
 	self._lastState = state
 end
 
-return Rodux
+return Store

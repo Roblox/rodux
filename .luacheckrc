@@ -21,6 +21,15 @@ stds.roblox = {
 	}
 }
 
+stds.testez = {
+	read_globals = {
+		"describe",
+		"it", "itFOCUS", "itSKIP",
+		"FOCUS", "SKIP", "HACK_NO_XPCALL",
+		"expect",
+	}
+}
+
 ignore = {
 	"212", -- unused arguments
 	"421", -- shadowing local variable
@@ -31,10 +40,6 @@ ignore = {
 
 std = "lua51+roblox"
 
-files["spec/*.lua"] = {
-	std = "+busted",
-}
-
-files["src/*_spec.lua"] = {
-	std = "+busted",
+files["src/rodux/**/*.spec.lua"] = {
+	std = "+testez",
 }
