@@ -36,4 +36,18 @@ return function()
 		expect(preCount).to.equal(1)
 		expect(postCount).to.equal(0)
 	end)
+
+	it("should propagate error messages", function()
+		local count = 0
+
+		local function test()
+			count = count + 1
+			error("foo")
+		end
+
+		local ok, err = pcall(NoYield, test)
+
+		expect(ok).to.equal(false)
+		expect(err:find("foo")).to.be.ok()
+	end)
 end

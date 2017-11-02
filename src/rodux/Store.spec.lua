@@ -110,6 +110,8 @@ return function()
 			store:Flush()
 
 			expect(callCount).to.equal(1)
+
+			store:Destruct()
 		end)
 
 		it("should handle actions dispatched within the changed event", function()
@@ -173,10 +175,37 @@ return function()
 				store:Flush()
 			end).to.throw()
 
-			store:Destruct()
-
 			expect(preCount).to.equal(1)
 			expect(postCount).to.equal(0)
+
+			store:Destruct()
+		end)
+	end)
+
+	describe("Flush", function()
+		it("should not fire a Changed event if there were no dispatches", function()
+			local store = Store.new(function()
+			end)
+
+			local count = 0
+			store.Changed:Connect(function()
+				count = count + 1
+			end)
+
+			store:Flush()
+
+			expect(count).to.equal(0)
+
+			store:Dispatch("increment")
+			store:Flush()
+
+			expect(count).to.equal(1)
+
+			store:Flush()
+
+			expect(count).to.equal(1)
+
+			store:Destruct()
 		end)
 	end)
 end
