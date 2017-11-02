@@ -26,4 +26,8 @@ habitat:loadFromFs("testez/lib", TestEZ)
 local TestBootstrap = habitat:require(TestEZ.TestBootstrap)
 local TextReporter = habitat:require(TestEZ.Reporters.TextReporter)
 
-TestBootstrap:run(Rodux, TextReporter)
+local results = TestBootstrap:run(Rodux, TextReporter)
+
+if results.failureCount > 0 then
+	os.exit(1)
+end
