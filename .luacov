@@ -1,6 +1,6 @@
 return {
 	include = {
-		"src/rodux",
+		"src",
 	},
 	exclude = {
 		"%.spec$",
