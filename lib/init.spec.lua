@@ -1,7 +1,9 @@
 return function()
 	describe("Rodux", function()
 		it("should load", function()
-			require(script.Parent)
+			local Rodux = require(script.Parent)
+
+			expect(Rodux.Store).to.be.ok()
 		end)
 	end)
 end

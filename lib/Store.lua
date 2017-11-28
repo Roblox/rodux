@@ -27,21 +27,20 @@ function Store.new(reducer, initialState)
 	assert(type(reducer) == "function", "Bad argument #1 to Store.new, expected function.")
 
 	local self = {
-		Reducer = reducer,
+		_reducer = reducer,
+		_state = reducer(initialState, {}),
 	}
-
-	self._state = self.Reducer(initialState, {})
 
 	self._lastState = self._state
 	self._mutatedSinceFlush = false
 	self._connections = {}
 
-	self.Changed = Signal.new()
+	self.changed = Signal.new()
 
 	setmetatable(self, Store)
 
 	local connection = self._flushEvent:Connect(function()
-		self:Flush()
+		self:flush()
 	end)
 	table.insert(self._connections, connection)
 
@@ -51,7 +50,7 @@ end
 --[[
 	Get the current state of the Store. Do not mutate this!
 ]]
-function Store:GetState()
+function Store:getState()
 	return self._state
 end
 
@@ -64,13 +63,13 @@ end
 
 	Pass a function to dispatch a thunk.
 ]]
-function Store:Dispatch(action)
+function Store:dispatch(action)
 	if type(action) == "function" then
 		local result = action(self)
 
 		return result
 	else
-		self._state = self.Reducer(self._state, action)
+		self._state = self._reducer(self._state, action)
 		self._mutatedSinceFlush = true
 	end
 end
@@ -78,7 +77,7 @@ end
 --[[
 	Marks the store as deleted, disconnecting any outstanding connections.
 ]]
-function Store:Destruct()
+function Store:destruct()
 	for _, connection in ipairs(self._connections) do
 		connection:Disconnect()
 	end
@@ -89,7 +88,7 @@ end
 --[[
 	Flush all pending actions since the last change event was dispatched.
 ]]
-function Store:Flush()
+function Store:flush()
 	if not self._mutatedSinceFlush then
 		return
 	end
@@ -104,7 +103,7 @@ function Store:Flush()
 	-- If a Changed listener yields, *very* surprising bugs can ensue.
 	-- Because of that, Changed listeners cannot yield.
 	NoYield(function()
-		self.Changed:Fire(state, self._lastState)
+		self.changed:fire(state, self._lastState)
 	end)
 
 	self._lastState = state

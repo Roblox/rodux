@@ -20,13 +20,13 @@ return function()
 
 		local signal = Signal.new()
 
-		local connection = signal:Connect(callback)
-		signal:Fire(value1, value2)
+		local connection = signal:connect(callback)
+		signal:fire(value1, value2)
 
 		expect(callCount).to.equal(1)
 
-		connection:Disconnect()
-		signal:Fire(value1, value2)
+		connection:disconnect()
+		signal:fire(value1, value2)
 
 		expect(callCount).to.equal(1)
 	end)
@@ -38,10 +38,10 @@ return function()
 
 		local signal = Signal.new()
 
-		local connection = signal:Connect(callback)
-		connection:Disconnect()
+		local connection = signal:connect(callback)
+		connection:disconnect()
 
-		signal:Fire()
+		signal:fire()
 	end)
 
 	it("should fire handlers in order", function()
@@ -61,9 +61,9 @@ return function()
 			y = y + 1
 		end
 
-		signal:Connect(callback1)
-		signal:Connect(callback2)
-		signal:Fire()
+		signal:connect(callback1)
+		signal:connect(callback2)
+		signal:fire()
 
 		expect(x).to.equal(1)
 		expect(y).to.equal(1)
@@ -75,16 +75,16 @@ return function()
 		local countB = 0
 
 		local connectionA
-		connectionA = signal:Connect(function()
-			connectionA:Disconnect()
+		connectionA = signal:connect(function()
+			connectionA:disconnect()
 			countA = countA + 1
 		end)
 
-		signal:Connect(function()
+		signal:connect(function()
 			countB = countB + 1
 		end)
 
-		signal:Fire()
+		signal:fire()
 
 		expect(countA).to.equal(1)
 		expect(countB).to.equal(1)

@@ -8,9 +8,9 @@ return function()
 			end)
 
 			expect(store).to.be.ok()
-			expect(store:GetState()).to.equal("hello, world")
+			expect(store:getState()).to.equal("hello, world")
 
-			store:Destruct()
+			store:destruct()
 		end)
 
 		it("should instantiate with a reducer and an initial state", function()
@@ -19,9 +19,9 @@ return function()
 			end, "initial state")
 
 			expect(store).to.be.ok()
-			expect(store:GetState()).to.equal("initial state")
+			expect(store:getState()).to.equal("initial state")
 
-			store:Destruct()
+			store:destruct()
 		end)
 	end)
 
@@ -31,11 +31,11 @@ return function()
 				return "foo"
 			end)
 
-			local state = store:GetState()
+			local state = store:getState()
 
 			expect(state).to.equal("foo")
 
-			store:Destruct()
+			store:destruct()
 		end)
 	end)
 
@@ -52,17 +52,17 @@ return function()
 			end)
 
 			expect(store).to.be.ok()
-			expect(store:GetState()).to.equal("foo")
+			expect(store:getState()).to.equal("foo")
 
-			store:Dispatch({
+			store:dispatch({
 				type = "act"
 			})
 
-			store:Flush()
+			store:flush()
 
-			expect(store:GetState()).to.equal("bar")
+			expect(store:getState()).to.equal("bar")
 
-			store:Destruct()
+			store:destruct()
 		end)
 
 		it("should call thunks passed for reduction", function()
@@ -76,11 +76,11 @@ return function()
 				callCount = callCount + 1
 			end
 
-			store:Dispatch(thunk)
+			store:dispatch(thunk)
 
 			expect(callCount).to.equal(1)
 
-			store:Destruct()
+			store:destruct()
 		end)
 
 		it("should trigger the Changed event after a flush", function()
@@ -96,22 +96,22 @@ return function()
 
 			local callCount = 0
 
-			store.Changed:Connect(function(state, oldState)
+			store.changed:connect(function(state, oldState)
 				expect(oldState).to.equal(0)
 				expect(state).to.equal(1)
 
 				callCount = callCount + 1
 			end)
 
-			store:Dispatch({
+			store:dispatch({
 				type = "increment"
 			})
 
-			store:Flush()
+			store:flush()
 
 			expect(callCount).to.equal(1)
 
-			store:Destruct()
+			store:destruct()
 		end)
 
 		it("should handle actions dispatched within the changed event", function()
@@ -135,23 +135,23 @@ return function()
 
 			local changeCount = 0
 
-			store.Changed:Connect(function(state, oldState)
+			store.changed:connect(function(state, oldState)
 				expect(state).never.to.equal(oldState)
 
 				if state.value > 0 then
-					store:Dispatch("decrement")
+					store:dispatch("decrement")
 				end
 
 				changeCount = changeCount + 1
 			end)
 
-			store:Dispatch("increment")
-			store:Flush()
-			store:Flush()
+			store:dispatch("increment")
+			store:flush()
+			store:flush()
 
 			expect(changeCount).to.equal(2)
 
-			store:Destruct()
+			store:destruct()
 		end)
 
 		it("should prevent yielding from Changed handler", function()
@@ -163,22 +163,22 @@ return function()
 				return state + 1
 			end)
 
-			store.Changed:Connect(function(state, oldState)
+			store.changed:connect(function(state, oldState)
 				preCount = preCount + 1
 				wait()
 				postCount = postCount + 1
 			end)
 
-			store:Dispatch("increment")
+			store:dispatch("increment")
 
 			expect(function()
-				store:Flush()
+				store:flush()
 			end).to.throw()
 
 			expect(preCount).to.equal(1)
 			expect(postCount).to.equal(0)
 
-			store:Destruct()
+			store:destruct()
 		end)
 	end)
 
@@ -188,24 +188,24 @@ return function()
 			end)
 
 			local count = 0
-			store.Changed:Connect(function()
+			store.changed:connect(function()
 				count = count + 1
 			end)
 
-			store:Flush()
+			store:flush()
 
 			expect(count).to.equal(0)
 
-			store:Dispatch("increment")
-			store:Flush()
+			store:dispatch("increment")
+			store:flush()
 
 			expect(count).to.equal(1)
 
-			store:Flush()
+			store:flush()
 
 			expect(count).to.equal(1)
 
-			store:Destruct()
+			store:destruct()
 		end)
 	end)
 end

@@ -46,7 +46,7 @@ function Signal.new()
 	return self
 end
 
-function Signal:Connect(callback)
+function Signal:connect(callback)
 	self._listeners = immutableAppend(self._listeners, callback)
 
 	local function disconnect()
@@ -54,11 +54,11 @@ function Signal:Connect(callback)
 	end
 
 	return {
-		Disconnect = disconnect
+		disconnect = disconnect
 	}
 end
 
-function Signal:Fire(...)
+function Signal:fire(...)
 	for _, listener in ipairs(self._listeners) do
 		listener(...)
 	end
