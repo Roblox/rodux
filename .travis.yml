@@ -15,11 +15,12 @@ before_install:
   - export PATH=$PATH:$PWD/lua_install/bin
 
 install:
+  - luarocks install luafilesystem
   - luarocks install busted
   - luarocks install luacov
   - luarocks install luacov-coveralls
   - luarocks install luacheck
-  - ./install-dependencies
+  - lua bin/install-dependencies.lua
 
 script:
   - luacheck lib
