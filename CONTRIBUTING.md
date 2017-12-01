@@ -19,7 +19,7 @@ To get started working on Rodux, you'll need:
 * [Luacheck](https://github.com/mpeterv/luacheck) (`luarocks install luacheck`)
 * [LuaCov](https://keplerproject.github.io/luacov) (`luarocks install luacov`)
 
-Once you have all of these installed, you can run the `install-dependencies` script to grab a couple additional local dependencies automatically.
+Once you have all of these installed, you can run `lua bin/install-dependencies.lua` script to grab a couple additional local dependencies automatically.
 
 Finally, you can run all of Rodux's tests with:
 
