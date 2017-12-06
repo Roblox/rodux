@@ -47,10 +47,16 @@ function Signal.new()
 end
 
 function Signal:connect(callback)
-	self._listeners = immutableAppend(self._listeners, callback)
+	local listener = {
+		callback = callback,
+		disconnected = false,
+	}
+
+	self._listeners = immutableAppend(self._listeners, listener)
 
 	local function disconnect()
-		self._listeners = immutableRemoveValue(self._listeners, callback)
+		listener.disconnected = true
+		self._listeners = immutableRemoveValue(self._listeners, listener)
 	end
 
 	return {
@@ -60,7 +66,9 @@ end
 
 function Signal:fire(...)
 	for _, listener in ipairs(self._listeners) do
-		listener(...)
+		if not listener.disconnected then
+			listener.callback(...)
+		end
 	end
 end
 
