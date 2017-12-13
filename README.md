@@ -53,7 +53,7 @@ local function reducer(state, action)
 	return state
 end
 
-local store = Rodux.store.new(reducer)
+local store = Rodux.Store.new(reducer)
 
 store:getState() -- { frobulations = 0 }
 
