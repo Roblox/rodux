@@ -26,12 +26,12 @@ return function()
 				return (state or 0) + 1
 			end,
 			b = function(state, action)
-				return (state or 0) + 1
+				return (state or 0) + 3
 			end,
 		})
 
 		local newState = reducer({}, {})
 		expect(newState.a).to.equal(1)
-		expect(newState.b).to.equal(1)
+		expect(newState.b).to.equal(3)
 	end)
 end
