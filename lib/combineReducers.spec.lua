@@ -19,4 +19,19 @@ return function()
 		expect(aCount).to.equal(1)
 		expect(bCount).to.equal(1)
 	end)
+
+	it("should assign each sub-reducer's value to the new state", function()
+		local reducer = combineReducers({
+			a = function(state, action)
+				return (state or 0) + 1
+			end,
+			b = function(state, action)
+				return (state or 0) + 1
+			end,
+		})
+
+		local newState = reducer({}, {})
+		expect(newState.a).to.equal(1)
+		expect(newState.b).to.equal(1)
+	end)
 end
