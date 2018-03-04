@@ -69,7 +69,7 @@ function Store:dispatch(action)
 
 		return result
 	elseif typeof(action) == "table" then
-		if not action.type then
+		if action.type == nil then
 			error("action does not have a type field", 0)
 		end
 
