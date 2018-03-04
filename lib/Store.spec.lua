@@ -120,11 +120,11 @@ return function()
 					value = 0
 				}
 
-				if action == "increment" then
+				if action.type == "increment" then
 					return {
 						value = state.value + 1
 					}
-				elseif action == "decrement" then
+				elseif action.type == "decrement" then
 					return {
 						value = state.value - 1
 					}
@@ -139,13 +139,17 @@ return function()
 				expect(state).never.to.equal(oldState)
 
 				if state.value > 0 then
-					store:dispatch("decrement")
+					store:dispatch({
+						type = "decrement"
+					})
 				end
 
 				changeCount = changeCount + 1
 			end)
 
-			store:dispatch("increment")
+			store:dispatch({
+				type = "increment"
+			})
 			store:flush()
 			store:flush()
 
@@ -169,7 +173,9 @@ return function()
 				postCount = postCount + 1
 			end)
 
-			store:dispatch("increment")
+			store:dispatch({
+				type = "increment"
+			})
 
 			expect(function()
 				store:flush()
@@ -177,6 +183,18 @@ return function()
 
 			expect(preCount).to.equal(1)
 			expect(postCount).to.equal(0)
+
+			store:destruct()
+		end)
+
+		it("should throw if an action is dispatched without a type field", function()
+			local store = Store.new(function(state, action)
+				return state
+			end)
+
+			expect(function()
+				store:dispatch({})
+			end).to.throw()
 
 			store:destruct()
 		end)
@@ -196,7 +214,9 @@ return function()
 
 			expect(count).to.equal(0)
 
-			store:dispatch("increment")
+			store:dispatch({
+				type = "increment"
+			})
 			store:flush()
 
 			expect(count).to.equal(1)
