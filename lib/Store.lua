@@ -70,13 +70,13 @@ function Store:dispatch(action)
 		return result
 	elseif typeof(action) == "table" then
 		if action.type == nil then
-			error("action does not have a type field", 0)
+			error("action does not have a type field", 2)
 		end
 
 		self._state = self._reducer(self._state, action)
 		self._mutatedSinceFlush = true
 	else
-		error(("actions of type %q are not permitted"):format(typeof(action)))
+		error(("actions of type %q are not permitted"):format(typeof(action)), 2)
 	end
 end
 
