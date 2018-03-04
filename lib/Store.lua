@@ -24,7 +24,7 @@ Store.__index = Store
 	valid.
 ]]
 function Store.new(reducer, initialState)
-	assert(type(reducer) == "function", "Bad argument #1 to Store.new, expected function.")
+	assert(typeof(reducer) == "function", "Bad argument #1 to Store.new, expected function.")
 
 	local self = {
 		_reducer = reducer,
@@ -64,13 +64,19 @@ end
 	Pass a function to dispatch a thunk.
 ]]
 function Store:dispatch(action)
-	if type(action) == "function" then
+	if typeof(action) == "function" then
 		local result = action(self)
 
 		return result
-	else
+	elseif typeof(action) == "table" then
+		if action.type == nil then
+			error("action does not have a type field", 2)
+		end
+
 		self._state = self._reducer(self._state, action)
 		self._mutatedSinceFlush = true
+	else
+		error(("actions of type %q are not permitted"):format(typeof(action)), 2)
 	end
 end
 
