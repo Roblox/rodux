@@ -23,7 +23,7 @@ Store.__index = Store
 	Reducers do not mutate the state object, so the original state is still
 	valid.
 ]]
-function Store.new(reducer, initialState)
+function Store.new(reducer, initialState, middlewares)
 	assert(typeof(reducer) == "function", "Bad argument #1 to Store.new, expected function.")
 
 	local self = {
@@ -43,6 +43,13 @@ function Store.new(reducer, initialState)
 		self:flush()
 	end)
 	table.insert(self._connections, connection)
+
+	local dispatch = Store.dispatch
+	for _, middleware in ipairs(middlewares) do
+		dispatch = middleware(dispatch)
+	end
+
+	self.dispatch = dispatch
 
 	return self
 end
