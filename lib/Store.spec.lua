@@ -198,6 +198,18 @@ return function()
 
 			store:destruct()
 		end)
+
+		it("should throw if the action is not a function or table", function()
+			local store = Store.new(function(state, action)
+				return state
+			end)
+
+			expect(function()
+				store:dispatch(1)
+			end).to.throw()
+
+			store:destruct()
+		end)
 	end)
 
 	describe("Flush", function()
