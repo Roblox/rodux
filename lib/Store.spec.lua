@@ -54,6 +54,8 @@ return function()
 				type = "test"
 			})
 			expect(middlewareInvokeCount).to.equal(1)
+
+			store:destruct()
 		end)
 	end)
 
