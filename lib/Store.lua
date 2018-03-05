@@ -58,7 +58,7 @@ end
 	Dispatch an action to the store. This allows the store's reducer to mutate
 	the state of the application by creating a new copy of the state.
 
-	Listeners on the Changed event of the store are notified when the state
+	Listeners on the changed event of the store are notified when the state
 	changes, but not necessarily on every Dispatch.
 
 	Pass a function to dispatch a thunk.
@@ -101,13 +101,13 @@ function Store:flush()
 
 	self._mutatedSinceFlush = false
 
-	-- On self.Changed:Fire, further actions may be immediately dispatched,
-	-- in which case self._lastState will be set to the most recent self._state,
+	-- On self.changed:fire(), further actions may be immediately dispatched, in
+	-- which case self._lastState will be set to the most recent self._state,
 	-- unless we cache this value first
 	local state = self._state
 
-	-- If a Changed listener yields, *very* surprising bugs can ensue.
-	-- Because of that, Changed listeners cannot yield.
+	-- If a changed listener yields, *very* surprising bugs can ensue.
+	-- Because of that, changed listeners cannot yield.
 	NoYield(function()
 		self.changed:fire(state, self._lastState)
 	end)
