@@ -25,6 +25,7 @@ Store.__index = Store
 ]]
 function Store.new(reducer, initialState, middlewares)
 	assert(typeof(reducer) == "function", "Bad argument #1 to Store.new, expected function.")
+	assert(middlewares == nil or typeof(middlewares) == "table", "Bad argument #3 to Store.new, expected nil or table.")
 
 	local self = {
 		_reducer = reducer,
@@ -44,12 +45,14 @@ function Store.new(reducer, initialState, middlewares)
 	end)
 	table.insert(self._connections, connection)
 
-	local dispatch = Store.dispatch
-	for _, middleware in ipairs(middlewares) do
-		dispatch = middleware(dispatch)
-	end
+	if middlewares then
+		local dispatch = Store.dispatch
+		for _, middleware in ipairs(middlewares) do
+			dispatch = middleware(dispatch)
+		end
 
-	self.dispatch = dispatch
+		self.dispatch = dispatch
+	end
 
 	return self
 end
