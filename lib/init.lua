@@ -7,5 +7,5 @@ return {
 	Store = Store,
 	createReducer = createReducer,
 	combineReducers = combineReducers,
-	logger = loggerMiddleware,
+	loggerMiddleware = loggerMiddleware,
 }
