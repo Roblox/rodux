@@ -33,7 +33,7 @@ end
 local function loggerPlugin(next)
 	return function(store, action)
 		print("Action dispatched:", prettyPrint(action))
-		next(action)
+		next(store, action)
 		print("State changed to:", prettyPrint(store:getState()))
 	end
 end
