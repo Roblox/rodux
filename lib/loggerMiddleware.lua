@@ -30,12 +30,18 @@ local function prettyPrint(t, indent)
 	return table.concat(outputBuffer, "")
 end
 
-local function loggerPlugin(next)
-	return function(store, action)
-		print("Action dispatched:", prettyPrint(action))
-		next(store, action)
-		print("State changed to:", prettyPrint(store:getState()))
+local loggerPlugin = {}
+-- Allows the output function to be changed at runtime.
+loggerPlugin.outputFunction = print
+
+setmetatable(loggerPlugin, {
+	__call = function(_, next)
+		return function(store, action)
+			loggerPlugin.outputFunction("Action dispatched: "..prettyPrint(action))
+			next(store, action)
+			loggerPlugin.outputFunction("State changed to:"..prettyPrint(store:getState()))
+		end
 	end
-end
+})
 
 return loggerPlugin
