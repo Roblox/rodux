@@ -38,6 +38,8 @@ return function()
 			expect(callCount).to.equal(1)
 			expect(lastAction).to.be.a("table")
 			expect(lastAction.type).to.be.ok()
+
+			store:destruct()
 		end)
 	end)
 
