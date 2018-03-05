@@ -26,12 +26,14 @@ Store.__index = Store
 function Store.new(reducer, initialState)
 	assert(typeof(reducer) == "function", "Bad argument #1 to Store.new, expected function.")
 
-	local self = {
-		_reducer = reducer,
-		_state = reducer(initialState, {}),
-	}
+	local self = {}
 
+	self._reducer = reducer
+	self._state = reducer(initialState, {
+		type = "@@INIT",
+	})
 	self._lastState = self._state
+
 	self._mutatedSinceFlush = false
 	self._connections = {}
 

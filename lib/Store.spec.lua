@@ -23,6 +23,22 @@ return function()
 
 			store:destruct()
 		end)
+
+		it("should send an initial action with a 'type' field", function()
+			local lastAction
+			local callCount = 0
+
+			local store = Store.new(function(state, action)
+				lastAction = action
+				callCount = callCount + 1
+
+				return state
+			end)
+
+			expect(callCount).to.equal(1)
+			expect(lastAction).to.be.a("table")
+			expect(lastAction.type).to.be.ok()
+		end)
 	end)
 
 	describe("GetState", function()
