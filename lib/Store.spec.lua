@@ -23,6 +23,31 @@ return function()
 
 			store:destruct()
 		end)
+
+		it("should instantiate with a reducer, initial state, and middlewares", function()
+			local store = Store.new(function(state, action)
+				return state
+			end, "initial state", {})
+
+			expect(store).to.be.ok()
+			expect(store:getState()).to.equal("initial state")
+
+			store:destruct()
+		end)
+
+		it("should modify the dispatch method when middlewares are passed", function()
+			local store = Store.new(function(state, action)
+				return state
+			end, "initial state", {
+				function(next)
+					return function(store, action)
+						next(action)
+					end
+				end
+			})
+
+			expect(store.dispatch).to.never.equal(Store.dispatch)
+		end)
 	end)
 
 	describe("GetState", function()
