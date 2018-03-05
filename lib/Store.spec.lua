@@ -38,20 +38,23 @@ return function()
 		it("should modify the dispatch method when middlewares are passed", function()
 			local middlewareInvokeCount = 0
 
-			local store = Store.new(function(state, action)
+			local function reducer(state, action)
 				return state
-			end, "initial state", {
-				function(next)
-					return function(store, action)
-						middlewareInvokeCount = middlewareInvokeCount + 1
-						next(store, action)
-					end
+			end
+
+			local function testMiddleware(next)
+				return function(store, action)
+					middlewareInvokeCount = middlewareInvokeCount + 1
+					next(store, action)
 				end
-			})
+			end
+
+			local store = Store.new(reducer, "initial state", { testMiddleware })
 
 			store:dispatch({
 				type = "test"
 			})
+
             expect(middlewareInvokeCount).to.equal(1)
 
 			store:destruct()
