@@ -49,7 +49,6 @@ return function()
 				end
 			})
 
-			expect(store.dispatch).to.never.equal(Store.dispatch)
 			store:dispatch({
 				type = "test"
 			})
