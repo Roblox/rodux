@@ -119,24 +119,6 @@ return function()
 			store:destruct()
 		end)
 
-		it("should call thunks passed for reduction", function()
-			local store = Store.new(function(state, action)
-			end)
-
-			local callCount = 0
-
-			local function thunk(passedStore)
-				expect(passedStore).to.equal(store)
-				callCount = callCount + 1
-			end
-
-			store:dispatch(thunk)
-
-			expect(callCount).to.equal(1)
-
-			store:destruct()
-		end)
-
 		it("should trigger the Changed event after a flush", function()
 			local store = Store.new(function(state, action)
 				state = state or 0
