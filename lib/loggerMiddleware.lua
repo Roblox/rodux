@@ -13,7 +13,7 @@ local function prettyPrint(t, indent)
 		table.insert(outputBuffer, strKey)
 		table.insert(outputBuffer, " = ")
 
-		if type(value) == "table" then
+		if typeof(value) == "table" then
 			table.insert(outputBuffer, prettyPrint(value, indent + 1))
 			table.insert(outputBuffer, "\n")
 		else
@@ -35,9 +35,9 @@ local function loggerMiddleware(outputFunction)
 
 	return function(next)
 		return function(store, action)
-			outputFunction("Action dispatched: "..prettyPrint(action))
+			outputFunction("Action dispatched: " .. prettyPrint(action))
 			next(store, action)
-			outputFunction("State changed to:"..prettyPrint(store:getState()))
+			outputFunction("State changed to:" .. prettyPrint(store:getState()))
 		end
 	end
 end
