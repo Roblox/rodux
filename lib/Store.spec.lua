@@ -24,6 +24,42 @@ return function()
 			store:destruct()
 		end)
 
+		it("should instantiate with a reducer, initial state, and middlewares", function()
+			local store = Store.new(function(state, action)
+				return state
+			end, "initial state", {})
+
+			expect(store).to.be.ok()
+			expect(store:getState()).to.equal("initial state")
+
+			store:destruct()
+		end)
+
+		it("should modify the dispatch method when middlewares are passed", function()
+			local middlewareInvokeCount = 0
+
+			local function reducer(state, action)
+				return state
+			end
+
+			local function testMiddleware(next)
+				return function(store, action)
+					middlewareInvokeCount = middlewareInvokeCount + 1
+					next(store, action)
+				end
+			end
+
+			local store = Store.new(reducer, "initial state", { testMiddleware })
+
+			store:dispatch({
+				type = "test"
+			})
+
+			expect(middlewareInvokeCount).to.equal(1)
+
+			store:destruct()
+		end)
+
 		it("should send an initial action with a 'type' field", function()
 			local lastAction
 			local callCount = 0
