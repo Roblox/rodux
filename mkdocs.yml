@@ -10,6 +10,8 @@ theme:
 
 pages:
   - Home: index.md
+  - Guide:
+    - Middleware: 'guide/middleware.md'
   - 'API Reference': api-reference.md
 
 markdown_extensions:
@@ -18,3 +20,4 @@ markdown_extensions:
       guess_lang: false
   - toc:
       permalink: true
+  - pymdownx.superfences
