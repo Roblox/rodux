@@ -1,0 +1,19 @@
+site_name: Rodux Documentation
+repo_name: Roblox/rodux
+repo_url: https://github.com/Roblox/rodux
+
+theme:
+  name: material
+  palette:
+    primary: 'Light Blue'
+    accent: 'Light Blue'
+
+pages:
+  - Home: index.md
+
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - toc:
+      permalink: true
