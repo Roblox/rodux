@@ -23,6 +23,6 @@ return function()
 			type = "test"
 		})
 
-		expect(outputCount == 1).to.equal(true)
+		expect(outputCount >= 1).to.equal(true)
 	end)
 end
