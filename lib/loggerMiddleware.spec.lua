@@ -13,13 +13,12 @@ return function()
 			outputCount = outputCount + 1
 		end
 
-		-- Modify the output function so we don't spam test logs.
-		loggerMiddleware.outputFunction = outputFunction
+		local logger = loggerMiddleware(outputFunction)
 
 		local store = Store.new(reducer, {
 			value = 0,
 			otherValue = {},
-		}, { loggerMiddleware })
+		}, { logger })
 		store:dispatch({
 			type = "test"
 		})
