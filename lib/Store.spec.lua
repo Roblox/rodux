@@ -55,10 +55,10 @@ return function()
 				type = "test"
 			})
 
-            expect(middlewareInvokeCount).to.equal(1)
+			expect(middlewareInvokeCount).to.equal(1)
 
 			store:destruct()
-        end)
+		end)
 
 		it("should send an initial action with a 'type' field", function()
 			local lastAction
