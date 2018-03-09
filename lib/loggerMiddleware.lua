@@ -35,10 +35,12 @@ local function loggerMiddleware(outputFunction)
 
 	return function(next)
 		return function(store, action)
-			next(store, action)
+			local result = next(store, action)
 			outputFunction(("Action dispatched: %s\nState changed to: %s"):format(
 				prettyPrint(action),
 				prettyPrint(store:getState())))
+
+			return result
 		end
 	end
 end

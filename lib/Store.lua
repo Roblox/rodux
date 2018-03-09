@@ -72,15 +72,9 @@ end
 
 	Listeners on the changed event of the store are notified when the state
 	changes, but not necessarily on every Dispatch.
-
-	Pass a function to dispatch a thunk.
 ]]
 function Store:dispatch(action)
-	if typeof(action) == "function" then
-		local result = action(self)
-
-		return result
-	elseif typeof(action) == "table" then
+	if typeof(action) == "table" then
 		if action.type == nil then
 			error("action does not have a type field", 2)
 		end
