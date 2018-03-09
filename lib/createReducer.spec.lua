@@ -9,7 +9,7 @@ return function()
 			a = function(state, action)
 				return {
 					a = state.a + 1,
-					b = state.b
+					b = state.b,
 				}
 			end,
 			b = function(state, action)
@@ -24,13 +24,13 @@ return function()
 			a = 0,
 			b = 0,
 		}, {
-			type = "a"
+			type = "a",
 		})
 
 		expect(newState.a).to.equal(1)
 
 		newState = reducer(newState, {
-			type = "b"
+			type = "b",
 		})
 
 		expect(newState.b).to.equal(2)
@@ -59,7 +59,7 @@ return function()
 			a = function(state, action)
 				return {
 					a = state.a + 1,
-					b = state.b
+					b = state.b,
 				}
 			end,
 			b = function(state, action)
@@ -71,7 +71,7 @@ return function()
 		})
 
 		local newState = reducer(initialState, {
-			type = "c"
+			type = "c",
 		})
 
 		expect(newState).to.equal(initialState)

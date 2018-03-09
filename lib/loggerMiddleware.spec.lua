@@ -19,8 +19,9 @@ return function()
 			value = 0,
 			otherValue = {},
 		}, { logger })
+
 		store:dispatch({
-			type = "test"
+			type = "test",
 		})
 
 		expect(outputCount).to.equal(1)

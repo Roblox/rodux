@@ -3,7 +3,7 @@ local indentStr = "    "
 local function prettyPrint(t, indent)
 	indent = indent or 1
 	local outputBuffer = {
-		"{\n"
+		"{\n",
 	}
 
 	for key, value in pairs(t) do
@@ -36,9 +36,11 @@ local function loggerMiddleware(outputFunction)
 	return function(next)
 		return function(store, action)
 			local result = next(store, action)
+
 			outputFunction(("Action dispatched: %s\nState changed to: %s"):format(
 				prettyPrint(action),
-				prettyPrint(store:getState())))
+				prettyPrint(store:getState()))
+			)
 
 			return result
 		end

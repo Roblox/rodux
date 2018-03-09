@@ -52,7 +52,7 @@ return function()
 			local store = Store.new(reducer, "initial state", { testMiddleware })
 
 			store:dispatch({
-				type = "test"
+				type = "test",
 			})
 
 			expect(middlewareInvokeCount).to.equal(1)
@@ -109,7 +109,7 @@ return function()
 			expect(store:getState()).to.equal("foo")
 
 			store:dispatch({
-				type = "act"
+				type = "act",
 			})
 
 			store:flush()
@@ -140,7 +140,7 @@ return function()
 			end)
 
 			store:dispatch({
-				type = "increment"
+				type = "increment",
 			})
 
 			store:flush()
@@ -153,16 +153,16 @@ return function()
 		it("should handle actions dispatched within the changed event", function()
 			local store = Store.new(function(state, action)
 				state = state or {
-					value = 0
+					value = 0,
 				}
 
 				if action.type == "increment" then
 					return {
-						value = state.value + 1
+						value = state.value + 1,
 					}
 				elseif action.type == "decrement" then
 					return {
-						value = state.value - 1
+						value = state.value - 1,
 					}
 				end
 
@@ -176,7 +176,7 @@ return function()
 
 				if state.value > 0 then
 					store:dispatch({
-						type = "decrement"
+						type = "decrement",
 					})
 				end
 
@@ -184,7 +184,7 @@ return function()
 			end)
 
 			store:dispatch({
-				type = "increment"
+				type = "increment",
 			})
 			store:flush()
 			store:flush()
@@ -210,7 +210,7 @@ return function()
 			end)
 
 			store:dispatch({
-				type = "increment"
+				type = "increment",
 			})
 
 			expect(function()
@@ -263,7 +263,7 @@ return function()
 			expect(count).to.equal(0)
 
 			store:dispatch({
-				type = "increment"
+				type = "increment",
 			})
 			store:flush()
 

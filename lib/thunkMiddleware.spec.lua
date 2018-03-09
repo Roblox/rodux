@@ -30,7 +30,7 @@ return function()
 		local store = Store.new(reducer, {}, { thunkMiddleware })
 
 		store:dispatch({
-			type = "test"
+			type = "test",
 		})
 
 		-- Reducer will be invoked twice:
