@@ -7,9 +7,9 @@
 local function thunkMiddleware(next)
 	return function(store, action)
 		if typeof(action) == "function" then
-			action(store)
+			return action(store)
 		else
-			next(store, action)
+			return next(store, action)
 		end
 	end
 end

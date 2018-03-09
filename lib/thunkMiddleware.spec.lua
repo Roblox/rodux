@@ -38,4 +38,21 @@ return function()
 		-- Once when the test action is dispatched
 		expect(reducerCount).to.equal(2)
 	end)
+
+	it("should return the value from the thunk", function()
+		local function reducer(state, action)
+			return state
+		end
+
+		local store = Store.new(reducer, {}, { thunkMiddleware })
+		local thunkValue = "test"
+
+		local function thunk(store)
+			return thunkValue
+		end
+
+		local result = store:dispatch(thunk)
+
+		expect(result).to.equal(thunkValue)
+	end)
 end
