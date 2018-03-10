@@ -13,6 +13,7 @@ pages:
   - Guide:
     - State: 'guide/state.md'
     - Actions: 'guide/actions.md'
+    - Reducers: 'guide/reducers.md'
     - Middleware: 'guide/middleware.md'
   - 'API Reference': api-reference.md
 
