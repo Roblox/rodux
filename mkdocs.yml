@@ -12,6 +12,7 @@ pages:
   - Home: index.md
   - Guide:
     - State: 'guide/state.md'
+    - Actions: 'guide/actions.md'
     - Middleware: 'guide/middleware.md'
   - 'API Reference': api-reference.md
 
