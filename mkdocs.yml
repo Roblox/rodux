@@ -11,6 +11,7 @@ theme:
 pages:
   - Home: index.md
   - Guide:
+    - State: 'guide/state.md'
     - Middleware: 'guide/middleware.md'
   - 'API Reference': api-reference.md
 
