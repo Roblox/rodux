@@ -31,6 +31,26 @@ local function reducer(state, action)
 end
 ```
 
+## Initializing state: the `@@INIT` action
+When you first create a store, Rodux will automatically dispatch an action with a type of `@@INIT` before any other actions are dispatched. Your reducer should use this action to set up the state correctly:
+
+```lua
+local function reducer(state, action)
+    if action.type == "@@INIT" then
+        return {
+            value = "default",
+            -- ...
+        }
+    end
+
+    -- Do something with the action
+end
+```
+
+!!! question
+    #### If there's an initialization action, what's the point of supplying an initial state?
+    They do different things! The initialization action is for setting up parts of your state that need to be set up at run-time. The initial state that you can supply when creating a store is for loading your state from storage.
+
 ## Handling more than one type of action
 Most of the time, your reducer needs to handle many types of actions. You can use the `type` field of the action for this:
 
