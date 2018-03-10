@@ -30,3 +30,36 @@ local function reducer(state, action)
     return newState
 end
 ```
+
+## Handling more than one type of action
+Most of the time, your reducer needs to handle many types of actions. You can use the `type` field of the action for this:
+
+```lua
+local function reducer(state, action)
+    if action.type == "someAction" then
+        -- Do something with this action
+    elseif action.type == "otherAction" then
+        -- Do something with another action
+    else
+        -- Don't know how to handle this action; don't change the state at all
+        return state
+    end
+end
+```
+
+!!! question
+    #### Why is the reducer returning the same state value if it can't handle the action?
+    You're allowed to return the same state **provided it has not changed**. If the state doesn't change at all, the existing state is still valid, and can be returned from the reducer.
+
+Writing out `if-elseif-else` blocks can be inconvenient at times. To simplify these constructs, Rodux provides a `createReducer` function. This `createReducer` call is equivalent to the reducer above:
+
+```lua
+local reducer = Rodux.createReducer({
+    someAction = function(state, action)
+        -- Do something with someAction
+    end,
+    otherAction = function(state, action)
+        -- Do something with otherAction
+    end,
+})
+```
