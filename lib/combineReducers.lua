@@ -3,6 +3,11 @@
 ]]
 local function combineReducers(map)
 	return function(state, action)
+		-- If state is nil, substitute it with a blank table.
+		if state == nil then
+			state = {}
+		end
+
 		local newState = {}
 
 		for key, reducer in pairs(map) do
