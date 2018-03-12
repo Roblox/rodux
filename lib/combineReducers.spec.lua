@@ -34,4 +34,19 @@ return function()
 		expect(newState.a).to.equal(1)
 		expect(newState.b).to.equal(3)
 	end)
+
+	it("should not throw when state is nil", function()
+		local reducer = combineReducers({
+			a = function(state, action)
+				return (state or 0) + 1
+			end,
+			b = function(state, action)
+				return (state or 0) + 3
+			end,
+		})
+
+		expect(function()
+			reducer(nil, {})
+		end).to.never.throw()
+	end)
 end
