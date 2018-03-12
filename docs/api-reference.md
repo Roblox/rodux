@@ -73,8 +73,8 @@ Connects a listener to the signal. The listener will be invoked whenever the sig
 ## Helper functions
 Rodux supplies some helper functions to make creating complex reducers easier.
 
-### combineReducers
-A helper function that can be used to combine reducers. It is exposed as `Rodux.combineReducers`.
+### Rodux.combineReducers
+A helper function that can be used to combine reducers.
 
 ```lua
 local reducer = combineReducers({
@@ -94,8 +94,8 @@ local function reducer(state, action)
 end
 ```
 
-### createReducer
-A helper function that can be used to create reducers. It is exposed as `Rodux.createReducer`.
+### Rodux.createReducer
+A helper function that can be used to create reducers.
 
 ```lua
 local reducer = createReducer({
@@ -110,13 +110,13 @@ local reducer = createReducer({
 ```
 
 ## Middleware
-Rodux ships with several middlewares that address common use-cases.
+Rodux ships with several middleware that address common use-cases.
 
-### loggerMiddleware
+### Rodux.loggerMiddleware
 ```lua
 loggerMiddleware(outputFunction = print) -> middlewareFunction
 ```
-A middleware that logs actions and the new state that results from them. It is exposed as `Rodux.loggerMiddleware`.
+A middleware that logs actions and the new state that results from them.
 
 This middleware supports changing the output function. By default, it is `print`, and state changes are printed to the output. As a consequence of this, `loggerMiddleware` must be called when using it:
 
@@ -124,8 +124,8 @@ This middleware supports changing the output function. By default, it is `print`
 local store = Store.new(reducer, initialState, { loggerMiddleware() })
 ```
 
-### thunkMiddleware
-A middleware that allows thunks to be dispatched. Thunks are functions that perform asynchronous tasks or side effects, and can dispatch actions as needed. It is exposed as `Rodux.thunkMiddleware`.
+### Rodux.thunkMiddleware
+A middleware that allows thunks to be dispatched. Thunks are functions that perform asynchronous tasks or side effects, and can dispatch actions as needed.
 
 ```lua
 local store = Store.new(reducer, initialState, { thunkMiddleware })
