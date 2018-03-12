@@ -11,7 +11,7 @@ Anything that changes in your game should go in your state table. You should be 
 Constants and configuration values that don't ever change in your game don't need to go in your state table.
 
 ## State is read-only
-In Rodux, state is **read-only** - it cannot be changed directly. The only way to change your state is by dispatching an [action](./actions.md). This means that every change to your state flows down a single path, which can be easily manipulated. Logging state changes, for example, only needs to happen in one place, instead of sprinkling `print` statements across your entire codebase.
+In Rodux, state is **read-only** - it cannot be changed directly. The only way to change your state is by dispatching an [action](actions.md). This means that every change to your state flows down a single path, which can be easily manipulated. Logging state changes, for example, only needs to happen in one place, instead of sprinkling `print` statements across your entire codebase.
 
 !!! question
     #### Why is state immutable?
@@ -26,4 +26,4 @@ In Rodux, state is **read-only** - it cannot be changed directly. The only way t
     This also makes it very easy to undo an action - just save the old state value, and replace the current state with the old state. That state will always be valid, since it's never changed, only replaced!
 
 ## State is updated using pure functions
-Since state is read-only, the way to change it is with **pure functions**, known in Rodux as [reducers](./reducers.md). Reducers take the old state and an action, and return a brand-new state table. They do not change the old state - they make a new state table.
+Since state is read-only, the way to change it is with **pure functions**, known in Rodux as [reducers](reducers.md). Reducers take the old state and an action, and return a brand-new state table. They do not change the old state - they make a new state table.

@@ -1,5 +1,5 @@
 # Reducers
-A **reducer** is a function that transforms the [state](./state.md) in response to [actions](./actions.md). Reducers should be pure functions - given the same inputs, they should always have the same output. The reducer signature is:
+A **reducer** is a function that transforms the [state](state.md) in response to [actions](actions.md). Reducers should be pure functions - given the same inputs, they should always have the same output. The reducer signature is:
 
 ```
 reducer(state, action) -> newState

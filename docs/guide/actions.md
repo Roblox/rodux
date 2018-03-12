@@ -1,5 +1,5 @@
 # Actions
-**Actions** are bundles of data sent from your game to your store. They are tables with a single required field: `type`. The `type` field is used to describe the type of the action, which determines what it does. It is recommended, but not required, that `type` be a string, for easy debugging. You can dispatch actions to the store using its [dispatch](../api-reference.md#storedispatch) method.
+**Actions** are bundles of data sent from your game to your store. They are tables with a single required field: `type`. The `type` field is used to describe the type of the action, which determines what it does. It is recommended, but not required, that `type` be a string, for easy debugging. You can dispatch actions to the store using its [dispatch](/api-reference.md#storedispatch) method.
 
 Here's an example action that tells the store that a player joined:
 
