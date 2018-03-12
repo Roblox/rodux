@@ -1,8 +1,8 @@
 # Middleware
-Middleware is a way to modify the behavior of a store by altering the dispatch behavior. Middlewares can modify an action, consume it entirely (stopping it from being dispatched), or just do something else on top of the action. They do this by overriding the store's `dispatch` method entirely. A middleware is a factory for new `dispatch` methods, to rephrase things.
+Middleware is a way to modify the behavior of a store by altering the dispatch behavior. Middleware can modify an action, consume it entirely (stopping it from being dispatched), or just do something else on top of the action. They do this by overriding the store's `dispatch` method entirely. A middleware is a factory for new `dispatch` methods, to rephrase things.
 
 ## Using middlewares
-Middlewares can be used by specifying them in an array in the third argument of `Store.new`:
+Middleware can be used by specifying them in an array in the third argument of `Store.new`:
 
 ```lua
 local store = Rodux.Store.new(
@@ -14,15 +14,15 @@ local store = Rodux.Store.new(
 
 !!! question
     #### Why are the middlewares in reverse order?
-	Rodux evaluates its middlewares in last-in-first-out order: the last argument is the one that's invoked first. The order of your middlewares is important.
+	Rodux evaluates middleware in last-in-first-out order: the last argument is the one that's invoked first. The order of your middleware is important.
 
 Once you've done this, the middlewares are active and will take effect whenever you use the store's `dispatch` method.
 
 ## Built-in middlewares
-Rodux comes with two built-in middlewares: `loggerMiddleware` and `thunkMiddleware`.
+Rodux comes with two built-in middleware: `loggerMiddleware` and `thunkMiddleware`.
 
-### loggerMiddleware
-`loggerMiddleware` is a very simple middleware that lets you log changes to your state. It is exposed as `Rodux.loggerMiddleware` from the main Rodux module. Whenever an action is dispatched, it will print two things:
+### Rodux.loggerMiddleware
+`loggerMiddleware` is a very simple middleware that lets you log changes to your state. Whenever an action is dispatched, it will print two things:
 
 * The action in its entirety
 * The state after the action was reduced
@@ -61,7 +61,7 @@ State changed to: {
 	}
 ```
 
-### thunkMiddleware
+### Rodux.thunkMiddleware
 `thunkMiddleware` is a middleware that lets you use thunks - it lets you dispatch a function to your store, which will be run. The function can do anything, and can dispatch new actions at will. Thunks are commonly used for asynchronous, long-running operations, like reading from a data store or performing a HTTP request.
 
 To use it, just include it in your `middlewares` table:
@@ -87,8 +87,8 @@ store:dispatch(function(store)
 end)
 ```
 
-## Writing your own middlewares
-There's nothing magic about writing middlewares! Here's how you can write your own.
+## Writing your own middleware
+There's nothing magic about writing middleware! Here's how you can write your own.
 
 ### A simple example: printing the type field
 Here's a simple middleware that just prints the action's `type` field:
