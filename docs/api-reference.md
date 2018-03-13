@@ -5,14 +5,14 @@ The Store class is the core piece of Rodux. It is the state container that you c
 
 ### Store.new
 ```
-Store.new(reducer, [initialState, [middleware]]) -> Store
+Store.new(reducer, [initialState, [middlewares]]) -> Store
 ```
 
 Creates and returns a new Store.
 
 * `reducer` is the store's root reducer function, and is invokved whenever an action is dispatched. It must be a pure function.
 * `initialState` is the store's initial state. This should be used to load a saved state from storage.
-* `middleware` is a list of middleware to apply to the store. See [the middleware guide](/guide/middleware.md) for more details.
+* `middlewares` is a list of middleware to apply to the store. See [the middleware guide](/guide/middleware.md) for more details.
 
 The store will automatically dispatch an initialization action with a `type` of `@@INIT`.
 
