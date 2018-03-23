@@ -6,8 +6,8 @@
 	<a href="https://coveralls.io/github/Roblox/rodux?branch=master">
 		<img src="https://coveralls.io/repos/github/Roblox/rodux/badge.svg?branch=master" alt="Coveralls Coverage" />
 	</a>
-	<a href="#">
-		<img src="https://img.shields.io/badge/docs-soon-red.svg" alt="Documentation" />
+	<a href="https://roblox.github.io/rodux">
+		<img src="https://img.shields.io/badge/docs-website-green.svg" alt="Documentation" />
 	</a>
 </div>
 
