@@ -8,6 +8,6 @@ return {
 	Store = Store,
 	createReducer = createReducer,
 	combineReducers = combineReducers,
-	loggerMiddleware = loggerMiddleware,
+	loggerMiddleware = loggerMiddleware.middleware,
 	thunkMiddleware = thunkMiddleware,
 }

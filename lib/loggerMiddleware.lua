@@ -1,49 +1,54 @@
-local indentStr = "    "
+local indent = "    "
 
-local function prettyPrint(t, indent)
-	indent = indent or 1
-	local outputBuffer = {
-		"{\n",
-	}
+local function prettyPrint(value, indentLevel)
+	indentLevel = indentLevel or 0
+	local output = {}
 
-	for key, value in pairs(t) do
-		local strKey = tostring(key)
+	if typeof(value) == "table" then
+		table.insert(output, "{\n")
 
-		table.insert(outputBuffer, indentStr:rep(indent + 1))
-		table.insert(outputBuffer, strKey)
-		table.insert(outputBuffer, " = ")
+		for key, value in pairs(value) do
+			table.insert(output, indent:rep(indentLevel + 1))
+			table.insert(output, tostring(key))
+			table.insert(output, " = ")
 
-		if typeof(value) == "table" then
-			table.insert(outputBuffer, prettyPrint(value, indent + 1))
-			table.insert(outputBuffer, "\n")
-		else
-			table.insert(outputBuffer, tostring(value))
-			table.insert(outputBuffer, "; (")
-			table.insert(outputBuffer, typeof(value))
-			table.insert(outputBuffer, ")\n")
+			table.insert(output, prettyPrint(value, indentLevel + 1))
+			table.insert(output, "\n")
 		end
+
+		table.insert(output, indent:rep(indentLevel))
+		table.insert(output, "}")
+	elseif typeof(value) == "string" then
+		table.insert(output, string.format("%q", value))
+		table.insert(output, " (string)")
+	else
+		table.insert(output, tostring(value))
+		table.insert(output, " (")
+		table.insert(output, typeof(value))
+		table.insert(output, ")")
 	end
 
-	table.insert(outputBuffer, indentStr:rep(indent))
-	table.insert(outputBuffer, "}")
-
-	return table.concat(outputBuffer, "")
+	return table.concat(output, "")
 end
 
-local function loggerMiddleware(outputFunction)
-	outputFunction = outputFunction or print
+-- We want to be able to override outputFunction in tests, so the shape of this
+-- module is kind of unconventional.
+--
+-- We fix it this weird shape in init.lua.
+local loggerMiddleware = {
+	outputFunction = print,
+}
 
-	return function(next)
-		return function(store, action)
-			local result = next(store, action)
+function loggerMiddleware.middleware(next)
+	return function(store, action)
+		local result = next(store, action)
 
-			outputFunction(("Action dispatched: %s\nState changed to: %s"):format(
-				prettyPrint(action),
-				prettyPrint(store:getState()))
-			)
+		loggerMiddleware.outputFunction(("Action dispatched: %s\nState changed to: %s"):format(
+			prettyPrint(action),
+			prettyPrint(store:getState())
+		))
 
-			return result
-		end
+		return result
 	end
 end
 
