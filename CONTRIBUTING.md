@@ -19,7 +19,18 @@ To get started working on Rodux, you'll need:
 * [Luacheck](https://github.com/mpeterv/luacheck) (`luarocks install luacheck`)
 * [LuaCov](https://keplerproject.github.io/luacov) (`luarocks install luacov`)
 
-Once you have all of these installed, you can run `lua bin/install-dependencies.lua` script to grab a couple additional local dependencies automatically.
+Before the tests will work, make sure you have all of the repository's Git submodules installed. If you haven't cloned it yet, you can use:
+
+```sh
+git clone --recurse-submodules https://github.com/Roblox/rodux.git
+```
+
+If you've already cloned the Rodux repository, you can use:
+
+```sh
+git submodule init
+git submodule update
+```
 
 Finally, you can run all of Rodux's tests with:
 
