@@ -1,0 +1,99 @@
+{
+    "docs": [
+        {
+            "location": "/",
+            "text": "Home\n\u00b6\n\n\nRodux is a central state management library based on Dan Abramov's \nRedux\n library for JavaScript.\n\n\nThis documentation is incomplete!",
+            "title": "Home"
+        },
+        {
+            "location": "/#home",
+            "text": "Rodux is a central state management library based on Dan Abramov's  Redux  library for JavaScript.  This documentation is incomplete!",
+            "title": "Home"
+        },
+        {
+            "location": "/api-reference/",
+            "text": "Rodux API Reference\n\u00b6\n\n\nRodux.Store\n\u00b6\n\n\nThe Store class is the core piece of Rodux. It is the state container that you create and use.\n\n\nStore.new\n\u00b6\n\n\nStore.new(reducer, [initialState, [middlewares]]) -> Store\n\n\n\n\nCreates and returns a new Store.\n\n\n\n\nreducer\n is the store's root reducer function, and is invokved whenever an action is dispatched. It must be a pure function.\n\n\ninitialState\n is the store's initial state. This should be used to load a saved state from storage.\n\n\nmiddlewares\n is a list of middleware to apply to the store.\n\n\n\n\nThe store will automatically dispatch an initialization action with a \ntype\n of \n@@INIT\n.\n\n\n\n\nNote\n\n\nThe initialization action does not pass through any middleware prior to reaching the reducer.\n\n\n\n\nStore.changed\n\u00b6\n\n\nstore\n.\nchanged\n:\nconnect\n(\nfunction\n(\nnewState\n,\n \noldState\n)\n\n    \n-- do something with newState or oldState\n\n\nend\n)\n\n\n\n\n\nA \nSignal\n that is fired when the store's state is changed up to once per frame.\n\n\n\n\nWarning\n\n\nMultiple actions can be grouped together into one changed event!\n\n\n\n\n\n\nDanger\n\n\nDo not yield within any listeners on \nchanged\n; an error will be thrown.\n\n\n\n\nStore:dispatch\n\u00b6\n\n\nstore:dispatch(action) -> nil\n\n\n\n\nDispatches an action. The action will travel through all of the store's middlewares before reaching the store's reducer.\n\n\nUnless handled by middleware, \naction\n must contain a \ntype\n field to indicate what type of action it is. No other fields are required.\n\n\nStore:getState\n\u00b6\n\n\nstore:getState() -> table\n\n\n\n\nGets the store's current state.\n\n\n\n\nWarning\n\n\nDo not modify this state! Doing so will cause \nserious\n bugs your code!\n\n\n\n\nStore:destruct\n\u00b6\n\n\nstore:destruct() -> nil\n\n\n\n\nDestroys the store, cleaning up its connections.\n\n\n\n\nDanger\n\n\nAttempting to use the store after \ndestruct\n has been called will cause problems.\n\n\n\n\nStore:flush\n\u00b6\n\n\nstore:flush() -> nil\n\n\n\n\nFlushes the store's pending actions, firing the \nchanged\n event if necessary.\n\n\n\n\nInfo\n\n\nflush\n is called by Rodux automatically every frame and usually doesn't need to be called manually.\n\n\n\n\nSignal\n\u00b6\n\n\nThe Signal class in Rodux represents a simple, predictable event that is controlled from within Rodux. It cannot be created outside of Rodux, but is used as \nStore.changed\n.\n\n\nSignal:connect\n\u00b6\n\n\nsignal:connect(listener) -> { disconnect }\n\n\n\n\nConnects a listener to the signal. The listener will be invoked whenever the signal is fired.\n\n\nconnect\n returns a table with a \ndisconnect\n function that can be used to disconnect the listener from the signal.\n\n\nHelper functions\n\u00b6\n\n\nRodux supplies some helper functions to make creating complex reducers easier.\n\n\nRodux.combineReducers\n\u00b6\n\n\nA helper function that can be used to combine multiple reducers into a new reducer.\n\n\nlocal\n \nreducer\n \n=\n \ncombineReducers\n({\n\n    \nkey1\n \n=\n \nreducer1\n,\n\n    \nkey2\n \n=\n \nreducer2\n,\n\n\n})\n\n\n\n\n\ncombineReducers\n is functionally equivalent to writing:\n\n\nlocal\n \nfunction\n \nreducer\n(\nstate\n,\n \naction\n)\n\n    \nreturn\n \n{\n\n        \nkey1\n \n=\n \nreducer1\n(\nstate\n.\nkey1\n,\n \naction\n),\n\n        \nkey2\n \n=\n \nreducer2\n(\nstate\n.\nkey2\n,\n \naction\n),\n\n    \n}\n\n\nend\n\n\n\n\n\nRodux.createReducer\n\u00b6\n\n\nRodux.createReducer(initialState, actionHandlers) -> reducer\n\n\n\n\nA helper function that can be used to create reducers.\n\n\nUnlike JavaScript, Lua has no \nswitch\n statement, which can make writing reducers that respond to lots of actions clunky.\n\n\nReducers often have a structure that looks like this:\n\n\nlocal\n \ninitialState\n \n=\n \n{}\n\n\n\nlocal\n \nfunction\n \nreducer\n(\nstate\n,\n \naction\n)\n\n    \nstate\n \n=\n \nstate\n \nor\n \ninitialState\n\n\n    \nif\n \naction\n.\ntype\n \n==\n \n\"setFoo\"\n \nthen\n\n        \n-- Handle the setFoo action\n\n    \nelseif\n \naction\n.\ntype\n \n==\n \n\"setBar\"\n \nthen\n\n        \n-- Handle the setBar action\n\n    \nend\n\n\n    \nreturn\n \nstate\n\n\nend\n\n\n\n\n\ncreateReducer\n can replace the chain of \nif\n statements in a reducer:\n\n\nlocal\n \ninitialState\n \n=\n \n{}\n\n\n\nlocal\n \nreducer\n \n=\n \ncreateReducer\n(\ninitialState\n,\n \n{\n\n    \nsetFoo\n \n=\n \nfunction\n(\nstate\n,\n \naction\n)\n\n        \n-- Handle the setFoo action\n\n    \nend\n,\n\n\n    \nsetBar\n \n=\n \nfunction\n(\nstate\n,\n \naction\n)\n\n        \n-- Handle the setBar action\n\n    \nend\n\n\n})\n\n\n\n\n\nMiddleware\n\u00b6\n\n\nRodux provides an API that allows changing the way that actions are dispatched called \nmiddleware\n. To attach middlewares to a store, pass a list of middleware as the third argument to \nStore.new\n.\n\n\nA single middleware is just a function with the following signature:\n\n\n(next) -> (store, action) -> result\n\n\n\n\nThat is, middleware is a function that accepts the next middleware to apply and returns a new function. That function takes the \nStore\n and the current action and can dispatch more actions, log to output, or do network requests!\n\n\nA simple version of Rodux's \nloggerMiddleware\n is as easy as:\n\n\nlocal\n \nfunction\n \nsimpleLogger\n(\nnext\n)\n\n    \nreturn\n \nfunction\n(\nstore\n,\n \naction\n)\n\n        \nprint\n(\n\"Dispatched action of type\"\n,\n \naction\n.\ntype\n)\n\n\n        \nreturn\n \nnext\n(\nstore\n,\n \naction\n)\n\n    \nend\n\n\nend\n\n\n\n\n\nRodux also ships with several middleware that address common use-cases.\n\n\nRodux.loggerMiddleware\n\u00b6\n\n\nA middleware that logs actions and the new state that results from them.\n\n\nloggerMiddleware\n is useful for getting a quick look at what actions are being dispatched. In the future, Rodux will have tools similar to \nRedux's DevTools\n.\n\n\nlocal\n \nstore\n \n=\n \nStore\n.\nnew\n(\nreducer\n,\n \ninitialState\n,\n \n{\n \nloggerMiddleware\n \n})\n\n\n\n\n\nRodux.thunkMiddleware\n\u00b6\n\n\nA middleware that allows thunks to be dispatched. Thunks are functions that perform asynchronous tasks or side effects, and can dispatch actions.\n\n\nthunkMiddleware\n is comparable to Redux's \nredux-thunk\n.\n\n\nlocal\n \nstore\n \n=\n \nStore\n.\nnew\n(\nreducer\n,\n \ninitialState\n,\n \n{\n \nthunkMiddleware\n \n})\n\n\n\nstore\n:\ndispatch\n(\nfunction\n(\nstore\n)\n\n    \nprint\n(\n\"Hello from a thunk!\"\n)\n\n\n    \nstore\n:\ndispatch\n({\n\n        \ntype\n \n=\n \n\"thunkAction\"\n\n    \n})\n\n\nend\n)",
+            "title": "API Reference"
+        },
+        {
+            "location": "/api-reference/#rodux-api-reference",
+            "text": "",
+            "title": "Rodux API Reference"
+        },
+        {
+            "location": "/api-reference/#roduxstore",
+            "text": "The Store class is the core piece of Rodux. It is the state container that you create and use.",
+            "title": "Rodux.Store"
+        },
+        {
+            "location": "/api-reference/#storenew",
+            "text": "Store.new(reducer, [initialState, [middlewares]]) -> Store  Creates and returns a new Store.   reducer  is the store's root reducer function, and is invokved whenever an action is dispatched. It must be a pure function.  initialState  is the store's initial state. This should be used to load a saved state from storage.  middlewares  is a list of middleware to apply to the store.   The store will automatically dispatch an initialization action with a  type  of  @@INIT .   Note  The initialization action does not pass through any middleware prior to reaching the reducer.",
+            "title": "Store.new"
+        },
+        {
+            "location": "/api-reference/#storechanged",
+            "text": "store . changed : connect ( function ( newState ,   oldState ) \n     -- do something with newState or oldState  end )   A  Signal  that is fired when the store's state is changed up to once per frame.   Warning  Multiple actions can be grouped together into one changed event!    Danger  Do not yield within any listeners on  changed ; an error will be thrown.",
+            "title": "Store.changed"
+        },
+        {
+            "location": "/api-reference/#storedispatch",
+            "text": "store:dispatch(action) -> nil  Dispatches an action. The action will travel through all of the store's middlewares before reaching the store's reducer.  Unless handled by middleware,  action  must contain a  type  field to indicate what type of action it is. No other fields are required.",
+            "title": "Store:dispatch"
+        },
+        {
+            "location": "/api-reference/#storegetstate",
+            "text": "store:getState() -> table  Gets the store's current state.   Warning  Do not modify this state! Doing so will cause  serious  bugs your code!",
+            "title": "Store:getState"
+        },
+        {
+            "location": "/api-reference/#storedestruct",
+            "text": "store:destruct() -> nil  Destroys the store, cleaning up its connections.   Danger  Attempting to use the store after  destruct  has been called will cause problems.",
+            "title": "Store:destruct"
+        },
+        {
+            "location": "/api-reference/#storeflush",
+            "text": "store:flush() -> nil  Flushes the store's pending actions, firing the  changed  event if necessary.   Info  flush  is called by Rodux automatically every frame and usually doesn't need to be called manually.",
+            "title": "Store:flush"
+        },
+        {
+            "location": "/api-reference/#signal",
+            "text": "The Signal class in Rodux represents a simple, predictable event that is controlled from within Rodux. It cannot be created outside of Rodux, but is used as  Store.changed .",
+            "title": "Signal"
+        },
+        {
+            "location": "/api-reference/#signalconnect",
+            "text": "signal:connect(listener) -> { disconnect }  Connects a listener to the signal. The listener will be invoked whenever the signal is fired.  connect  returns a table with a  disconnect  function that can be used to disconnect the listener from the signal.",
+            "title": "Signal:connect"
+        },
+        {
+            "location": "/api-reference/#helper-functions",
+            "text": "Rodux supplies some helper functions to make creating complex reducers easier.",
+            "title": "Helper functions"
+        },
+        {
+            "location": "/api-reference/#roduxcombinereducers",
+            "text": "A helper function that can be used to combine multiple reducers into a new reducer.  local   reducer   =   combineReducers ({ \n     key1   =   reducer1 , \n     key2   =   reducer2 ,  })   combineReducers  is functionally equivalent to writing:  local   function   reducer ( state ,   action ) \n     return   { \n         key1   =   reducer1 ( state . key1 ,   action ), \n         key2   =   reducer2 ( state . key2 ,   action ), \n     }  end",
+            "title": "Rodux.combineReducers"
+        },
+        {
+            "location": "/api-reference/#roduxcreatereducer",
+            "text": "Rodux.createReducer(initialState, actionHandlers) -> reducer  A helper function that can be used to create reducers.  Unlike JavaScript, Lua has no  switch  statement, which can make writing reducers that respond to lots of actions clunky.  Reducers often have a structure that looks like this:  local   initialState   =   {}  local   function   reducer ( state ,   action ) \n     state   =   state   or   initialState \n\n     if   action . type   ==   \"setFoo\"   then \n         -- Handle the setFoo action \n     elseif   action . type   ==   \"setBar\"   then \n         -- Handle the setBar action \n     end \n\n     return   state  end   createReducer  can replace the chain of  if  statements in a reducer:  local   initialState   =   {}  local   reducer   =   createReducer ( initialState ,   { \n     setFoo   =   function ( state ,   action ) \n         -- Handle the setFoo action \n     end , \n\n     setBar   =   function ( state ,   action ) \n         -- Handle the setBar action \n     end  })",
+            "title": "Rodux.createReducer"
+        },
+        {
+            "location": "/api-reference/#middleware",
+            "text": "Rodux provides an API that allows changing the way that actions are dispatched called  middleware . To attach middlewares to a store, pass a list of middleware as the third argument to  Store.new .  A single middleware is just a function with the following signature:  (next) -> (store, action) -> result  That is, middleware is a function that accepts the next middleware to apply and returns a new function. That function takes the  Store  and the current action and can dispatch more actions, log to output, or do network requests!  A simple version of Rodux's  loggerMiddleware  is as easy as:  local   function   simpleLogger ( next ) \n     return   function ( store ,   action ) \n         print ( \"Dispatched action of type\" ,   action . type ) \n\n         return   next ( store ,   action ) \n     end  end   Rodux also ships with several middleware that address common use-cases.",
+            "title": "Middleware"
+        },
+        {
+            "location": "/api-reference/#roduxloggermiddleware",
+            "text": "A middleware that logs actions and the new state that results from them.  loggerMiddleware  is useful for getting a quick look at what actions are being dispatched. In the future, Rodux will have tools similar to  Redux's DevTools .  local   store   =   Store . new ( reducer ,   initialState ,   {   loggerMiddleware   })",
+            "title": "Rodux.loggerMiddleware"
+        },
+        {
+            "location": "/api-reference/#roduxthunkmiddleware",
+            "text": "A middleware that allows thunks to be dispatched. Thunks are functions that perform asynchronous tasks or side effects, and can dispatch actions.  thunkMiddleware  is comparable to Redux's  redux-thunk .  local   store   =   Store . new ( reducer ,   initialState ,   {   thunkMiddleware   })  store : dispatch ( function ( store ) \n     print ( \"Hello from a thunk!\" ) \n\n     store : dispatch ({ \n         type   =   \"thunkAction\" \n     })  end )",
+            "title": "Rodux.thunkMiddleware"
+        }
+    ]
+}
