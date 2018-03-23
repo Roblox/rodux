@@ -79,7 +79,7 @@ return function()
 		end)
 	end)
 
-	describe("GetState", function()
+	describe("getState", function()
 		it("should get the current state", function()
 			local store = Store.new(function(state, action)
 				return "foo"
@@ -93,7 +93,7 @@ return function()
 		end)
 	end)
 
-	describe("Dispatch", function()
+	describe("dispatch", function()
 		it("should be sent through the reducer", function()
 			local store = Store.new(function(state, action)
 				state = state or "foo"
@@ -119,7 +119,7 @@ return function()
 			store:destruct()
 		end)
 
-		it("should trigger the Changed event after a flush", function()
+		it("should trigger the changed event after a flush", function()
 			local store = Store.new(function(state, action)
 				state = state or 0
 
@@ -194,7 +194,7 @@ return function()
 			store:destruct()
 		end)
 
-		it("should prevent yielding from Changed handler", function()
+		it("should prevent yielding from changed handler", function()
 			local preCount = 0
 			local postCount = 0
 
@@ -248,8 +248,8 @@ return function()
 		end)
 	end)
 
-	describe("Flush", function()
-		it("should not fire a Changed event if there were no dispatches", function()
+	describe("flush", function()
+		it("should not fire a changed event if there were no dispatches", function()
 			local store = Store.new(function()
 			end)
 
