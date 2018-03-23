@@ -1,0 +1,14 @@
+{
+  "name": "rodux",
+  "servePort": 8000,
+  "partitions": {
+    "src": {
+      "path": "lib",
+      "target": "ReplicatedStorage.Rodux"
+    },
+    "testez": {
+      "path": "modules/testez/lib",
+      "target": "ReplicatedStorage.TestEZ"
+    }
+  }
+}
