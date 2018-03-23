@@ -26,8 +26,6 @@ return function()
 			type = "testActionType",
 		})
 
-		print(outputMessage)
-
 		expect(outputCount).to.equal(1)
 		expect(outputMessage:find("testActionType")).to.be.ok()
 		expect(outputMessage:find("fooValue")).to.be.ok()
