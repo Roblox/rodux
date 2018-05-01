@@ -23,18 +23,20 @@ return function()
 		local preCount = 0
 		local postCount = 0
 
-		local function test()
+		local function testMethod()
 			preCount = preCount + 1
 			wait()
 			postCount = postCount + 1
 		end
 
-		expect(function()
-			NoYield(test)
-		end).to.throw()
+		local ok, err = pcall(NoYield, testMethod)
 
 		expect(preCount).to.equal(1)
 		expect(postCount).to.equal(0)
+
+		expect(ok).to.equal(false)
+		expect(err:find("wait")).to.be.ok()
+		expect(err:find("NoYield.spec")).to.be.ok()
 	end)
 
 	it("should propagate error messages", function()
