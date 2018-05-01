@@ -14,7 +14,7 @@ local function resultHandler(co, ok, ...)
 	end
 
 	if coroutine.status(co) ~= "dead" then
-		error(debug.traceback(co, "Attempted to yield inside Changed event!"), 2)
+		error(debug.traceback(co, "Attempted to yield inside changed event!"), 2)
 	end
 
 	return ...
