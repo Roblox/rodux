@@ -9,8 +9,8 @@
 
 local function resultHandler(co, ok, ...)
 	if not ok then
-		local err = (...)
-		error(err, 2)
+		local message = (...)
+		error(debug.traceback(co, message), 2)
 	end
 
 	if coroutine.status(co) ~= "dead" then
