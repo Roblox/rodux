@@ -51,5 +51,6 @@ return function()
 
 		expect(ok).to.equal(false)
 		expect(err:find("foo")).to.be.ok()
+		expect(err:find("NoYield.spec")).to.be.ok()
 	end)
 end
