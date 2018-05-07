@@ -39,9 +39,9 @@ local loggerMiddleware = {
 	outputFunction = print,
 }
 
-function loggerMiddleware.middleware(next)
-	return function(store, action)
-		local result = next(store, action)
+function loggerMiddleware.middleware(nextDispatch, store)
+	return function(action)
+		local result = nextDispatch(action)
 
 		loggerMiddleware.outputFunction(("Action dispatched: %s\nState changed to: %s"):format(
 			prettyPrint(action),
