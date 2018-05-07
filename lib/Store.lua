@@ -48,8 +48,9 @@ function Store.new(reducer, initialState, middlewares)
 	table.insert(self._connections, connection)
 
 	if middlewares then
+		local unboundDispatch = self.dispatch
 		local dispatch = function(...)
-			return self:dispatch(...)
+			return unboundDispatch(self, ...)
 		end
 
 		for _, middleware in ipairs(middlewares) do
