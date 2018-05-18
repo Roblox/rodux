@@ -1,7 +1,14 @@
 # Rodux Changelog
 
 ## Current master
-* No changes
+* Added `combineReducers` utility, mirroring Redux's ([#9](https://github.com/Roblox/rodux/pull/9))
+* Added `createReducer` utility, similar to `redux-create-reducer` ([#10](https://github.com/Roblox/rodux/pull/10))
+* `type` is now required as a field on all actions
+* Introduced middleware ([#13](https://github.com/Roblox/rodux/pull/13))
+	* Thunks are no longer enabled by default, use `Rodux.thunkMiddleware` to add them back.
+	* Added `Rodux.loggerMiddleware` as a simple debugger
+	* The middleware API changed in [#29](https://github.com/Roblox/rodux/pull/29) in a backwards-incompatible way!
+* Errors thrown in `changed` event now have correct stack traces ([#27](https://github.com/Roblox/rodux/pull/27))
 
-## 1.0.0 (TODO: Date)
-* Initial release
+## Public Release (December 13, 2017)
+* Initial release!
