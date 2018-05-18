@@ -164,7 +164,7 @@ A single middleware is just a function with the following signature:
 (nextDispatch, store) -> (action) -> result
 ```
 
-That is, middleware is a function that accepts the next middleware to apply and returns a new function. That function takes the `Store` and the current action and can dispatch more actions, log to output, or do network requests!
+A middleware is a function that accepts the next dispatch function in the *middleware chain*, as well as the store the middleware is being used with, and returns a new function. That function is called whenever an action is dispatched and can dispatch more actions, log to output, or perform any side effects!
 
 A simple version of Rodux's `loggerMiddleware` is as easy as:
 
