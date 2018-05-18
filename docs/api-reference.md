@@ -153,7 +153,7 @@ local reducer = createReducer(initialState, {
 ```
 
 ## Middleware
-Rodux provides an API that allows changing the way that actions are dispatched called *middleware*. To attach middlewares to a store, pass a list of middleware as the third argument to `Store.new`.
+Rodux provides an API that allows changing the way that actions are dispatched called *middleware*. To attach middleware to a store, pass a list of middleware as the third argument to `Store.new`.
 
 !!! warn
 	The middleware API changed in [#29](https://github.com/Roblox/rodux/pull/29) -- middleware written against the old API will not work!
@@ -179,6 +179,14 @@ end
 ```
 
 Rodux also ships with several middleware that address common use-cases.
+
+To apply middleware, pass a list of middleware as the third argument to `Store.new`:
+
+```lua
+local store = Store.new(reducer, initialState, { simpleLogger })
+```
+
+Middleware runs from left to right when an action is dispatched. That means that if a middleware does not call `nextDispatch` when handling an action, any middleware after it will not run.
 
 ### Rodux.loggerMiddleware
 A middleware that logs actions and the new state that results from them.

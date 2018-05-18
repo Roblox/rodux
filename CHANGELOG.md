@@ -8,6 +8,7 @@
 	* Thunks are no longer enabled by default, use `Rodux.thunkMiddleware` to add them back.
 	* Added `Rodux.loggerMiddleware` as a simple debugger
 	* The middleware API changed in [#29](https://github.com/Roblox/rodux/pull/29) in a backwards-incompatible way!
+		* Middleware now run left-to-right instead of right-to-left!
 * Errors thrown in `changed` event now have correct stack traces ([#27](https://github.com/Roblox/rodux/pull/27))
 
 ## Public Release (December 13, 2017)

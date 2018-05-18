@@ -85,6 +85,44 @@ return function()
 			store:destruct()
 		end)
 
+		it("should execute middleware left-to-right", function()
+			local events = {}
+
+			local function reducer(state)
+				return state
+			end
+
+			local function middlewareA(nextDispatch, store)
+				table.insert(events, "instantiate a")
+				return function(action)
+					table.insert(events, "execute a")
+					return nextDispatch(action)
+				end
+			end
+
+			local function middlewareB(nextDispatch, store)
+				table.insert(events, "instantiate b")
+				return function(action)
+					table.insert(events, "execute b")
+					return nextDispatch(action)
+				end
+			end
+
+			local store = Store.new(reducer, 5, { middlewareA, middlewareB })
+
+			expect(#events).to.equal(2)
+			expect(events[1]).to.equal("instantiate b")
+			expect(events[2]).to.equal("instantiate a")
+
+			store:dispatch({
+				type = "test",
+			})
+
+			expect(#events).to.equal(4)
+			expect(events[3]).to.equal("execute a")
+			expect(events[4]).to.equal("execute b")
+		end)
+
 		it("should send an initial action with a 'type' field", function()
 			local lastAction
 			local callCount = 0

@@ -53,7 +53,8 @@ function Store.new(reducer, initialState, middlewares)
 			return unboundDispatch(self, ...)
 		end
 
-		for _, middleware in ipairs(middlewares) do
+		for i = #middlewares, 1, -1 do
+			local middleware = middlewares[i]
 			dispatch = middleware(dispatch, self)
 		end
 
