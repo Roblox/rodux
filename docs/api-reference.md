@@ -153,29 +153,40 @@ local reducer = createReducer(initialState, {
 ```
 
 ## Middleware
-Rodux provides an API that allows changing the way that actions are dispatched called *middleware*. To attach middlewares to a store, pass a list of middleware as the third argument to `Store.new`.
+Rodux provides an API that allows changing the way that actions are dispatched called *middleware*. To attach middleware to a store, pass a list of middleware as the third argument to `Store.new`.
+
+!!! warn
+	The middleware API changed in [#29](https://github.com/Roblox/rodux/pull/29) -- middleware written against the old API will not work!
 
 A single middleware is just a function with the following signature:
 
 ```
-(next) -> (store, action) -> result
+(nextDispatch, store) -> (action) -> result
 ```
 
-That is, middleware is a function that accepts the next middleware to apply and returns a new function. That function takes the `Store` and the current action and can dispatch more actions, log to output, or do network requests!
+A middleware is a function that accepts the next dispatch function in the *middleware chain*, as well as the store the middleware is being used with, and returns a new function. That function is called whenever an action is dispatched and can dispatch more actions, log to output, or perform any side effects!
 
 A simple version of Rodux's `loggerMiddleware` is as easy as:
 
 ```lua
-local function simpleLogger(next)
-	return function(store, action)
+local function simpleLogger(nextDispatch, store)
+	return function(action)
 		print("Dispatched action of type", action.type)
 
-		return next(store, action)
+		return nextDispatch(action)
 	end
 end
 ```
 
 Rodux also ships with several middleware that address common use-cases.
+
+To apply middleware, pass a list of middleware as the third argument to `Store.new`:
+
+```lua
+local store = Store.new(reducer, initialState, { simpleLogger })
+```
+
+Middleware runs from left to right when an action is dispatched. That means that if a middleware does not call `nextDispatch` when handling an action, any middleware after it will not run.
 
 ### Rodux.loggerMiddleware
 A middleware that logs actions and the new state that results from them.

@@ -48,12 +48,19 @@ function Store.new(reducer, initialState, middlewares)
 	table.insert(self._connections, connection)
 
 	if middlewares then
-		local dispatch = Store.dispatch
-		for _, middleware in ipairs(middlewares) do
-			dispatch = middleware(dispatch)
+		local unboundDispatch = self.dispatch
+		local dispatch = function(...)
+			return unboundDispatch(self, ...)
 		end
 
-		self.dispatch = dispatch
+		for i = #middlewares, 1, -1 do
+			local middleware = middlewares[i]
+			dispatch = middleware(dispatch, self)
+		end
+
+		self.dispatch = function(self, ...)
+			return dispatch(...)
+		end
 	end
 
 	return self

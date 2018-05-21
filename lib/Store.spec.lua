@@ -36,28 +36,91 @@ return function()
 		end)
 
 		it("should modify the dispatch method when middlewares are passed", function()
+			local middlewareInstantiateCount = 0
 			local middlewareInvokeCount = 0
+			local passedDispatch
+			local passedStore
+			local passedAction
 
 			local function reducer(state, action)
+				if action.type == "test" then
+					return "test state"
+				end
+
 				return state
 			end
 
-			local function testMiddleware(next)
-				return function(store, action)
+			local function testMiddleware(nextDispatch, store)
+				middlewareInstantiateCount = middlewareInstantiateCount + 1
+				passedDispatch = nextDispatch
+				passedStore = store
+
+				return function(action)
 					middlewareInvokeCount = middlewareInvokeCount + 1
-					next(store, action)
+					passedAction = action
+
+					nextDispatch(action)
 				end
 			end
 
 			local store = Store.new(reducer, "initial state", { testMiddleware })
 
+			expect(middlewareInstantiateCount).to.equal(1)
+			expect(middlewareInvokeCount).to.equal(0)
+			expect(passedDispatch).to.be.a("function")
+			expect(passedStore).to.equal(store)
+
 			store:dispatch({
 				type = "test",
 			})
 
+			expect(middlewareInstantiateCount).to.equal(1)
 			expect(middlewareInvokeCount).to.equal(1)
+			expect(passedAction.type).to.equal("test")
+
+			store:flush()
+
+			expect(store:getState()).to.equal("test state")
 
 			store:destruct()
+		end)
+
+		it("should execute middleware left-to-right", function()
+			local events = {}
+
+			local function reducer(state)
+				return state
+			end
+
+			local function middlewareA(nextDispatch, store)
+				table.insert(events, "instantiate a")
+				return function(action)
+					table.insert(events, "execute a")
+					return nextDispatch(action)
+				end
+			end
+
+			local function middlewareB(nextDispatch, store)
+				table.insert(events, "instantiate b")
+				return function(action)
+					table.insert(events, "execute b")
+					return nextDispatch(action)
+				end
+			end
+
+			local store = Store.new(reducer, 5, { middlewareA, middlewareB })
+
+			expect(#events).to.equal(2)
+			expect(events[1]).to.equal("instantiate b")
+			expect(events[2]).to.equal("instantiate a")
+
+			store:dispatch({
+				type = "test",
+			})
+
+			expect(#events).to.equal(4)
+			expect(events[3]).to.equal("execute a")
+			expect(events[4]).to.equal("execute b")
 		end)
 
 		it("should send an initial action with a 'type' field", function()

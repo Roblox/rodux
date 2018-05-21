@@ -4,12 +4,12 @@
 	This middleware consumes the function; middleware further down the chain
 	will not receive it.
 ]]
-local function thunkMiddleware(next)
-	return function(store, action)
+local function thunkMiddleware(nextDispatch, store)
+	return function(action)
 		if typeof(action) == "function" then
 			return action(store)
 		else
-			return next(store, action)
+			return nextDispatch(action)
 		end
 	end
 end
