@@ -32,7 +32,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-0.17.3, mkdocs-material-2.7.1">
+      <meta name="generator" content="mkdocs-0.17.2, mkdocs-material-2.6.6">
     
     
       
@@ -89,8 +89,8 @@
         
       </defs>
     </svg>
-    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="drawer" autocomplete="off">
-    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="search" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="drawer">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="search">
     <label class="md-overlay" data-md-component="overlay" for="drawer"></label>
     
       <a href="#rodux-api-reference" tabindex="1" class="md-skip">
@@ -712,23 +712,32 @@
 </pre></div>
 
 <h2 id="middleware">Middleware<a class="headerlink" href="#middleware" title="Permanent link">&para;</a></h2>
-<p>Rodux provides an API that allows changing the way that actions are dispatched called <em>middleware</em>. To attach middlewares to a store, pass a list of middleware as the third argument to <code>Store.new</code>.</p>
+<p>Rodux provides an API that allows changing the way that actions are dispatched called <em>middleware</em>. To attach middleware to a store, pass a list of middleware as the third argument to <code>Store.new</code>.</p>
+<div class="admonition warn">
+<p class="admonition-title">Warn</p>
+<p>The middleware API changed in <a href="https://github.com/Roblox/rodux/pull/29">#29</a> -- middleware written against the old API will not work!</p>
+</div>
 <p>A single middleware is just a function with the following signature:</p>
-<div class="codehilite"><pre><span></span>(next) -&gt; (store, action) -&gt; result
+<div class="codehilite"><pre><span></span>(nextDispatch, store) -&gt; (action) -&gt; result
 </pre></div>
 
-<p>That is, middleware is a function that accepts the next middleware to apply and returns a new function. That function takes the <code>Store</code> and the current action and can dispatch more actions, log to output, or do network requests!</p>
+<p>A middleware is a function that accepts the next dispatch function in the <em>middleware chain</em>, as well as the store the middleware is being used with, and returns a new function. That function is called whenever an action is dispatched and can dispatch more actions, log to output, or perform any side effects!</p>
 <p>A simple version of Rodux's <code>loggerMiddleware</code> is as easy as:</p>
-<div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="kr">function</span> <span class="nf">simpleLogger</span><span class="p">(</span><span class="nb">next</span><span class="p">)</span>
-    <span class="kr">return</span> <span class="kr">function</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="kr">function</span> <span class="nf">simpleLogger</span><span class="p">(</span><span class="n">nextDispatch</span><span class="p">,</span> <span class="n">store</span><span class="p">)</span>
+    <span class="kr">return</span> <span class="kr">function</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dispatched action of type&quot;</span><span class="p">,</span> <span class="n">action</span><span class="p">.</span><span class="n">type</span><span class="p">)</span>
 
-        <span class="kr">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span>
+        <span class="kr">return</span> <span class="n">nextDispatch</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
     <span class="kr">end</span>
 <span class="kr">end</span>
 </pre></div>
 
 <p>Rodux also ships with several middleware that address common use-cases.</p>
+<p>To apply middleware, pass a list of middleware as the third argument to <code>Store.new</code>:</p>
+<div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="n">store</span> <span class="o">=</span> <span class="n">Store</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="n">reducer</span><span class="p">,</span> <span class="n">initialState</span><span class="p">,</span> <span class="p">{</span> <span class="n">simpleLogger</span> <span class="p">})</span>
+</pre></div>
+
+<p>Middleware runs from left to right when an action is dispatched. That means that if a middleware does not call <code>nextDispatch</code> when handling an action, any middleware after it will not run.</p>
 <h3 id="roduxloggermiddleware">Rodux.loggerMiddleware<a class="headerlink" href="#roduxloggermiddleware" title="Permanent link">&para;</a></h3>
 <p>A middleware that logs actions and the new state that results from them.</p>
 <p><code>loggerMiddleware</code> is useful for getting a quick look at what actions are being dispatched. In the future, Rodux will have tools similar to <a href="https://github.com/gaearon/redux-devtools">Redux's DevTools</a>.</p>
@@ -754,8 +763,6 @@
               
               
                 
-
-
               
             </article>
           </div>
@@ -805,9 +812,9 @@
       
     </div>
     
-      <script src="../assets/javascripts/application.8eb9be28.js"></script>
+      <script src="../assets/javascripts/application.02434462.js"></script>
       
-      <script>app.initialize({version:"0.17.3",url:{base:".."}})</script>
+      <script>app.initialize({version:"0.17.2",url:{base:".."}})</script>
       
     
     
