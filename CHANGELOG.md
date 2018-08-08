@@ -10,6 +10,7 @@
 	* The middleware API changed in [#29](https://github.com/Roblox/rodux/pull/29) in a backwards-incompatible way!
 		* Middleware now run left-to-right instead of right-to-left!
 * Errors thrown in `changed` event now have correct stack traces ([#27](https://github.com/Roblox/rodux/pull/27))
+* Fixed `createReducer` having incorrect behavior with `nil` state values ([#33](https://github.com/Roblox/rodux/pull/33))
 
 ## Public Release (December 13, 2017)
 * Initial release!
