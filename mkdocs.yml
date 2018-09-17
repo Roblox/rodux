@@ -10,8 +10,9 @@ theme:
 
 pages:
   - Home: index.md
-  - Guide:
-    - Installation: guide/installation.md
+  - Introduction:
+    - Installation: introduction/installation.md
+    - Motivation: introduction/motivation.md
   - API Reference: api-reference.md
 
 markdown_extensions:
