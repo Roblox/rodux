@@ -21,6 +21,7 @@ pages:
   #   - Thunks: advanced/thunks.md
   # - Data Flow Diagram: dataFlowDiagram.md
   # - When Should I Use Rodux?: whenShouldIUseRodux.md
+  # - Debugging: debugging.md
   - API Reference: api-reference.md
 
 markdown_extensions:
