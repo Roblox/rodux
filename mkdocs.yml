@@ -19,6 +19,7 @@ pages:
   # - Advanced:
   #   - Middleware: advanced/middleware.md
   #   - Thunks: advanced/thunks.md
+  # - Example: example.md
   # - Data Flow Diagram: dataFlowDiagram.md
   # - When Should I Use Rodux?: whenShouldIUseRodux.md
   # - Debugging: debugging.md
