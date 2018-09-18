@@ -21,7 +21,7 @@ This is a pure function that takes in an `action` object and the current state o
 This is the portion of the `store` that handles incoming `action` objects. If you have applied any additional `middleware` to your `store`, the `dispatcher` is responsible for passing `action` objects to appropriate `middleware` before forwarding those `action` objects to the `reducer`. You can provide `middleware` to the `store` during initialization via [`Store.new`](../api-reference.md#storenew).
 
 !!! info
-	This example assumes that you've successfully [installed Redux](installation.md) into `ReplicatedStorage`!
+	This example assumes that you've successfully [installed Rodux](installation.md) into `ReplicatedStorage`!
 
 ```lua
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
