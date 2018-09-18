@@ -5,9 +5,8 @@ This is the object tree that contains all of the data backing the business logic
 
 ```lua
 local exampleState = {
-	currentUser = "Sarah",
-	phoneNumber = "12345678",
-	friends = {
+	myPhoneNumber = "12345678",
+	myFriends = {
 		"Joe",
 		"Cassandra",
 	},
@@ -15,7 +14,7 @@ local exampleState = {
 ```
 
 ### Reducer
-This is a pure function that takes in an `action` object and the current state of your `store` and outputs a new state in response to the `action`. Reducers are often broken down into many individual pure functions, each of which modifies one portion of the `store` state object tree. You provide your global `reducer` to the `store` during initialization via [`Store.new`](../api-reference.md#storenew).
+This is a pure function that takes in an `action` object and the current state of your `store` and outputs a new state in response to the `action`. Reducers are often broken down into many individual pure functions, each of which modifies one portion of the `store` state object tree. You provide your global `reducer` to the `store` during initialization via [`Store.new`](../api-reference.md#storenew). See the [Reducer](reducers.md) page for more details.
 
 ### Dispatcher
 This is the portion of the `store` that handles incoming `action` objects. If you have applied any additional `middleware` to your `store`, the `dispatcher` is responsible for passing `action` objects to appropriate `middleware` before forwarding those `action` objects to the `reducer`. You can provide `middleware` to the `store` during initialization via [`Store.new`](../api-reference.md#storenew).
@@ -28,7 +27,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Rodux = require(ReplicatedStorage.Rodux)
 
-local store = Store.new(function(action, currentState)
+local store = Rodux.Store.new(function(action, currentState)
 	-- The body of your reducer
 end)
 

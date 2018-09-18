@@ -15,7 +15,7 @@ pages:
     - Motivation: introduction/motivation.md
     - The Store: introduction/store.md
     - Actions: introduction/actions.md
-  #   - Reducers: introduction/reducers.md
+    - Reducers: introduction/reducers.md
   # - Advanced:
   #   - Middleware: advanced/middleware.md
   #   - Thunks: advanced/thunks.md
