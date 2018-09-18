@@ -32,4 +32,4 @@ store:dispatch(SetCurrentUser("Cassandra"))
 local state = store:getState()
 ```
 
-In most cases your `action` will be sent directly to the `reducer` for your `store`. However, if you specified any `middleware` when initializing your `store`, your `action` will also be processed by that `middleware` if it conforms to the structure your `middleware` expects.
+In most cases your `action` will be sent directly to the `reducer` for your `store` to be processed. However, if you specified any `middleware` when initializing your `store`, your `action` will also be processed by that `middleware` if it conforms to the structure your `middleware` expects.
