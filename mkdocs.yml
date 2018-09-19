@@ -16,13 +16,11 @@ pages:
     - The Store: introduction/store.md
     - Actions: introduction/actions.md
     - Reducers: introduction/reducers.md
-  # - Advanced:
-  #   - Middleware: advanced/middleware.md
-  #   - Thunks: advanced/thunks.md
-  # - Example: example.md
-  # - Data Flow Diagram: dataFlowDiagram.md
-  # - When Should I Use Rodux?: whenShouldIUseRodux.md
-  # - Debugging: debugging.md
+  - Advanced:
+    - Middleware: advanced/middleware.md
+    - Thunks: advanced/thunks.md
+  - Debugging: debugging.md
+  - Roact-Rodux: https://github.com/Roblox/roact-rodux
   - API Reference: api-reference.md
 
 markdown_extensions:

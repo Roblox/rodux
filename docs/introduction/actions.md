@@ -31,8 +31,6 @@ local store = Store.new(function(currentState, action)
 end)
 
 store:dispatch(ReceivedNewPhoneNumber("19876543"))
-
-local state = store:getState()
 ```
 
 In most cases your `action` will be sent directly to the `reducer` to be processed. However, if you specified any `middleware` when initializing your `store`, your `action` might also be processed by that `middleware`.

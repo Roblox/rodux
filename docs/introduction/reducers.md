@@ -46,8 +46,6 @@ local reducer = function(action, state)
 		myFriends = friendsReducer(state.myFriends, action),
 	}
 end
-
-local store = Rodux.Store.new(reducer)
 ```
 
 Alternatively, you can use [`Rodux.createReducer`](../api-reference.md#roduxcreatereducer) and [`Rodux.combineReducers`](../api-reference.md#roduxcombinereducers) to generate the same code as seen above. This method of creating `reducer` functions isn't as verbose and is less prone to developer error.
