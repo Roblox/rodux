@@ -25,8 +25,8 @@ local delayOneSecondMiddleware = function(nextDispatch, store)
 end
 
 local store = Rodux.Store.new(reducer, initialState, {
-	delayOneSecondMiddleware
+	delayOneSecondMiddleware,
 })
 ```
 
-By default, `store` objects in Rodux include a `middleware` called `thunk` that allows any function to be dispatched to the `store` as an `action`. This can be used in lieu of creating your own custom `middleware` in most cases. See [`Thunks`](thunks.md) for more details.
+Rodux has two `middlewares` available to you out of the box. See [`Thunks`](thunks.md) and [`Debugging`](../debugging.md) for more details.
