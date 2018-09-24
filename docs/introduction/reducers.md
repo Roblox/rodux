@@ -1,6 +1,3 @@
-!!! note
-	This section assumes you are already familiar with [Actions](actions.md) and [The Store](store.md).
-
 When you initialize your `store` with [`Store.new`](../api-reference.md#storenew), you provide a single function called a `reducer` which will consume any `action` dispatched to your `store` and create a new `state` object tree based on the current `state` object tree of your `store`.
 
 ```lua
@@ -20,12 +17,12 @@ For complex applications, it is often useful to break down the global `reducer` 
 ```lua
 local friendsReducer = function(state, action)
 	--[[
-		The state will be nil the first time this reducer is executed.
+		The state might be nil the first time this reducer is executed.
 		In that case, we need to initialize our state to be the empty table.
 	]]
 	state = state or {}
 
-	if action.type == "MadeANewFriend" then
+	if action.type == "MadeNewFriends" then
 		local newState = {}
 
 		-- Since state is read-only, we copy it into newState
@@ -33,13 +30,20 @@ local friendsReducer = function(state, action)
 			newState[index] = friend
 		end
 
-		table.insert(newState, action.friend)
+		for _, friend in ipairs(action.newFriends)
+			table.insert(newState, friend)
+		end
+
 		return newState
 	end
 
 	return state
 end
 
+--[[
+	note that the reducer for our entire application is defined by a table of sub-reducers where each sub-reducer is responsible for one portion of the
+	overall state.
+]]
 local reducer = function(action, state)
 	return {
 		myPhoneNumber = phoneNumberReducer(state.myPhoneNumber, action),
@@ -48,24 +52,17 @@ local reducer = function(action, state)
 end
 ```
 
-Alternatively, you can use [`Rodux.createReducer`](../api-reference.md#roduxcreatereducer) and [`Rodux.combineReducers`](../api-reference.md#roduxcombinereducers) to generate the same code as seen above. This method of creating `reducer` functions isn't as verbose and is less prone to developer error.
-
-!!! info
-	This example assumes that you've successfully [installed Rodux](installation.md) into `ReplicatedStorage`!
+Alternatively, you can use [`Rodux.createReducer`](../api-reference.md#roduxcreatereducer) and [`Rodux.combineReducers`](../api-reference.md#roduxcombinereducers) to generate the same code as seen above. Using `Rodux.createReducer` and `Rodux.combineReducers` to create your `reducer` functions isn't as verbose and is less prone to developer error.
 
 ```lua
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local Rodux = require(ReplicatedStorage.Rodux)
-
 local phoneNumberReducer = Rodux.createReducer(nil, {
-	CurrentUserChanged = function(state, action)
+	ReceivedNewPhoneNumber = function(state, action)
 		return action.phoneNumber
 	end,
 })
 
 local friendsReducer = Rodux.createReducer({}, {
-	MadeANewFriend = function(state, action)
+	MadeNewFriends = function(state, action)
 		local newState = {}
 
 		-- Since state is read-only, we copy it into newState
@@ -73,7 +70,10 @@ local friendsReducer = Rodux.createReducer({}, {
 			newState[index] = friend
 		end
 
-		table.insert(newState, action.friend)
+		for _, friend in ipairs(action.friends)
+			table.insert(newState, friend)
+		end
+
 		return newState
 	end,
 })
@@ -82,6 +82,4 @@ local reducer = Rodux.combineReducers({
 	myPhoneNumber = phoneNumberReducer,
 	myFriends = friendsReducer,
 })
-
-local store = Rodux.Store.new(reducer)
 ```

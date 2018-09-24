@@ -1,15 +1,16 @@
-In most cases the `dispatcher` in our `store` sends incoming `action` objects directly to the `reducer` to determine what updates should be made to the `state` object tree, but sometimes we want some additional processing to be done on the `action` that our `reducer` cannot provide. Features like delayed processing of an `action`, logging `action` objects dispatched to our `store`, or waiting for the response from a network request before sending our `action` payload to the `reducer` are quite cumbersome within the strict confines of Rodux. We circumvent this problem by introducing custom `middleware` that processes `action` objects before they are passed on to the `reducer`, allowing us to break out of the Rodux paradigm in a controlled and consistent fashion when necessary.
+Most of the time, calling `Store:dispatch` sends incoming `action` objects directly to the `reducer` to determine what updates should be made to the `state` object tree. This is enough for most cases, but some features would be difficult to implement if this was all Rodux provided. For example:
 
-When creating a `store` via [`Store.new`](../api-reference.md#storenew), you can optionally provide `middleware` like so:
+- Delayed processing of an `action`.
+- Logging `action` objects dispatched to our `store`.
+- Performing a network request in response to an `action` and storing the response in the `state` object tree.
 
-!!! info
-	the following examples assume that you've successfully [installed Rodux](installation.md) into `ReplicatedStorage`!
+Rodux has the concept of `middleware` chaining to deal with these sorts of situations.
+
+A `middleware` is a function that accepts the next `dispatch` function in the `middleware` chain, as well as the `store` the `middleware` is being used with, and returns a new function. That function is called whenever an `action` is dispatched and can dispatch more `actions`, log to output, or perform any side effects! When an `action` is dispatched, `middleware` are run in the order they were specified in [`Store.new`](../api-reference.md#storenew) from left to right.
+
+Here is an example of a `middleware` that could be used to delay the processing of `action` objects dispatched to the `store`.
 
 ```lua
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local Rodux = require(ReplicatedStorage.Rodux)
-
 local reducer = function(state, action)
 	-- the body of your reducer
 end
@@ -19,6 +20,11 @@ local initialState = {}
 local delayOneSecondMiddleware = function(nextDispatch, store)
 	return function(action)
 		delay(1, function()
+			--[[
+				nextDispatch passes the action to the next middleware provided
+				to the store at initialization or to the reducer if the action
+				has already been processed by all the provided middleware.
+			]]
 			nextDispatch(action)
 		end)
 	end
@@ -29,4 +35,7 @@ local store = Rodux.Store.new(reducer, initialState, {
 })
 ```
 
-Rodux has two `middlewares` available to you out of the box. See [`Thunks`](thunks.md) and [`Debugging`](../debugging.md) for more details.
+!!! warning
+	If the `delayOneSecondMiddleware` function did not call `nextDispatch`, then the `action` would not be processed by any other `middleware` in the `middleware` chain or our `reducer`!
+
+Rodux has two `middlewares` available to you out of the box. See [`Middleware`](../api-reference.md#middleware), [`thunkMiddleware`](../api-reference.md#roduxthunkmiddleware), and [`loggerMiddleware`](../api-reference.md#roduxloggermiddleware) for more details.

@@ -1,7 +1,7 @@
-As applications become more complex it can be difficult to manage the state of your application in a way that is transparent and compartmentalized. State changes caused by network responses and user input become difficult to follow as our business logic gets spread out between an increasing number of models and views, producing unpredictable and undesirable results. Rodux tries to address this problem by following three core principles.
+As applications become more complex it can be difficult to manage the state of our application in a way that is transparent and compartmentalized. State changes caused by network responses and user input become difficult to follow as our business logic gets spread out between an increasing number of models and views, producing unpredictable and undesirable results. Rodux tries to address this problem by following three core principles.
 
 ### Single Source of Truth
-By collecting all of our application's state in a single object tree, we can quickly inspect the entirety of the data backing our business logic so that we no longer have to track down data models squirrelled away in disparate parts of our code base.
+By collecting all of our application's state in a single object tree, we can quickly inspect the entirety of the data backing our business logic. We will no longer need to track down data models squirrelled away in disparate parts of our code base.
 
 ### State is Read-only
 All changes to our single object tree are accomplished by dispatching actions to our store, so which part of our code caused what changes to our underlying data will be completely transparent and reproducible. Features that were once difficult like undo/redo become trivial when all changes to our data are controlled via a single, consistent interface.

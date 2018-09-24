@@ -19,8 +19,9 @@ pages:
   - Advanced:
     - Middleware: advanced/middleware.md
     - Thunks: advanced/thunks.md
+  - Complete Example: example.md
   - Debugging: debugging.md
-  - Roact-Rodux: https://github.com/Roblox/roact-rodux
+  - Usage with Roact: withroact.md
   - API Reference: api-reference.md
 
 markdown_extensions:
