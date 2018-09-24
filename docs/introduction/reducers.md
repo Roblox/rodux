@@ -41,7 +41,8 @@ local friendsReducer = function(state, action)
 end
 
 --[[
-	note that the reducer for our entire application is defined by a table of sub-reducers where each sub-reducer is responsible for one portion of the
+	note that the reducer for our entire application is defined by a table of
+	sub-reducers where each sub-reducer is responsible for one portion of the
 	overall state.
 ]]
 local reducer = function(action, state)

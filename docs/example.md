@@ -1,19 +1,31 @@
+The following is an example of a Rodux store that keeps track of the current user's phone number and the names of their friends. It demonstrates the use of the Rodux `store`, `actions`, `reducers`, and `middleware` in a real world setting. The `loggerMiddleware` has been included to demonstrate how to include `middleware` in your `store` and to provide valuable output in response to dispatched `action` objects.
+
 !!! info
-	This example assumes that you've successfully [installed Rodux](introduction/installation.md) into `ReplicatedStorage`!
+	This example assumes that you've successfully [installed Rodux](introduction/installation.md) into `ReplicatedStorage` and placed the contents of the following in a LocalScript under `StarterPlayer/StarterPlayerScripts`!
 
 ```lua
---[[
-	Contents of Main.lua
-]]
-
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Rodux = require(ReplicatedStorage.Rodux)
 
-local MadeNewFriends = require(script.Parent.ActionCreators.MadeNewFriends)
-local ReceivedNewPhoneNumber = require(script.Parent.ActionCreators.ReceivedNewPhoneNumber)
+-- Action creator for the ReceivedNewPhoneNumber action
+local function ReceivedNewPhoneNumber(phoneNumber)
+	return {
+		type = "ReceivedNewPhoneNumber",
+		phoneNumber = phoneNumber,
+	}
+end
 
-local phoneNumberReducer = Rodux.createReducer(nil, {
+-- Action creator for the MadeNewFriends action
+local function MadeNewFriends(listOfNewFriends)
+	return {
+		type = "MadeNewFriends",
+		newFriends = listOfNewFriends,
+	}
+end
+
+-- Reducer for the current user's phone number
+local phoneNumberReducer = Rodux.createReducer("", {
 	ReceivedNewPhoneNumber = function(state, action)
 		return action.phoneNumber
 	end,
@@ -28,7 +40,7 @@ local friendsReducer = Rodux.createReducer({}, {
 			newState[index] = friend
 		end
 
-		for _, friend in ipairs(action.newFriends)
+		for _, friend in ipairs(action.newFriends) do
 			table.insert(newState, friend)
 		end
 
@@ -50,34 +62,32 @@ store:dispatch(MadeNewFriends({
 	"Cassandra",
 	"Joe",
 }))
-```
 
-```lua
 --[[
-	Contents of ActionCreators/ReceivedNewPhoneNumber.lua
-]]
+	Expected output to the developer console:
 
-local ReceivedNewPhoneNumber(function(phoneNumber)
-	return {
-		type = script.name,
-		phoneNumber = phoneNumber,
+	Action dispatched: {
+	    phoneNumber = "12345678" (string)
+	    type = "ReceivedNewPhoneNumber" (string)
 	}
-end)
-
-return ReceivedNewPhoneNumber
-```
-
-```lua
---[[
-	Contents of ActionCreators/MadeNewFriends.lua
-]]
-
-local MadeNewFriends(function(listOfNewFriends)
-	return {
-		type = script.name,
-		newFriends = listOfNewFriends,
+	State changed to: {
+	    myPhoneNumber = "12345678" (string)
+	    myFriends = {
+	    }
 	}
-end)
-
-return MadeNewFriends
+	Action dispatched: {
+	    newFriends = {
+	        1 = "Cassandra" (string)
+	        2 = "Joe" (string)
+	    }
+	    type = "MadeNewFriends" (string)
+	}
+	State changed to: {
+	    myPhoneNumber = "12345678" (string)
+	    myFriends = {
+	        1 = "Cassandra" (string)
+	        2 = "Joe" (string)
+	    }
+	}
+]]
 ```

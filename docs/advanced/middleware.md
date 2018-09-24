@@ -4,9 +4,9 @@ Most of the time, calling `Store:dispatch` sends incoming `action` objects direc
 - Logging `action` objects dispatched to our `store`.
 - Performing a network request in response to an `action` and storing the response in the `state` object tree.
 
-Rodux has the concept of `middleware` chaining to deal with these sorts of situations.
+Rodux has the concept of `middleware` to deal with these sorts of situations.
 
-A `middleware` is a function that accepts the next `dispatch` function in the `middleware` chain, as well as the `store` the `middleware` is being used with, and returns a new function. That function is called whenever an `action` is dispatched and can dispatch more `actions`, log to output, or perform any side effects! When an `action` is dispatched, `middleware` are run in the order they were specified in [`Store.new`](../api-reference.md#storenew) from left to right.
+A `middleware` is a function that accepts the next `dispatch` function in the `middleware` chain, as well as the `store` the `middleware` is being used with, and returns a new function. That function is called whenever an `action` is dispatched and can dispatch more `actions`, log to output, or perform any other side effects! When an `action` is dispatched, `middleware` are run in the order they were specified in [`Store.new`](../api-reference.md#storenew) from left to right.
 
 Here is an example of a `middleware` that could be used to delay the processing of `action` objects dispatched to the `store`.
 
