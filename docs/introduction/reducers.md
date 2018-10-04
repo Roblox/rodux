@@ -1,4 +1,4 @@
-When you initialize your `store` with [`Store.new`](../api-reference.md#storenew), you provide a single function called a `reducer` which will consume any `action` dispatched to your `store` and create a new `state` object tree based on the current `state` object tree of your `store`.
+When you initialize your `store` with [`Store.new`](../api-reference.md#storenew), you provide a single function called a `reducer` which will consume any `action` dispatched to your `store` and create a new `state` object based on the current `state` of your `store`.
 
 ```lua
 local phoneNumberReducer = function(state, action)
@@ -10,9 +10,9 @@ local phoneNumberReducer = function(state, action)
 end
 ```
 
-Note that `state` is never actually modified by our `reducer`. The `state` object tree of our `store` is *read-only*, so our `reducer` must construct a new `state` in response to the received `action`.
+Note that `state` is never actually modified by our `reducer`. The `state` of our `store` is *read-only*, so our `reducer` must construct a new `state` object in response to the received `action`.
 
-For complex applications, it is often useful to break down the global `reducer` you provide to the `store` into a set of smaller `reducer` functions, each of which is responsible for a portion of the `state` object tree.
+For complex applications, it is often useful to break down the global `reducer` you provide to the `store` into a set of smaller `reducer` functions, each of which is responsible for a portion of the `state`.
 
 ```lua
 local friendsReducer = function(state, action)

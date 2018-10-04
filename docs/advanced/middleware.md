@@ -1,8 +1,8 @@
-Most of the time, calling `Store:dispatch` sends incoming `action` objects directly to the `reducer` to determine what updates should be made to the `state` object tree. This is enough for most cases, but some features would be difficult to implement if this was all Rodux provided. For example:
+Most of the time, calling `Store:dispatch` sends incoming `action` objects directly to the `reducer` to determine what updates should be made to the `state`. This is enough for most cases, but some features would be difficult to implement if this was all Rodux provided. For example:
 
 - Delayed processing of an `action`.
 - Logging `action` objects dispatched to our `store`.
-- Performing a network request in response to an `action` and storing the response in the `state` object tree.
+- Performing a network request in response to an `action` and storing the response in the `state`.
 
 Rodux has the concept of `middleware` to deal with these sorts of situations.
 

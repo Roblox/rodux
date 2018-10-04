@@ -1,4 +1,4 @@
-Whenever the `state` object tree in your `store` needs to be updated in response to an event, you `dispatch` an `action` to your `store` with any relevant information required to make said update. An `action` must be a Lua table with a `type` field. They are usually created via an action creator Lua module like the following:
+Whenever the `state` in your `store` needs to be updated in response to an event, you `dispatch` an `action` to your `store` with any relevant information required to make said update. An `action` is usually a Lua table with a `type` field. They are usually created via an action creator Lua module like the following:
 
 ```lua
 local function ReceivedNewPhoneNumber(phoneNumber)
@@ -21,4 +21,5 @@ end)
 store:dispatch(ReceivedNewPhoneNumber("12345678"))
 ```
 
-In most cases your `action` will be sent directly to the `reducer` to be processed. However, if you specified any `middleware` when initializing your `store`, your `action` might also be processed by that `middleware`.
+!!! info
+	In most cases your `action` will be sent directly to the `reducer` to be processed. However, if you specified any `middleware` when initializing your `store`, your `action` might also be processed by that `middleware`.

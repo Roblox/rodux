@@ -31,6 +31,7 @@ local phoneNumberReducer = Rodux.createReducer("", {
 	end,
 })
 
+-- Reducer for the current user's list of friends
 local friendsReducer = Rodux.createReducer({}, {
 	MadeNewFriends = function(state, action)
 		local newState = {}

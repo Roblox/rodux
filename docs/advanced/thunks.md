@@ -28,4 +28,4 @@ store:dispatch(function(store)
 end)
 ```
 
-Thunks are the simplest way to introduce more complex processing of `action` objects. However, thunks allow any portion of our code with access to the `store` to create custom business logic and dispatch it via an `action` to the `store`. One of the primary goals of Rodux is to consolidate our business logic and thunks work directly against that goal. Thunks are good for prototyping new ideas, but you may want to consider creating custom [`middleware`](middleware.md) for complex features instead of relying on thunks alone.
+Thunks are a simple way to introduce more complex processing of `action` objects, but you may want to consider creating custom [`middleware`](middleware.md) for complex features instead of relying on thunks alone.
