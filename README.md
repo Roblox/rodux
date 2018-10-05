@@ -31,7 +31,7 @@
 ## Usage
 Rodux works just like [Redux](https://redux.js.org)'s base API.
 
-Documentation is currently in progress!
+See the official [Rodux Documentation](https://roblox.github.io/rodux/) for more details.
 
 ```lua
 local Rodux = require(script.Parent.Rodux)
