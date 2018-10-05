@@ -5,7 +5,7 @@ This is the object that contains all of the data backing the business logic of y
 
 ```lua
 local exampleState = {
-	myPhoneNumber = "12345678",
+	myPhoneNumber = "15552345678",
 	myFriends = {
 		"Joe",
 		"Cassandra",

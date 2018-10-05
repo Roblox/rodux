@@ -18,7 +18,7 @@ local store = Store.new(function(currentState, action)
 	-- The body of your reducer
 end)
 
-store:dispatch(ReceivedNewPhoneNumber("12345678"))
+store:dispatch(ReceivedNewPhoneNumber("15552345678"))
 ```
 
 !!! info
