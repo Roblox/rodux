@@ -1,0 +1,1 @@
+In the future, Rodux will have tools similar to [Redux's DevTools](https://github.com/gaearon/redux-devtools) and will be documented here. For now, we highly recommend using the [`loggerMiddleware`](api-reference.md#roduxloggermiddleware) to observe the `state` as `action` objects are dispatched to your `store`.

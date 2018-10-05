@@ -10,6 +10,18 @@ theme:
 
 pages:
   - Home: index.md
+  - Introduction:
+    - Installation: introduction/installation.md
+    - Motivation: introduction/motivation.md
+    - The Store: introduction/store.md
+    - Actions: introduction/actions.md
+    - Reducers: introduction/reducers.md
+  - Advanced:
+    - Middleware: advanced/middleware.md
+    - Thunks: advanced/thunks.md
+  - Complete Example: example.md
+  - Debugging: debugging.md
+  - Usage with Roact: withroact.md
   - API Reference: api-reference.md
 
 markdown_extensions:
