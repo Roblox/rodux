@@ -11,6 +11,7 @@
 		* Middleware now run left-to-right instead of right-to-left!
 * Errors thrown in `changed` event now have correct stack traces ([#27](https://github.com/Roblox/rodux/pull/27))
 * Fixed `createReducer` having incorrect behavior with `nil` state values ([#33](https://github.com/Roblox/rodux/pull/33))
+* Added `makeActionCreator` utility for common action creator pattern ([#35](https://github.com/Roblox/rodux/pull/35))
 
 ## Public Release (2017-12-13)
 * Initial release!
