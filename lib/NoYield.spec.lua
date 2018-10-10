@@ -35,7 +35,7 @@ return function()
 		expect(postCount).to.equal(0)
 
 		expect(ok).to.equal(false)
-		expect(err:find("wait")).to.be.ok()
+		expect(err:find("Attempted to yield inside changed event!")).to.be.ok()
 		expect(err:find("NoYield.spec")).to.be.ok()
 	end)
 
