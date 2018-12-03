@@ -20,7 +20,7 @@
 ## Installation
 
 ### Method 1: Model File (Roblox Studio)
-* Download the `rbxmx` model file attached to the latest release from the [GitHub releases page](https://github.com/Roblox/rodux/releases).
+* Download the `rbxm` model file attached to the latest release from the [GitHub releases page](https://github.com/Roblox/rodux/releases).
 * Insert the model into Studio into a place like `ReplicatedStorage`
 
 ### Method 2: Filesystem
