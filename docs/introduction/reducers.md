@@ -45,7 +45,7 @@ end
 	sub-reducers where each sub-reducer is responsible for one portion of the
 	overall state.
 ]]
-local reducer = function(action, state)
+local reducer = function(state, action)
 	return {
 		myPhoneNumber = phoneNumberReducer(state.myPhoneNumber, action),
 		myFriends = friendsReducer(state.myFriends, action),
