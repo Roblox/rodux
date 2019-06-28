@@ -10,7 +10,7 @@ Store.new(reducer, [initialState, [middlewares]]) -> Store
 
 Creates and returns a new Store.
 
-* `reducer` is the store's root reducer function, and is invokved whenever an action is dispatched. It must be a pure function.
+* `reducer` is the store's root reducer function, and is invoked whenever an action is dispatched. It must be a pure function.
 * `initialState` is the store's initial state. This should be used to load a saved state from storage.
 * `middlewares` is a list of middleware to apply to the store.
 
