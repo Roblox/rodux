@@ -1,94 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-    
     <url>
-     <loc>/</loc>
-     <lastmod>2018-10-04</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-06-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
-        
     <url>
-     <loc>/introduction/installation/</loc>
-     <lastmod>2018-10-04</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-06-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/introduction/motivation/</loc>
-     <lastmod>2018-10-04</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-06-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/introduction/store/</loc>
-     <lastmod>2018-10-04</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-06-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/introduction/actions/</loc>
-     <lastmod>2018-10-04</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-06-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/introduction/reducers/</loc>
-     <lastmod>2018-10-04</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-06-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
-    
-
-    
-        
     <url>
-     <loc>/advanced/middleware/</loc>
-     <lastmod>2018-10-04</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-06-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/advanced/thunks/</loc>
-     <lastmod>2018-10-04</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-06-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
-    
-
-    
     <url>
-     <loc>/example/</loc>
-     <lastmod>2018-10-04</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-06-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
     <url>
-     <loc>/debugging/</loc>
-     <lastmod>2018-10-04</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-06-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
     <url>
-     <loc>/withroact/</loc>
-     <lastmod>2018-10-04</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-06-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
     <url>
-     <loc>/api-reference/</loc>
-     <lastmod>2018-10-04</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-06-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
 </urlset>
