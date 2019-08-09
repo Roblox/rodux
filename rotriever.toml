@@ -1,3 +1,4 @@
+[package]
 name = "Rodux"
 author = "Roblox"
 license = "Apache-2.0"
