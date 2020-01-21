@@ -1,6 +1,6 @@
 {
   "name": "Rodux",
   "tree": {
-    "$path": "lib"
+    "$path": "src"
   }
 }
