@@ -71,7 +71,7 @@ Add a line under the "Current master" heading. When we make a new release, all o
 ### Luacheck
 We use [Luacheck](https://github.com/mpeterv/luacheck) for static analysis of Lua on all of our projects.
 
-From the command line, just run `luacheck lib` to check the Rodux source.
+From the command line, just run `luacheck src` to check the Rodux source.
 
 You should get it working on your system, and then get a plugin for the editor you use. There are plugins available for most popular editors!
 

@@ -24,7 +24,7 @@
 * Insert the model into Studio into a place like `ReplicatedStorage`
 
 ### Method 2: Filesystem
-* Copy the `lib` directory into your codebase
+* Copy the `src` directory into your codebase
 * Rename the folder to `Rodux`
 * Use a plugin like [Rojo](https://github.com/LPGhatguy/rojo) to sync the files into a place
 
