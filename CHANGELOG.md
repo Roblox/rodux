@@ -1,6 +1,6 @@
 # Rodux Changelog
 
-## Current master
+## 1.0.0 (2019-09-18)
 * Added `combineReducers` utility, mirroring Redux's ([#9](https://github.com/Roblox/rodux/pull/9))
 * Added `createReducer` utility, similar to `redux-create-reducer` ([#10](https://github.com/Roblox/rodux/pull/10))
 * `type` is now required as a field on all actions
@@ -12,5 +12,5 @@
 * Errors thrown in `changed` event now have correct stack traces ([#27](https://github.com/Roblox/rodux/pull/27))
 * Fixed `createReducer` having incorrect behavior with `nil` state values ([#33](https://github.com/Roblox/rodux/pull/33))
 
-## Public Release (December 13, 2017)
+## Public Release (2017-12-13)
 * Initial release!
