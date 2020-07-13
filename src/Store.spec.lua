@@ -313,8 +313,13 @@ return function()
 
 	describe("flush", function()
 		it("should not fire a changed event if there were no dispatches", function()
-			local store = Store.new(function()
-			end)
+			local store = Store.new(function(state, action)
+				if action.type == 'increment' then
+					return state + 1
+				end
+
+				return state
+			end, 0)
 
 			local count = 0
 			store.changed:connect(function()
@@ -335,6 +340,32 @@ return function()
 			store:flush()
 
 			expect(count).to.equal(1)
+
+			store:destruct()
+		end)
+
+		it("should not fire a changed event if the state did not change", function()
+			local store = Store.new(function(state, action)
+				return {
+					state = "non-changed state"
+				}
+			end, {
+				state = "non-changed state"
+			})
+
+			local count = 0
+			store.changed:connect(function()
+				print("store changed")
+				count = count + 1
+			end)
+
+			store:dispatch({
+				type = ""
+			})
+
+			store:flush()
+
+			expect(count).to.equal(0)
 
 			store:destruct()
 		end)
