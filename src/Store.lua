@@ -1,5 +1,6 @@
 local RunService = game:GetService("RunService")
 
+local didChange = require(script.Parent.didChange)
 local Signal = require(script.Parent.Signal)
 local NoYield = require(script.Parent.NoYield)
 
@@ -86,8 +87,11 @@ function Store:dispatch(action)
 			error("action does not have a type field", 2)
 		end
 
-		self._state = self._reducer(self._state, action)
-		self._mutatedSinceFlush = true
+		local newState = self._reducer(self._state, action)
+		if didChange(self._state, newState) then
+			self._mutatedSinceFlush = true
+		end
+		self._state = newState
 	else
 		error(("actions of type %q are not permitted"):format(typeof(action)), 2)
 	end
