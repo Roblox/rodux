@@ -27,7 +27,6 @@ return function()
 		}
 
 		local isDifferent = didChange(original, new)
-		print('isDiff?', isDifferent)
 		expect(isDifferent).to.equal(true)
 
 		-- check new key added
@@ -40,7 +39,6 @@ return function()
 		}
 
 		isDifferent = didChange(original, new)
-		print('isDiff2?', isDifferent)
 		expect(isDifferent).to.equal(true)
 
 		-- check key removed
@@ -50,7 +48,6 @@ return function()
 		new = {}
 
 		isDifferent = didChange(original, new)
-		print('isDiff3?', isDifferent)
 		expect(isDifferent).to.equal(true)
 
 		-- check recursive
@@ -66,7 +63,6 @@ return function()
 		}
 
 		isDifferent = didChange(original, new)
-		print('isDiff4?', isDifferent)
 		expect(isDifferent).to.equal(true)
 	end)
 

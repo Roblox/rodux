@@ -11,12 +11,9 @@ didChange = function(original, new)
 		return original ~= new
 	end
 
-	print(new, type(new), original, type(original))
-
 	-- compare new to old
 	for key, value in pairs(new) do
 		-- check for changed keys
-		print(key, value, original[key], original[key] ~= value)
 		if not (type(original[key]) == 'table' and type(value) == 'table') then
 			if original[key] ~= value then
 				return true
