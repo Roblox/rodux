@@ -22,7 +22,9 @@ didChange = function(original, new)
 
 		-- repeat for children
 		if type(value) == 'table' then
-			return didChange(original[key], value)
+			if didChange(original[key], value) then
+				return true
+			end
 		end
 	end
 
@@ -37,7 +39,9 @@ didChange = function(original, new)
 
 		-- repeat for children
 		if type(value) == 'table' then
-			return didChange(value, new[key])
+			if didChange(value, new[key]) then
+				return true
+			end
 		end
 	end
 
