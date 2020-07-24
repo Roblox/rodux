@@ -43,6 +43,9 @@ Dispatches an action. The action will travel through all of the store's middlewa
 
 Unless handled by middleware, `action` must contain a `type` field to indicate what type of action it is. No other fields are required.
 
+!!! warning
+	`store:dispatch()` will **overwrite any previous states that have been previously dispatched.** For example, if you dispatch an action that contains a list of pet names and 	  then dispatch an action that contains a list of fruits, the list of fruits will show instead of the list of pets in `store:getState()`.
+
 ### Store:getState
 ```
 store:getState() -> table
