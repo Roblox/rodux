@@ -2,7 +2,8 @@
 	A helper function to define a Rodux action creator with an associated name.
 ]]
 local function makeActionCreator(name, fn)
-	assert(type(name) == "string", "Bad argument #1: Expecteda string name for the action creator")
+	assert(type(name) == "string", "Bad argument #1: Expected a string name for the action creator")
+
 	assert(type(fn) == "function", "Bad argument #2: Expected a function that creates action objects")
 
 	return setmetatable({
