@@ -1,5 +1,8 @@
 # Rodux Changelog
 
+## Unreleased Changes
+* Added color schemes for documentation based on user preference ([#56](https://github.com/Roblox/rodux/pull/56)).
+
 ## 1.0.0 (2019-09-18)
 * Added `combineReducers` utility, mirroring Redux's ([#9](https://github.com/Roblox/rodux/pull/9))
 * Added `createReducer` utility, similar to `redux-create-reducer` ([#10](https://github.com/Roblox/rodux/pull/10))

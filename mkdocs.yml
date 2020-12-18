@@ -7,6 +7,7 @@ theme:
   palette:
     primary: 'Light Blue'
     accent: 'Light Blue'
+    scheme: preference
 
 pages:
   - Home: index.md
