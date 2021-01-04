@@ -1,7 +1,10 @@
 # Rodux Changelog
 
 ## Unreleased Changes
+
+## 1.1.0 (2021-01-04)
 * Added color schemes for documentation based on user preference ([#56](https://github.com/Roblox/rodux/pull/56)).
+* Added `makeActionCreator` utility for common action creator pattern ([#35](https://github.com/Roblox/rodux/pull/35))
 
 ## 1.0.0 (2019-09-18)
 * Added `combineReducers` utility, mirroring Redux's ([#9](https://github.com/Roblox/rodux/pull/9))
@@ -14,7 +17,6 @@
 		* Middleware now run left-to-right instead of right-to-left!
 * Errors thrown in `changed` event now have correct stack traces ([#27](https://github.com/Roblox/rodux/pull/27))
 * Fixed `createReducer` having incorrect behavior with `nil` state values ([#33](https://github.com/Roblox/rodux/pull/33))
-* Added `makeActionCreator` utility for common action creator pattern ([#35](https://github.com/Roblox/rodux/pull/35))
 
 ## Public Release (2017-12-13)
 * Initial release!
