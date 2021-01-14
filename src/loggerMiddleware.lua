@@ -7,16 +7,16 @@ local function prettyPrint(value, indentLevel)
 	if typeof(value) == "table" then
 		table.insert(output, "{\n")
 
-		for key, value in pairs(value) do
-			table.insert(output, indent:rep(indentLevel + 1))
+		for key, subValue in pairs(value) do
+			table.insert(output, string.rep(indent, indentLevel + 1))
 			table.insert(output, tostring(key))
 			table.insert(output, " = ")
 
-			table.insert(output, prettyPrint(value, indentLevel + 1))
+			table.insert(output, prettyPrint(subValue, indentLevel + 1))
 			table.insert(output, "\n")
 		end
 
-		table.insert(output, indent:rep(indentLevel))
+		table.insert(output, string.rep(indent, indentLevel))
 		table.insert(output, "}")
 	elseif typeof(value) == "string" then
 		table.insert(output, string.format("%q", value))
@@ -43,7 +43,8 @@ function loggerMiddleware.middleware(nextDispatch, store)
 	return function(action)
 		local result = nextDispatch(action)
 
-		loggerMiddleware.outputFunction(("Action dispatched: %s\nState changed to: %s"):format(
+		loggerMiddleware.outputFunction(string.format(
+			"Action dispatched: %s\nState changed to: %s",
 			prettyPrint(action),
 			prettyPrint(store:getState())
 		))

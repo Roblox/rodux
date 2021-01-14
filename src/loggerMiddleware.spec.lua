@@ -6,7 +6,7 @@ return function()
 		local outputCount = 0
 		local outputMessage
 
-		local function reducer(state, action)
+		local function reducer(state)
 			return state
 		end
 

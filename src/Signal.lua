@@ -6,15 +6,16 @@
 ]]
 
 local function immutableAppend(list, ...)
-	local new = {}
 	local len = #list
+	local varLen = select("#", ...)
+	local new = table.create(len + varLen)
 
-	for key = 1, len do
-		new[key] = list[key]
+	for index, value in ipairs(list) do
+		new[index] = value
 	end
 
-	for i = 1, select("#", ...) do
-		new[len + i] = select(i, ...)
+	for index = 1, varLen do
+		new[len + index] = select(index, ...)
 	end
 
 	return new
@@ -23,9 +24,9 @@ end
 local function immutableRemoveValue(list, removeValue)
 	local new = {}
 
-	for i = 1, #list do
-		if list[i] ~= removeValue then
-			table.insert(new, list[i])
+	for _, value in ipairs(list) do
+		if value ~= removeValue then
+			table.insert(new, value)
 		end
 	end
 
@@ -33,12 +34,11 @@ local function immutableRemoveValue(list, removeValue)
 end
 
 local Signal = {}
-
 Signal.__index = Signal
 
 function Signal.new()
 	local self = {
-		_listeners = {}
+		_listeners = {},
 	}
 
 	setmetatable(self, Signal)
@@ -60,7 +60,7 @@ function Signal:connect(callback)
 	end
 
 	return {
-		disconnect = disconnect
+		disconnect = disconnect,
 	}
 end
 

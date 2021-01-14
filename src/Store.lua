@@ -58,7 +58,7 @@ function Store.new(reducer, initialState, middlewares)
 			dispatch = middleware(dispatch, self)
 		end
 
-		self.dispatch = function(self, ...)
+		self.dispatch = function(_, ...)
 			return dispatch(...)
 		end
 	end
@@ -89,7 +89,7 @@ function Store:dispatch(action)
 		self._state = self._reducer(self._state, action)
 		self._mutatedSinceFlush = true
 	else
-		error(("actions of type %q are not permitted"):format(typeof(action)), 2)
+		error(string.format("actions of type %q are not permitted", typeof(action)), 2)
 	end
 end
 
