@@ -28,7 +28,7 @@ local function prettyPrint(value, indentLevel)
 		table.insert(output, ")")
 	end
 
-	return table.concat(output, "")
+	return table.concat(output)
 end
 
 -- We want to be able to override outputFunction in tests, so the shape of this
