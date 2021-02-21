@@ -7,8 +7,8 @@ local Store = {}
 
 -- This value is exposed as a private value so that the test code can stay in
 -- sync with what event we listen to for dispatching the Changed event.
--- It may not be Heartbeat in the future.
-Store._flushEvent = RunService.Heartbeat
+-- It may not be PostSimulation in the future.
+Store._flushEvent = RunService.PostSimulation
 
 Store.__index = Store
 
