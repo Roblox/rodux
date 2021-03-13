@@ -142,6 +142,34 @@ return function()
 
 			store:destruct()
 		end)
+
+		it("should error if the reducer errors", function()
+			local reportedErrorMessage, reportedErrorError
+			local mockErrorReporter = {
+				reportErrorImmediately = function(_self, message, error_)
+					reportedErrorMessage = message
+					reportedErrorError = error_
+				end,
+				reportErrorDeferred = function(_self, message, error_)
+					reportedErrorMessage = message
+					reportedErrorError = error_
+				end
+			}
+
+			local reducerThatErrors = function(state, action)
+				error("Z4PH0D")
+			end
+
+			local store
+			store = Store.new(reducerThatErrors, nil, nil, mockErrorReporter)
+			local caughtErrorMessage = "Caught error with init"
+			expect(string.sub(reportedErrorMessage, 1, string.len(caughtErrorMessage))).to.equal(caughtErrorMessage)
+			local caughtErrorError = "LoadedCode"
+			expect(string.sub(reportedErrorError, 1, string.len(caughtErrorError))).to.equal(caughtErrorError)
+
+			store:destruct()
+		end)
+
 	end)
 
 	describe("getState", function()
@@ -308,6 +336,38 @@ return function()
 			expect(function()
 				store:dispatch(1)
 			end).to.throw()
+
+			store:destruct()
+		end)
+
+		it("should report an error if the reducer errors", function()
+			local reportedErrorMessage, reportedErrorError
+			local mockErrorReporter = {
+				reportErrorImmediately = function(_self, message, error_)
+					reportedErrorMessage = message
+					reportedErrorError = error_
+				end,
+				reportErrorDeferred = function(_self, message, error_)
+					reportedErrorMessage = message
+					reportedErrorError = error_
+				end
+			}
+
+			local reducerCallCount = 0
+			local reducerThatErrors = function(state, action)
+				if reducerCallCount > 0 then
+					error("Z4PH0D")
+				end
+				reducerCallCount += 1
+			end
+			local store = Store.new(reducerThatErrors, nil, nil, mockErrorReporter)
+			expect(reportedErrorMessage).to.equal(nil)
+
+			store:dispatch({type = "any"})
+			local caughtErrorMessage = "Caught error"
+			expect(string.sub(reportedErrorMessage, 1, string.len(caughtErrorMessage))).to.equal(caughtErrorMessage)
+			local caughtErrorError = "LoadedCode"
+			expect(string.sub(reportedErrorError, 1, string.len(caughtErrorError))).to.equal(caughtErrorError)
 
 			store:destruct()
 		end)

@@ -111,4 +111,90 @@ return function()
 		expect(countA).to.equal(1)
 		expect(countB).to.equal(0)
 	end)
+
+	describe("when event handlers error", function()
+		local reportedErrorError, reportedErrorMessage
+		local mockStore = {
+			_errorReporter = {
+				reportErrorImmediately = function(_self, message, error_)
+					reportedErrorMessage = message
+					reportedErrorError = error_
+				end,
+				reportErrorDeferred = function(_self, message, error_)
+					reportedErrorMessage = message
+					reportedErrorError = error_
+				end
+			}
+		}
+
+		beforeEach(function()
+			reportedErrorError = ""
+			reportedErrorMessage = ""
+		end)
+
+		it("first listener succeeds when second listener errors", function()
+			local signal = Signal.new(mockStore)
+			local countA = 0
+
+			signal:connect(function()
+				countA = countA + 1
+			end)
+
+			signal:connect(function()
+				error("connectionB")
+			end)
+
+			signal:fire()
+
+			expect(countA).to.equal(1)
+			local caughtErrorMessage = "Caught error"
+			expect(string.sub(reportedErrorMessage, 1, string.len(caughtErrorMessage))).to.equal(caughtErrorMessage)
+			local caughtErrorError = "LoadedCode"
+			expect(string.sub(reportedErrorError, 1, string.len(caughtErrorError))).to.equal(caughtErrorError)
+		end)
+		it("second listener succeeds when first listener errors", function()
+			local signal = Signal.new(mockStore)
+			local countB = 0
+
+			signal:connect(function()
+				error("connectionA")
+			end)
+
+			signal:connect(function()
+				countB = countB + 1
+			end)
+
+			signal:fire()
+
+			expect(countB).to.equal(1)
+			local caughtErrorMessage = "Caught error"
+			expect(string.sub(reportedErrorMessage, 1, string.len(caughtErrorMessage))).to.equal(caughtErrorMessage)
+			local caughtErrorError = "LoadedCode"
+			expect(string.sub(reportedErrorError, 1, string.len(caughtErrorError))).to.equal(caughtErrorError)
+		end)
+
+		it("serializes table arguments when reporting errors", function()
+			local signal = Signal.new(mockStore)
+
+			signal:connect(function()
+				error("connectionA")
+			end)
+
+			local actionCommand = "SENTINEL"
+			signal:fire({actionCommand = actionCommand})
+			local tableEndString = [[ (string)
+    }
+}
+]]
+			expect(
+				string.sub(
+					reportedErrorMessage,
+					string.len(reportedErrorMessage) - string.len(actionCommand) - string.len(tableEndString),
+					string.len(reportedErrorMessage)
+				)
+			).to.equal(actionCommand .. "\"" .. tableEndString )
+			local caughtErrorError = "LoadedCode"
+			expect(string.sub(reportedErrorError, 1, string.len(caughtErrorError))).to.equal(caughtErrorError)
+		end)
+	end)
 end
