@@ -2,7 +2,7 @@ local RunService = game:GetService("RunService")
 
 local Signal = require(script.Parent.Signal)
 local NoYield = require(script.Parent.NoYield)
-local prettyPrint = require(script.Parent.prettyPrint)
+local inspect = require(script.Parent.inspect).inspect
 
 local defaultErrorReporter = {
 	reportErrorDeferred = function(self, message, stacktrace)
@@ -113,7 +113,7 @@ end
 function Store:_reportReducerError(failedAction, error_, traceback)
 	local message = ("Caught error when running action (%s) " ..
 		"through reducer (%s): \n%s \n" ..
-		"previous action type was: %s"):format(tostring(failedAction), tostring(self._reducer), tostring(error_), prettyPrint(self._lastAction))
+		"previous action type was: %s"):format(tostring(failedAction), tostring(self._reducer), tostring(error_), inspect(self._lastAction))
 
 	self._errorReporter:reportErrorImmediately(message, traceback)
 end
@@ -136,7 +136,7 @@ function Store:dispatch(action)
 	if action.type == nil then
 		error("Actions may not have an undefined 'type' property. " ..
 			"Have you misspelled a constant? \n" ..
-			prettyPrint(action), 2)
+			inspect(action), 2)
 	end
 
 	if self._isDispatching then
