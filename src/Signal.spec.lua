@@ -147,11 +147,12 @@ return function()
 			signal:fire()
 
 			expect(countA).to.equal(1)
-			local caughtErrorMessage = "Caught error"
-			expect(string.sub(reportedErrorMessage, 1, string.len(caughtErrorMessage))).to.equal(caughtErrorMessage)
-			local caughtErrorError = "LoadedCode"
-			expect(string.sub(reportedErrorError, 1, string.len(caughtErrorError))).to.equal(caughtErrorError)
+			local caughtErrorMessage = "Caught error when calling event listener"
+			expect(string.find(reportedErrorMessage, caughtErrorMessage)).to.be.ok()
+			local caughtErrorError = "connectionB"
+			expect(string.find(reportedErrorError, caughtErrorError)).to.be.ok()
 		end)
+
 		it("second listener succeeds when first listener errors", function()
 			local signal = Signal.new(mockStore)
 			local countB = 0
@@ -167,10 +168,10 @@ return function()
 			signal:fire()
 
 			expect(countB).to.equal(1)
-			local caughtErrorMessage = "Caught error"
-			expect(string.sub(reportedErrorMessage, 1, string.len(caughtErrorMessage))).to.equal(caughtErrorMessage)
-			local caughtErrorError = "LoadedCode"
-			expect(string.sub(reportedErrorError, 1, string.len(caughtErrorError))).to.equal(caughtErrorError)
+			local caughtErrorMessage = "Caught error when calling event listener"
+			expect(string.find(reportedErrorMessage, caughtErrorMessage)).to.be.ok()
+			local caughtErrorError = "connectionA"
+			expect(string.find(reportedErrorError, caughtErrorError)).to.be.ok()
 		end)
 
 		it("serializes table arguments when reporting errors", function()
@@ -182,19 +183,13 @@ return function()
 
 			local actionCommand = "SENTINEL"
 			signal:fire({actionCommand = actionCommand})
-			local tableEndString = [[ (string)
-    }
-}
-]]
-			expect(
-				string.sub(
-					reportedErrorMessage,
-					string.len(reportedErrorMessage) - string.len(actionCommand) - string.len(tableEndString),
-					string.len(reportedErrorMessage)
-				)
-			).to.equal(actionCommand .. "\"" .. tableEndString )
-			local caughtErrorError = "LoadedCode"
-			expect(string.sub(reportedErrorError, 1, string.len(caughtErrorError))).to.equal(caughtErrorError)
+
+			local caughtErrorMessage = "Caught error when calling event listener"
+			local caughtErrorArg = "actionCommand: \"" .. actionCommand .. "\""
+			expect(string.find(reportedErrorMessage, caughtErrorMessage)).to.be.ok()
+			expect(string.find(reportedErrorMessage, caughtErrorArg)).to.be.ok()
+			local caughtErrorError = "connectionA"
+			expect(string.find(reportedErrorError, caughtErrorError)).to.be.ok()
 		end)
 	end)
 end
