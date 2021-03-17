@@ -5,7 +5,7 @@
 -- If you add any dependencies, add them to this table so they'll be loaded!
 local LOAD_MODULES = {
 	{"src", "Library"},
-	{"modules/testez/lib", "TestEZ"},
+	{"modules/testez/src", "TestEZ"},
 }
 
 -- This makes sure we can load Lemur and other libraries that depend on init.lua
@@ -31,7 +31,10 @@ end
 -- Load TestEZ and run our tests
 local TestEZ = habitat:require(Root.TestEZ)
 
-local results = TestEZ.TestBootstrap:run(Root.Library, TestEZ.Reporters.TextReporter)
+local results = TestEZ.TestBootstrap:run(
+	{ Root.Library },
+	TestEZ.Reporters.TextReporter
+)
 
 -- Did something go wrong?
 if results.failureCount > 0 then
