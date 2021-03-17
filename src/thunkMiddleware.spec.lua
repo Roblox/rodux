@@ -10,7 +10,7 @@ return function()
 		local store = Store.new(reducer, {}, { thunkMiddleware })
 		local thunkCount = 0
 
-		local function thunk(store)
+		local function thunk(_store)
 			thunkCount = thunkCount + 1
 		end
 
@@ -47,7 +47,7 @@ return function()
 		local store = Store.new(reducer, {}, { thunkMiddleware })
 		local thunkValue = "test"
 
-		local function thunk(store)
+		local function thunk(_store)
 			return thunkValue
 		end
 

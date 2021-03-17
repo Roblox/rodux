@@ -24,6 +24,7 @@ stds.roblox = {
 stds.testez = {
 	read_globals = {
 		"describe",
+		"beforeEach", "afterEach", "beforeAll", "afterAll",
 		"it", "itFOCUS", "itSKIP",
 		"FOCUS", "SKIP", "HACK_NO_XPCALL",
 		"expect",

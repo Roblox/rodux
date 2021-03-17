@@ -142,6 +142,39 @@ return function()
 
 			store:destruct()
 		end)
+
+		it("should error if the reducer errors", function()
+			local reportedErrorMessage, reportedErrorError
+			local mockErrorReporter = {
+				reportErrorImmediately = function(_self, message, error_)
+					reportedErrorMessage = message
+					reportedErrorError = error_
+				end,
+				reportErrorDeferred = function(_self, message, error_)
+					reportedErrorMessage = message
+					reportedErrorError = error_
+				end
+			}
+
+			local innerErrorMessage = "Z4PH0D"
+			local reducerThatErrors = function(state, action)
+				error(innerErrorMessage)
+			end
+
+			local store
+			store = Store.new(reducerThatErrors, nil, nil, mockErrorReporter)
+
+			local caughtErrorMessage = "Caught error with init"
+			expect(string.find(reportedErrorMessage, caughtErrorMessage)).to.be.ok()
+			expect(string.find(reportedErrorMessage, innerErrorMessage)).to.be.ok()
+			-- We want to verify that this is a stacktrace without caring too
+			-- much about the format, so we look for the stack frame associated
+			-- with this test file
+			expect(string.find(reportedErrorError, script.Name)).to.be.ok()
+
+			store:destruct()
+		end)
+
 	end)
 
 	describe("getState", function()
@@ -260,13 +293,24 @@ return function()
 		end)
 
 		it("should prevent yielding from changed handler", function()
+			local reportedErrorMessage, reportedErrorError
+			local mockErrorReporter = {
+				reportErrorImmediately = function(_self, message, error_)
+					reportedErrorMessage = message
+					reportedErrorError = error_
+				end,
+				reportErrorDeferred = function(_self, message, error_)
+					reportedErrorMessage = message
+					reportedErrorError = error_
+				end
+			}
 			local preCount = 0
 			local postCount = 0
 
 			local store = Store.new(function(state, action)
 				state = state or 0
 				return state + 1
-			end)
+			end, nil, nil, mockErrorReporter)
 
 			store.changed:connect(function(state, oldState)
 				preCount = preCount + 1
@@ -278,12 +322,24 @@ return function()
 				type = "increment",
 			})
 
-			expect(function()
-				store:flush()
-			end).to.throw()
+			store:flush()
 
 			expect(preCount).to.equal(1)
 			expect(postCount).to.equal(0)
+
+			local caughtErrorMessage = "Caught error when calling event listener"
+			expect(string.find(reportedErrorMessage, caughtErrorMessage)).to.be.ok()
+			-- We want to verify that this is a stacktrace without caring too
+			-- much about the format, so we look for the stack frame associated
+			-- with this test file
+			expect(string.find(reportedErrorMessage, script.Name)).to.be.ok()
+			-- In vanilla lua, we get this message:
+			--   "attempt to yield across metamethod/C-call boundary"
+			-- In luau, we should end up wrapping our own NoYield message:
+			--   "Attempted to yield inside changed event!"
+			-- For convenience's sake, we just look for the common substring
+			local caughtErrorSubstring = "to yield"
+			expect(string.find(reportedErrorError, caughtErrorSubstring)).to.be.ok()
 
 			store:destruct()
 		end)
@@ -309,6 +365,42 @@ return function()
 				store:dispatch(1)
 			end).to.throw()
 
+			store:destruct()
+		end)
+
+		it("should report an error if the reducer errors", function()
+			local reportedErrorMessage, reportedErrorError
+			local mockErrorReporter = {
+				reportErrorImmediately = function(_self, message, error_)
+					reportedErrorMessage = message
+					reportedErrorError = error_
+				end,
+				reportErrorDeferred = function(_self, message, error_)
+					reportedErrorMessage = message
+					reportedErrorError = error_
+				end
+			}
+
+			local innerErrorMessage = "Z4PH0D"
+			local reducerCallCount = 0
+			local reducerThatErrors = function(state, action)
+				if reducerCallCount > 0 then
+					error(innerErrorMessage)
+				end
+				reducerCallCount = reducerCallCount + 1
+			end
+			local store = Store.new(reducerThatErrors, nil, nil, mockErrorReporter)
+			expect(reportedErrorMessage).to.equal(nil)
+
+			store:dispatch({type = "any"})
+
+			local previousAction = "previous action type was: { type: \"@@INIT\" }"
+			expect(string.find(reportedErrorMessage, innerErrorMessage)).to.be.ok()
+			expect(string.find(reportedErrorMessage, previousAction)).to.be.ok()
+			-- We want to verify that this is a stacktrace without caring too
+			-- much about the format, so we look for the stack frame associated
+			-- with this test file
+			expect(string.find(reportedErrorError, script.Name)).to.be.ok()
 			store:destruct()
 		end)
 	end)
