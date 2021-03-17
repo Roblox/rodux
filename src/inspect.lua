@@ -13,6 +13,15 @@ local formatArray
 local formatObject
 local getObjectTag
 
+local function find(array, value)
+	for i = 1, #array do
+		if array[i] == value then
+			return i
+		end
+	end
+	return nil
+end
+
 --[[
  * Used to print values in error messages.
  ]]
@@ -44,7 +53,7 @@ function formatValue(value, seenValues)
 end
 
 function formatObjectValue(value, previouslySeenValues)
-	if table.find(previouslySeenValues, value) ~= nil then
+	if find(previouslySeenValues, value) ~= nil then
 		return "[Circular]"
 	end
 
