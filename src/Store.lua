@@ -113,7 +113,13 @@ end
 function Store:_reportReducerError(failedAction, error_, traceback)
 	local message = ("Caught error when running action (%s) " ..
 		"through reducer (%s): \n%s \n" ..
-		"previous action type was: %s"):format(tostring(failedAction), tostring(self._reducer), tostring(error_), inspect(self._lastAction))
+		"previous action type was: %s"
+	):format(
+		tostring(failedAction),
+		tostring(self._reducer),
+		tostring(error_),
+		inspect(self._lastAction)
+	)
 
 	self._errorReporter:reportErrorImmediately(message, traceback)
 end

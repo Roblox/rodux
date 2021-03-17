@@ -22,8 +22,8 @@ return function(value)
 		if key % 1 ~= 0 or key < 1 then
 			return false
 		end
-		count += 1
-		sum += key
+		count = count + 1
+		sum = sum + key
 	end
 
     return sum == (count * (count + 1) / 2)

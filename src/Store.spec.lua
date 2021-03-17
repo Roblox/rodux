@@ -358,7 +358,7 @@ return function()
 				if reducerCallCount > 0 then
 					error("Z4PH0D")
 				end
-				reducerCallCount += 1
+				reducerCallCount = reducerCallCount + 1
 			end
 			local store = Store.new(reducerThatErrors, nil, nil, mockErrorReporter)
 			expect(reportedErrorMessage).to.equal(nil)

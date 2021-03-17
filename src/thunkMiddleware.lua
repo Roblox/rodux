@@ -4,7 +4,7 @@
 	This middleware consumes the function; middleware further down the chain
 	will not receive it.
 ]]
-function reportThunkError(errorReporter, failedAction, error_, traceback)
+local function reportThunkError(errorReporter, failedAction, error_, traceback)
 	local message = ("Caught error when running thunk (%s) " ..
 		"through thunk: \n%s"):format(tostring(failedAction), tostring(error_))
 

@@ -12,7 +12,6 @@ return function(value)
 		end
 	elseif valueType == "string" then
 		local length = value:len()
-		keys = table.create(length)
 		for i = 1, length do
 			keys[i] = tostring(i)
 		end
