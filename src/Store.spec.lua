@@ -156,16 +156,21 @@ return function()
 				end
 			}
 
+			local innerErrorMessage = "Z4PH0D"
 			local reducerThatErrors = function(state, action)
-				error("Z4PH0D")
+				error(innerErrorMessage)
 			end
 
 			local store
 			store = Store.new(reducerThatErrors, nil, nil, mockErrorReporter)
+
 			local caughtErrorMessage = "Caught error with init"
-			expect(string.sub(reportedErrorMessage, 1, string.len(caughtErrorMessage))).to.equal(caughtErrorMessage)
-			local caughtErrorError = "LoadedCode"
-			expect(string.sub(reportedErrorError, 1, string.len(caughtErrorError))).to.equal(caughtErrorError)
+			expect(string.find(reportedErrorMessage, caughtErrorMessage)).to.be.ok()
+			expect(string.find(reportedErrorMessage, innerErrorMessage)).to.be.ok()
+			-- We want to verify that this is a stacktrace without caring too
+			-- much about the format, so we look for the stack frame associated
+			-- with this test file
+			expect(string.find(reportedErrorError, script.Name)).to.be.ok()
 
 			store:destruct()
 		end)
@@ -353,10 +358,11 @@ return function()
 				end
 			}
 
+			local innerErrorMessage = "Z4PH0D"
 			local reducerCallCount = 0
 			local reducerThatErrors = function(state, action)
 				if reducerCallCount > 0 then
-					error("Z4PH0D")
+					error(innerErrorMessage)
 				end
 				reducerCallCount = reducerCallCount + 1
 			end
@@ -364,11 +370,15 @@ return function()
 			expect(reportedErrorMessage).to.equal(nil)
 
 			store:dispatch({type = "any"})
-			local caughtErrorMessage = "Caught error"
-			expect(string.sub(reportedErrorMessage, 1, string.len(caughtErrorMessage))).to.equal(caughtErrorMessage)
-			local caughtErrorError = "LoadedCode"
-			expect(string.sub(reportedErrorError, 1, string.len(caughtErrorError))).to.equal(caughtErrorError)
+			warn(reportedErrorMessage, "\n\n\n\n", reportedErrorError)
 
+			local previousAction = "previous action type was: { type: \"@@INIT\" }"
+			expect(string.find(reportedErrorMessage, innerErrorMessage)).to.be.ok()
+			expect(string.find(reportedErrorMessage, previousAction)).to.be.ok()
+			-- We want to verify that this is a stacktrace without caring too
+			-- much about the format, so we look for the stack frame associated
+			-- with this test file
+			expect(string.find(reportedErrorError, script.Name)).to.be.ok()
 			store:destruct()
 		end)
 	end)
