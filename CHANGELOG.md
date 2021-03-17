@@ -1,6 +1,7 @@
 # Rodux Changelog
 
 ## Unreleased Changes
+* Introduce error handling to catch and report errors during reducers ([#60](https://github.com/Roblox/rodux/pull/60)).
 
 ## 1.1.0 (2021-01-04)
 * Added color schemes for documentation based on user preference ([#56](https://github.com/Roblox/rodux/pull/56)).
