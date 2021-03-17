@@ -45,7 +45,7 @@ function Store.new(reducer, initialState, middlewares, errorReporter)
 				("Expected the middleware ('%s') at index %d to be a function."):format(tostring(middlewares[i]), i)
 			)
 		end
-end
+	end
 
 	local self = {}
 

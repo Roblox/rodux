@@ -293,13 +293,24 @@ return function()
 		end)
 
 		it("should prevent yielding from changed handler", function()
+			local reportedErrorMessage, reportedErrorError
+			local mockErrorReporter = {
+				reportErrorImmediately = function(_self, message, error_)
+					reportedErrorMessage = message
+					reportedErrorError = error_
+				end,
+				reportErrorDeferred = function(_self, message, error_)
+					reportedErrorMessage = message
+					reportedErrorError = error_
+				end
+			}
 			local preCount = 0
 			local postCount = 0
 
 			local store = Store.new(function(state, action)
 				state = state or 0
 				return state + 1
-			end)
+			end, nil, nil, mockErrorReporter)
 
 			store.changed:connect(function(state, oldState)
 				preCount = preCount + 1
@@ -311,12 +322,24 @@ return function()
 				type = "increment",
 			})
 
-			expect(function()
-				store:flush()
-			end).to.throw()
+			store:flush()
 
 			expect(preCount).to.equal(1)
 			expect(postCount).to.equal(0)
+
+			local caughtErrorMessage = "Caught error when calling event listener"
+			expect(string.find(reportedErrorMessage, caughtErrorMessage)).to.be.ok()
+			-- We want to verify that this is a stacktrace without caring too
+			-- much about the format, so we look for the stack frame associated
+			-- with this test file
+			expect(string.find(reportedErrorMessage, script.Name)).to.be.ok()
+			-- In vanilla lua, we get this message:
+			--   "attempt to yield across metamethod/C-call boundary"
+			-- In luau, we should end up wrapping our own NoYield message:
+			--   "Attempted to yield inside changed event!"
+			-- For convenience's sake, we just look for the common substring
+			local caughtErrorSubstring = "to yield"
+			expect(string.find(reportedErrorError, caughtErrorSubstring)).to.be.ok()
 
 			store:destruct()
 		end)
@@ -370,7 +393,6 @@ return function()
 			expect(reportedErrorMessage).to.equal(nil)
 
 			store:dispatch({type = "any"})
-			warn(reportedErrorMessage, "\n\n\n\n", reportedErrorError)
 
 			local previousAction = "previous action type was: { type: \"@@INIT\" }"
 			expect(string.find(reportedErrorMessage, innerErrorMessage)).to.be.ok()
