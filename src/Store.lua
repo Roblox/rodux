@@ -4,16 +4,18 @@ local Signal = require(script.Parent.Signal)
 local NoYield = require(script.Parent.NoYield)
 local inspect = require(script.Parent.inspect).inspect
 
-local defaultErrorReporter = {
-	reportErrorDeferred = function(self, message, stacktrace)
-		print(message)
-		print(stacktrace)
+local rethrowErrorReporter = {
+	reportReducerError = function(prevState, action, errorResult)
+		error(string.format("Received error: %s\n\n%s", errorResult.message, errorResult.thrownValue))
 	end,
-	reportErrorImmediately = function(self, message, stacktrace)
-		print(message)
-		print(stacktrace)
-	end
+	reportUpdateError = function(prevState, currentState, lastAction, errorResult)
+		error(string.format("Received error: %s\n\n%s", errorResult.message, errorResult.thrownValue))
+end,
 }
+
+local tracebackReporter = function(message)
+	return debug.traceback(message, 2)
+end
 
 local Store = {}
 
@@ -49,19 +51,21 @@ function Store.new(reducer, initialState, middlewares, errorReporter)
 
 	local self = {}
 
-	self._errorReporter = errorReporter or defaultErrorReporter
+	self._errorReporter = errorReporter or rethrowErrorReporter
 	self._isDispatching = false
 	self._reducer = reducer
 	local initAction = {
 		type = "@@INIT",
 	}
 	self._lastAction = initAction
-	local ok, result = pcall(function()
+	local ok, result = xpcall(function()
 		self._state = reducer(initialState, initAction)
-	end)
+	end, tracebackReporter)
 	if not ok then
-		local message = ("Caught error with init action of reducer (%s): %s"):format(tostring(reducer), tostring(result))
-		errorReporter:reportErrorImmediately(message, debug.traceback())
+		errorReporter.reportReducerError(initialState, initAction, {
+			message = ("Caught error in reducer (%s)"):format(tostring(reducer)),
+			thrownValue = result,
+		})
 		self._state = initialState
 	end
 	self._lastState = self._state
@@ -110,20 +114,6 @@ function Store:getState()
 	return self._state
 end
 
-function Store:_reportReducerError(failedAction, error_, traceback)
-	local message = ("Caught error when running action (%s) " ..
-		"through reducer (%s): \n%s \n" ..
-		"previous action type was: %s"
-	):format(
-		tostring(failedAction),
-		tostring(self._reducer),
-		tostring(error_),
-		inspect(self._lastAction)
-	)
-
-	self._errorReporter:reportErrorImmediately(message, traceback)
-end
-
 --[[
 	Dispatch an action to the store. This allows the store's reducer to mutate
 	the state of the application by creating a new copy of the state.
@@ -158,10 +148,10 @@ function Store:dispatch(action)
 	self._isDispatching = false
 
 	if not ok then
-		self:_reportReducerError(
+		self._errorReporter.reportReducerError(
+			self._state,
 			action,
-			result,
-			debug.traceback()
+			result
 		)
 	end
 	self._lastAction = action
@@ -196,7 +186,16 @@ function Store:flush()
 	-- If a changed listener yields, *very* surprising bugs can ensue.
 	-- Because of that, changed listeners cannot yield.
 	NoYield(function()
-		self.changed:fire(state, self._lastState)
+		local ok, errorResult = xpcall(function()
+			self.changed:fire(state, self._lastState)
+		end, tracebackReporter)
+
+		if not ok then
+			self._errorReporter.reportUpdateError(self._lastState, self._state, self._lastAction, {
+				message = "Caught error flushing store update",
+				thrownValue = errorResult,
+			})
+		end
 	end)
 
 	self._lastState = state
