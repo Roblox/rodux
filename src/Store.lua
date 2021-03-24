@@ -4,17 +4,19 @@ local Signal = require(script.Parent.Signal)
 local NoYield = require(script.Parent.NoYield)
 local inspect = require(script.Parent.inspect).inspect
 
+local ACTION_LOG_LENGTH = 3
+
 local rethrowErrorReporter = {
 	reportReducerError = function(prevState, action, errorResult)
 		error(string.format("Received error: %s\n\n%s", errorResult.message, errorResult.thrownValue))
 	end,
-	reportUpdateError = function(prevState, currentState, lastAction, errorResult)
+	reportUpdateError = function(prevState, currentState, lastActions, errorResult)
 		error(string.format("Received error: %s\n\n%s", errorResult.message, errorResult.thrownValue))
-end,
+	end,
 }
 
 local tracebackReporter = function(message)
-	return debug.traceback(message, 2)
+	return debug.traceback(message, 3)
 end
 
 local Store = {}
@@ -57,13 +59,13 @@ function Store.new(reducer, initialState, middlewares, errorReporter)
 	local initAction = {
 		type = "@@INIT",
 	}
-	self._lastAction = initAction
+	self._actionLog = { initAction }
 	local ok, result = xpcall(function()
 		self._state = reducer(initialState, initAction)
 	end, tracebackReporter)
 	if not ok then
-		errorReporter.reportReducerError(initialState, initAction, {
-			message = ("Caught error in reducer (%s)"):format(tostring(reducer)),
+		self._errorReporter.reportReducerError(initialState, initAction, {
+			message = "Caught error in reducer",
 			thrownValue = result,
 		})
 		self._state = initialState
@@ -151,10 +153,17 @@ function Store:dispatch(action)
 		self._errorReporter.reportReducerError(
 			self._state,
 			action,
-			result
+			{
+				message = "Caught error in reducer",
+				thrownValue = result,
+			}
 		)
 	end
-	self._lastAction = action
+
+	if #self._actionLog == ACTION_LOG_LENGTH then
+		table.remove(self._actionLog, 1)
+	end
+	table.insert(self._actionLog, action)
 end
 
 --[[
@@ -191,10 +200,15 @@ function Store:flush()
 		end, tracebackReporter)
 
 		if not ok then
-			self._errorReporter.reportUpdateError(self._lastState, self._state, self._lastAction, {
-				message = "Caught error flushing store update",
-				thrownValue = errorResult,
-			})
+			self._errorReporter.reportUpdateError(
+				self._lastState,
+				self._state,
+				self._actionLog,
+				{
+					message = "Caught error flushing store updates",
+					thrownValue = errorResult,
+				}
+			)
 		end
 	end)
 

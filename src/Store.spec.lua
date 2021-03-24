@@ -143,16 +143,16 @@ return function()
 			store:destruct()
 		end)
 
-		it("should error if the reducer errors", function()
-			local reportedErrorMessage, reportedErrorError
+		it("should report a reducer error thrown when handling the INIT action", function()
+			local lastState, lastAction, lastErrorResult
 			local mockErrorReporter = {
-				reportErrorImmediately = function(_self, message, error_)
-					reportedErrorMessage = message
-					reportedErrorError = error_
+				reportReducerError = function(state, action, errorResult)
+					lastState = state
+					lastAction = action
+					lastErrorResult = errorResult
 				end,
-				reportErrorDeferred = function(_self, message, error_)
-					reportedErrorMessage = message
-					reportedErrorError = error_
+				reportUpdateError = function()
+					-- no op
 				end
 			}
 
@@ -162,15 +162,79 @@ return function()
 			end
 
 			local store
-			store = Store.new(reducerThatErrors, nil, nil, mockErrorReporter)
+			store = Store.new(reducerThatErrors, {
+				Value = 1
+			}, nil, mockErrorReporter)
 
-			local caughtErrorMessage = "Caught error with init"
-			expect(string.find(reportedErrorMessage, caughtErrorMessage)).to.be.ok()
-			expect(string.find(reportedErrorMessage, innerErrorMessage)).to.be.ok()
+			expect(lastState.Value).to.equal(1)
+			expect(lastAction.type).to.equal("@@INIT")
+			expect(lastErrorResult.message).to.equal("Caught error in reducer")
+			expect(string.find(
+				lastErrorResult.thrownValue,
+				innerErrorMessage
+			)).to.be.ok()
 			-- We want to verify that this is a stacktrace without caring too
 			-- much about the format, so we look for the stack frame associated
 			-- with this test file
-			expect(string.find(reportedErrorError, script.Name)).to.be.ok()
+			expect(string.find(
+				lastErrorResult.thrownValue,
+				script.Name
+			)).to.be.ok()
+
+			store:destruct()
+		end)
+
+		it("should report a reducer error thrown when handling a subsequent action", function()
+			local lastState, lastAction, lastErrorResult
+			local mockErrorReporter = {
+				reportReducerError = function(state, action, errorResult)
+					lastState = state
+					lastAction = action
+					lastErrorResult = errorResult
+				end,
+				reportUpdateError = function()
+					-- no op
+				end
+			}
+
+			local innerErrorMessage = "Z4PH0D"
+			local reducerThatErrorsAfterInit = function(state, action)
+				if action.type == "ThrowError" then
+					error(innerErrorMessage)
+				elseif action.type == "Increment" then
+					return {
+						Value = state.Value + 1
+					}
+				end
+				return state
+			end
+
+			local store
+			store = Store.new(reducerThatErrorsAfterInit, {
+				Value = 1,
+			}, nil, mockErrorReporter)
+
+			expect(lastState).to.equal(nil)
+			expect(lastAction).to.equal(nil)
+			expect(lastErrorResult).to.equal(nil)
+
+			store:dispatch({type = "Increment"})
+			store:dispatch({type = "ThrowError"})
+
+			expect(lastState.Value).to.equal(2)
+			expect(lastAction.type).to.equal("ThrowError")
+			expect(lastErrorResult.message).to.equal("Caught error in reducer")
+			expect(string.find(
+				lastErrorResult.thrownValue,
+				innerErrorMessage
+			)).to.be.ok()
+			-- We want to verify that this is a stacktrace without caring too
+			-- much about the format, so we look for the stack frame associated
+			-- with this test file
+			expect(string.find(
+				lastErrorResult.thrownValue,
+				script.Name
+			)).to.be.ok()
 
 			store:destruct()
 		end)
