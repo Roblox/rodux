@@ -4,8 +4,6 @@
 	Handlers are fired in order, and (dis)connections are properly handled when
 	executing an event.
 ]]
-local inspect = require(script.Parent.inspect).inspect
-
 local function immutableAppend(list, ...)
 	local new = {}
 	local len = #list
@@ -56,8 +54,8 @@ function Signal:connect(callback)
 	if self._store and self._store._isDispatching then
 		error(
 			'You may not call store.changed:connect() while the reducer is executing. ' ..
-			  'If you would like to be notified after the store has been updated, subscribe from a ' ..
-			  'component and invoke store:getState() in the callback to access the latest state. '
+				'If you would like to be notified after the store has been updated, subscribe from a ' ..
+				'component and invoke store:getState() in the callback to access the latest state. '
 		)
 	end
 
@@ -72,14 +70,13 @@ function Signal:connect(callback)
 
 	local function disconnect()
 		if listener.disconnected then
-			local errorMessage = ("Listener connected at: \n%s\n" ..
-				"was already disconnected at: \n%s\n"):format(
-					tostring(listener.connectTraceback),
-					tostring(listener.disconnectTraceback)
-			)
-			self._store._errorReporter:reportErrorDeferred(errorMessage, debug.traceback())
-
-			return
+			error((
+				"Listener connected at: \n%s\n" ..
+				"was already disconnected at: \n%s\n"
+			):format(
+				tostring(listener.connectTraceback),
+				tostring(listener.disconnectTraceback)
+			))
 		end
 
 		if self._store and self._store._isDispatching then
@@ -96,35 +93,10 @@ function Signal:connect(callback)
 	}
 end
 
-function Signal:reportListenerError(listener, callbackArgs, error_)
-	local message = ("Caught error when calling event listener (%s), " ..
-		"originally subscribed from: \n%s\n" ..
-		"with arguments: \n%s\n"):format(
-			tostring(listener.callback),
-			tostring(listener.connectTraceback),
-			inspect(callbackArgs)
-		)
-
-	if self._store then
-		self._store._errorReporter:reportErrorImmediately(message, error_)
-	else
-		print(message .. tostring(error_))
-	end
-end
-
 function Signal:fire(...)
 	for _, listener in ipairs(self._listeners) do
 		if not listener.disconnected then
-			local ok, result = pcall(function(...)
-				listener.callback(...)
-			end, ...)
-			if not ok then
-				self:reportListenerError(
-					listener,
-					{...},
-					result
-				)
-			end
+			listener.callback(...)
 		end
 	end
 end

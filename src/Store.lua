@@ -2,18 +2,21 @@ local RunService = game:GetService("RunService")
 
 local Signal = require(script.Parent.Signal)
 local NoYield = require(script.Parent.NoYield)
-local inspect = require(script.Parent.inspect).inspect
 
-local defaultErrorReporter = {
-	reportErrorDeferred = function(self, message, stacktrace)
-		print(message)
-		print(stacktrace)
+local ACTION_LOG_LENGTH = 3
+
+local rethrowErrorReporter = {
+	reportReducerError = function(prevState, action, errorResult)
+		error(string.format("Received error: %s\n\n%s", errorResult.message, errorResult.thrownValue))
 	end,
-	reportErrorImmediately = function(self, message, stacktrace)
-		print(message)
-		print(stacktrace)
-	end
+	reportUpdateError = function(prevState, currentState, lastActions, errorResult)
+		error(string.format("Received error: %s\n\n%s", errorResult.message, errorResult.thrownValue))
+	end,
 }
+
+local function tracebackReporter(message)
+	return debug.traceback(tostring(message))
+end
 
 local Store = {}
 
@@ -49,19 +52,21 @@ function Store.new(reducer, initialState, middlewares, errorReporter)
 
 	local self = {}
 
-	self._errorReporter = errorReporter or defaultErrorReporter
+	self._errorReporter = errorReporter or rethrowErrorReporter
 	self._isDispatching = false
 	self._reducer = reducer
 	local initAction = {
 		type = "@@INIT",
 	}
-	self._lastAction = initAction
-	local ok, result = pcall(function()
+	self._actionLog = { initAction }
+	local ok, result = xpcall(function()
 		self._state = reducer(initialState, initAction)
-	end)
+	end, tracebackReporter)
 	if not ok then
-		local message = ("Caught error with init action of reducer (%s): %s"):format(tostring(reducer), tostring(result))
-		errorReporter:reportErrorImmediately(message, debug.traceback())
+		self._errorReporter.reportReducerError(initialState, initAction, {
+			message = "Caught error in reducer with init",
+			thrownValue = result,
+		})
 		self._state = initialState
 	end
 	self._lastState = self._state
@@ -110,20 +115,6 @@ function Store:getState()
 	return self._state
 end
 
-function Store:_reportReducerError(failedAction, error_, traceback)
-	local message = ("Caught error when running action (%s) " ..
-		"through reducer (%s): \n%s \n" ..
-		"previous action type was: %s"
-	):format(
-		tostring(failedAction),
-		tostring(self._reducer),
-		tostring(error_),
-		inspect(self._lastAction)
-	)
-
-	self._errorReporter:reportErrorImmediately(message, traceback)
-end
-
 --[[
 	Dispatch an action to the store. This allows the store's reducer to mutate
 	the state of the application by creating a new copy of the state.
@@ -142,7 +133,7 @@ function Store:dispatch(action)
 	if action.type == nil then
 		error("Actions may not have an undefined 'type' property. " ..
 			"Have you misspelled a constant? \n" ..
-			inspect(action), 2)
+			tostring(action), 2)
 	end
 
 	if self._isDispatching then
@@ -158,13 +149,20 @@ function Store:dispatch(action)
 	self._isDispatching = false
 
 	if not ok then
-		self:_reportReducerError(
+		self._errorReporter.reportReducerError(
+			self._state,
 			action,
-			result,
-			debug.traceback()
+			{
+				message = "Caught error in reducer",
+				thrownValue = result,
+			}
 		)
 	end
-	self._lastAction = action
+
+	if #self._actionLog == ACTION_LOG_LENGTH then
+		table.remove(self._actionLog, 1)
+	end
+	table.insert(self._actionLog, action)
 end
 
 --[[
@@ -193,11 +191,25 @@ function Store:flush()
 	-- unless we cache this value first
 	local state = self._state
 
-	-- If a changed listener yields, *very* surprising bugs can ensue.
-	-- Because of that, changed listeners cannot yield.
-	NoYield(function()
-		self.changed:fire(state, self._lastState)
-	end)
+	local ok, errorResult = xpcall(function()
+		-- If a changed listener yields, *very* surprising bugs can ensue.
+		-- Because of that, changed listeners cannot yield.
+		NoYield(function()
+			self.changed:fire(state, self._lastState)
+		end)
+	end, tracebackReporter)
+
+	if not ok then
+		self._errorReporter.reportUpdateError(
+			self._lastState,
+			state,
+			self._actionLog,
+			{
+				message = "Caught error flushing store updates",
+				thrownValue = errorResult,
+			}
+		)
+	end
 
 	self._lastState = state
 end

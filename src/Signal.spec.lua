@@ -112,84 +112,55 @@ return function()
 		expect(countB).to.equal(0)
 	end)
 
-	describe("when event handlers error", function()
-		local reportedErrorError, reportedErrorMessage
+	it("should throw an error if the argument to `connect` is not a function", function()
+		local signal = Signal.new()
+		expect(function()
+			signal:connect("not a function")
+		end).to.throw()
+	end)
+
+	it("should throw an error when disconnecting more than once", function()
+		local signal = Signal.new()
+
+		local connection = signal:connect(function() end)
+		-- Okay to disconnect once
+		expect(connection.disconnect).never.to.throw()
+
+		-- Throw an error if we disconnect twice
+		expect(connection.disconnect).to.throw()
+	end)
+
+	it("should throw an error when subscribing during dispatch", function()
 		local mockStore = {
-			_errorReporter = {
-				reportErrorImmediately = function(_self, message, error_)
-					reportedErrorMessage = message
-					reportedErrorError = error_
-				end,
-				reportErrorDeferred = function(_self, message, error_)
-					reportedErrorMessage = message
-					reportedErrorError = error_
-				end
-			}
+			_isDispatching = false
 		}
+		local signal = Signal.new(mockStore)
 
-		beforeEach(function()
-			reportedErrorError = ""
-			reportedErrorMessage = ""
+		signal:connect(function()
+			-- Subscribe while listeners are being fired
+			signal:connect(function() end)
 		end)
 
-		it("first listener succeeds when second listener errors", function()
-			local signal = Signal.new(mockStore)
-			local countA = 0
-
-			signal:connect(function()
-				countA = countA + 1
-			end)
-
-			signal:connect(function()
-				error("connectionB")
-			end)
-
+		mockStore._isDispatching = true
+		expect(function()
 			signal:fire()
+		end).to.throw()
+	end)
 
-			expect(countA).to.equal(1)
-			local caughtErrorMessage = "Caught error when calling event listener"
-			expect(string.find(reportedErrorMessage, caughtErrorMessage)).to.be.ok()
-			local caughtErrorError = "connectionB"
-			expect(string.find(reportedErrorError, caughtErrorError)).to.be.ok()
+	it("should throw an error when unsubscribing during dispatch", function()
+		local mockStore = {
+			_isDispatching = false
+		}
+		local signal = Signal.new(mockStore)
+
+		local connection
+		connection = signal:connect(function()
+			connection.disconnect()
 		end)
 
-		it("second listener succeeds when first listener errors", function()
-			local signal = Signal.new(mockStore)
-			local countB = 0
-
-			signal:connect(function()
-				error("connectionA")
-			end)
-
-			signal:connect(function()
-				countB = countB + 1
-			end)
-
+		mockStore._isDispatching = true
+		expect(function()
 			signal:fire()
-
-			expect(countB).to.equal(1)
-			local caughtErrorMessage = "Caught error when calling event listener"
-			expect(string.find(reportedErrorMessage, caughtErrorMessage)).to.be.ok()
-			local caughtErrorError = "connectionA"
-			expect(string.find(reportedErrorError, caughtErrorError)).to.be.ok()
-		end)
-
-		it("serializes table arguments when reporting errors", function()
-			local signal = Signal.new(mockStore)
-
-			signal:connect(function()
-				error("connectionA")
-			end)
-
-			local actionCommand = "SENTINEL"
-			signal:fire({actionCommand = actionCommand})
-
-			local caughtErrorMessage = "Caught error when calling event listener"
-			local caughtErrorArg = "actionCommand: \"" .. actionCommand .. "\""
-			expect(string.find(reportedErrorMessage, caughtErrorMessage)).to.be.ok()
-			expect(string.find(reportedErrorMessage, caughtErrorArg)).to.be.ok()
-			local caughtErrorError = "connectionA"
-			expect(string.find(reportedErrorError, caughtErrorError)).to.be.ok()
-		end)
+		end).to.throw()
 	end)
 end
