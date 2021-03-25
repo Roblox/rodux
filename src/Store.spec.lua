@@ -253,6 +253,21 @@ return function()
 
 			store:destruct()
 		end)
+
+		it("should throw errors if triggered during dispatches", function()
+			local store
+			store = Store.new(function(state, action)
+				if action.type ~= "@@INIT" then
+					store:getState()
+				end
+			end)
+
+			expect(function()
+				store:dispatch({ type = "SomeAction" })
+			end).to.throw()
+
+			store:destruct()
+		end)
 	end)
 
 	describe("dispatch", function()
@@ -487,6 +502,21 @@ return function()
 			-- apply the new state from all three actions
 			expect(caughtPrevState.Value).to.equal(1)
 			expect(caughtState.Value).to.equal(15)
+
+			store:destruct()
+		end)
+
+		it("should throw errors if dispatching while a dispatch is already happening", function()
+			local store
+			store = Store.new(function(state, action)
+				if action.type ~= "@@INIT" then
+					store:dispatch({ type = "MidDispatchAction" })
+				end
+			end)
+
+			expect(function()
+				store:dispatch({ type = "SomeAction" })
+			end).to.throw()
 
 			store:destruct()
 		end)

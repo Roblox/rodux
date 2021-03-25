@@ -54,8 +54,8 @@ function Signal:connect(callback)
 	if self._store and self._store._isDispatching then
 		error(
 			'You may not call store.changed:connect() while the reducer is executing. ' ..
-			  'If you would like to be notified after the store has been updated, subscribe from a ' ..
-			  'component and invoke store:getState() in the callback to access the latest state. '
+				'If you would like to be notified after the store has been updated, subscribe from a ' ..
+				'component and invoke store:getState() in the callback to access the latest state. '
 		)
 	end
 
@@ -77,8 +77,6 @@ function Signal:connect(callback)
 				tostring(listener.connectTraceback),
 				tostring(listener.disconnectTraceback)
 			))
-
-			return
 		end
 
 		if self._store and self._store._isDispatching then
