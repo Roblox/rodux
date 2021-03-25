@@ -2,6 +2,9 @@
 
 ## Unreleased Changes
 
+## 3.0.0 (2021-03-25)
+* Revise error reporting logic; restore default semantics from version 1.x ([#61](https://github.com/Roblox/rodux/pull/61)).
+
 ## 2.0.0 (2021-03-17)
 * Introduce error handling to catch and report errors during reducers ([#60](https://github.com/Roblox/rodux/pull/60)).
 
