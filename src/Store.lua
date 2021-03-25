@@ -65,7 +65,7 @@ function Store.new(reducer, initialState, middlewares, errorReporter)
 	end, tracebackReporter)
 	if not ok then
 		self._errorReporter.reportReducerError(initialState, initAction, {
-			message = "Caught error in reducer",
+			message = "Caught error in reducer with init",
 			thrownValue = result,
 		})
 		self._state = initialState
@@ -192,25 +192,25 @@ function Store:flush()
 	-- unless we cache this value first
 	local state = self._state
 
-	-- If a changed listener yields, *very* surprising bugs can ensue.
-	-- Because of that, changed listeners cannot yield.
-	NoYield(function()
-		local ok, errorResult = xpcall(function()
+	local ok, errorResult = xpcall(function()
+		-- If a changed listener yields, *very* surprising bugs can ensue.
+		-- Because of that, changed listeners cannot yield.
+		NoYield(function()
 			self.changed:fire(state, self._lastState)
-		end, tracebackReporter)
+		end)
+	end, tracebackReporter)
 
-		if not ok then
-			self._errorReporter.reportUpdateError(
-				self._lastState,
-				self._state,
-				self._actionLog,
-				{
-					message = "Caught error flushing store updates",
-					thrownValue = errorResult,
-				}
-			)
-		end
-	end)
+	if not ok then
+		self._errorReporter.reportUpdateError(
+			self._lastState,
+			state,
+			self._actionLog,
+			{
+				message = "Caught error flushing store updates",
+				thrownValue = errorResult,
+			}
+		)
+	end
 
 	self._lastState = state
 end

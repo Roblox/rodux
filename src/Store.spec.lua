@@ -144,12 +144,12 @@ return function()
 		end)
 
 		it("should report a reducer error thrown when handling the INIT action", function()
-			local lastState, lastAction, lastErrorResult
+			local caughtState, caughtAction, caughtErrorResult
 			local mockErrorReporter = {
 				reportReducerError = function(state, action, errorResult)
-					lastState = state
-					lastAction = action
-					lastErrorResult = errorResult
+					caughtState = state
+					caughtAction = action
+					caughtErrorResult = errorResult
 				end,
 				reportUpdateError = function()
 					-- no op
@@ -166,18 +166,18 @@ return function()
 				Value = 1
 			}, nil, mockErrorReporter)
 
-			expect(lastState.Value).to.equal(1)
-			expect(lastAction.type).to.equal("@@INIT")
-			expect(lastErrorResult.message).to.equal("Caught error in reducer")
+			expect(caughtState.Value).to.equal(1)
+			expect(caughtAction.type).to.equal("@@INIT")
+			expect(caughtErrorResult.message).to.equal("Caught error in reducer with init")
 			expect(string.find(
-				lastErrorResult.thrownValue,
+				caughtErrorResult.thrownValue,
 				innerErrorMessage
 			)).to.be.ok()
 			-- We want to verify that this is a stacktrace without caring too
 			-- much about the format, so we look for the stack frame associated
 			-- with this test file
 			expect(string.find(
-				lastErrorResult.thrownValue,
+				caughtErrorResult.thrownValue,
 				script.Name
 			)).to.be.ok()
 
@@ -185,12 +185,12 @@ return function()
 		end)
 
 		it("should report a reducer error thrown when handling a subsequent action", function()
-			local lastState, lastAction, lastErrorResult
+			local caughtState, caughtAction, caughtErrorResult
 			local mockErrorReporter = {
 				reportReducerError = function(state, action, errorResult)
-					lastState = state
-					lastAction = action
-					lastErrorResult = errorResult
+					caughtState = state
+					caughtAction = action
+					caughtErrorResult = errorResult
 				end,
 				reportUpdateError = function()
 					-- no op
@@ -214,25 +214,25 @@ return function()
 				Value = 1,
 			}, nil, mockErrorReporter)
 
-			expect(lastState).to.equal(nil)
-			expect(lastAction).to.equal(nil)
-			expect(lastErrorResult).to.equal(nil)
+			expect(caughtState).to.equal(nil)
+			expect(caughtAction).to.equal(nil)
+			expect(caughtErrorResult).to.equal(nil)
 
 			store:dispatch({type = "Increment"})
 			store:dispatch({type = "ThrowError"})
 
-			expect(lastState.Value).to.equal(2)
-			expect(lastAction.type).to.equal("ThrowError")
-			expect(lastErrorResult.message).to.equal("Caught error in reducer")
+			expect(caughtState.Value).to.equal(2)
+			expect(caughtAction.type).to.equal("ThrowError")
+			expect(caughtErrorResult.message).to.equal("Caught error in reducer")
 			expect(string.find(
-				lastErrorResult.thrownValue,
+				caughtErrorResult.thrownValue,
 				innerErrorMessage
 			)).to.be.ok()
 			-- We want to verify that this is a stacktrace without caring too
 			-- much about the format, so we look for the stack frame associated
 			-- with this test file
 			expect(string.find(
-				lastErrorResult.thrownValue,
+				caughtErrorResult.thrownValue,
 				script.Name
 			)).to.be.ok()
 
@@ -359,14 +359,13 @@ return function()
 		it("should prevent yielding from changed handler", function()
 			local reportedErrorMessage, reportedErrorError
 			local mockErrorReporter = {
-				reportErrorImmediately = function(_self, message, error_)
-					reportedErrorMessage = message
-					reportedErrorError = error_
+				reportUpdateError = function(_, _, _, errorResult)
+					reportedErrorMessage = errorResult.message
+					reportedErrorError = errorResult.thrownValue
 				end,
-				reportErrorDeferred = function(_self, message, error_)
-					reportedErrorMessage = message
-					reportedErrorError = error_
-				end
+				reportReducerError = function()
+					-- noop
+				end,
 			}
 			local preCount = 0
 			local postCount = 0
@@ -391,12 +390,11 @@ return function()
 			expect(preCount).to.equal(1)
 			expect(postCount).to.equal(0)
 
-			local caughtErrorMessage = "Caught error when calling event listener"
-			expect(string.find(reportedErrorMessage, caughtErrorMessage)).to.be.ok()
+			expect(reportedErrorMessage).to.equal("Caught error flushing store updates")
 			-- We want to verify that this is a stacktrace without caring too
 			-- much about the format, so we look for the stack frame associated
 			-- with this test file
-			expect(string.find(reportedErrorMessage, script.Name)).to.be.ok()
+			expect(string.find(reportedErrorError, script.Name)).to.be.ok()
 			-- In vanilla lua, we get this message:
 			--   "attempt to yield across metamethod/C-call boundary"
 			-- In luau, we should end up wrapping our own NoYield message:
@@ -432,39 +430,64 @@ return function()
 			store:destruct()
 		end)
 
-		it("should report an error if the reducer errors", function()
-			local reportedErrorMessage, reportedErrorError
+		it("should report an error if the listeners error when flushing", function()
+			local caughtPrevState, caughtState, caughtActionLog, caughtErrorResult
 			local mockErrorReporter = {
-				reportErrorImmediately = function(_self, message, error_)
-					reportedErrorMessage = message
-					reportedErrorError = error_
+				reportReducerError = function()
+					-- no op
 				end,
-				reportErrorDeferred = function(_self, message, error_)
-					reportedErrorMessage = message
-					reportedErrorError = error_
+				reportUpdateError = function(prevState, state, actionLog, errorResult)
+					caughtPrevState = prevState
+					caughtState = state
+					caughtActionLog = actionLog
+					caughtErrorResult = errorResult
 				end
 			}
 
+			local reducer = function(state, action)
+				if action.type == "Increment" then
+					return {
+						Value = state.Value + action.amount
+					}
+				end
+				return state
+			end
+			local store = Store.new(reducer, {
+				Value = 1,
+			}, nil, mockErrorReporter)
+
 			local innerErrorMessage = "Z4PH0D"
-			local reducerCallCount = 0
-			local reducerThatErrors = function(state, action)
-				if reducerCallCount > 0 then
+			store.changed:connect(function(state, prevState)
+				if state.Value == 15 then
 					error(innerErrorMessage)
 				end
-				reducerCallCount = reducerCallCount + 1
+			end)
+
+			local actions = {
+				{type = "Increment", amount = 1},
+				{type = "Increment", amount = 3},
+				{type = "Increment", amount = 10},
+			}
+			for _, action in ipairs(actions) do
+				store:dispatch(action)
 			end
-			local store = Store.new(reducerThatErrors, nil, nil, mockErrorReporter)
-			expect(reportedErrorMessage).to.equal(nil)
+			store:flush()
 
-			store:dispatch({type = "any"})
-
-			local previousAction = "previous action type was: { type: \"@@INIT\" }"
-			expect(string.find(reportedErrorMessage, innerErrorMessage)).to.be.ok()
-			expect(string.find(reportedErrorMessage, previousAction)).to.be.ok()
+			expect(caughtErrorResult.message).to.equal("Caught error flushing store updates")
 			-- We want to verify that this is a stacktrace without caring too
 			-- much about the format, so we look for the stack frame associated
 			-- with this test file
-			expect(string.find(reportedErrorError, script.Name)).to.be.ok()
+			expect(string.find(caughtErrorResult.thrownValue, script.Name)).to.be.ok()
+
+			expect(caughtActionLog[1]).to.equal(actions[1])
+			expect(caughtActionLog[2]).to.equal(actions[2])
+			expect(caughtActionLog[3]).to.equal(actions[3])
+
+			-- This is before any of the actions were processed; the flush will
+			-- apply the new state from all three actions
+			expect(caughtPrevState.Value).to.equal(1)
+			expect(caughtState.Value).to.equal(15)
+
 			store:destruct()
 		end)
 	end)
