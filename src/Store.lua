@@ -14,8 +14,8 @@ local rethrowErrorReporter = {
 	end,
 }
 
-local tracebackReporter = function(message)
-	return debug.traceback(message, 3)
+local function tracebackReporter(message)
+	return debug.traceback(tostring(message))
 end
 
 local Store = {}

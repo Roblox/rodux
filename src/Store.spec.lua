@@ -509,7 +509,7 @@ return function()
 		it("should throw errors if dispatching while a dispatch is already happening", function()
 			local store
 			store = Store.new(function(state, action)
-				if action.type ~= "@@INIT" then
+				if action.type == "SomeAction" then
 					store:dispatch({ type = "MidDispatchAction" })
 				end
 			end)
