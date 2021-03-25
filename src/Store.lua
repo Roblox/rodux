@@ -2,7 +2,6 @@ local RunService = game:GetService("RunService")
 
 local Signal = require(script.Parent.Signal)
 local NoYield = require(script.Parent.NoYield)
-local inspect = require(script.Parent.inspect).inspect
 
 local ACTION_LOG_LENGTH = 3
 
@@ -134,7 +133,7 @@ function Store:dispatch(action)
 	if action.type == nil then
 		error("Actions may not have an undefined 'type' property. " ..
 			"Have you misspelled a constant? \n" ..
-			inspect(action), 2)
+			tostring(action), 2)
 	end
 
 	if self._isDispatching then
