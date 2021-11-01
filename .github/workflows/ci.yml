@@ -35,12 +35,11 @@ jobs:
       with:
         version: "^1.0.1"
         token: ${{ secrets.GITHUB_TOKEN }}
-      run:
-        cargo install --git https://gitlab.com/seaofvoices/darklua.git#v0.6.0
 
     - name: Test
       run: |
-        darklua process src/ darklua_processed
+        cargo install --git https://gitlab.com/seaofvoices/darklua.git#v0.6.0
+        darklua process src/ darklua_processed/
         lua -lluacov test/lemur.lua
         luacov -r lcov
 
