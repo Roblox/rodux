@@ -27,7 +27,7 @@ jobs:
     - name: Install dependencies
       run: |
         luarocks install luafilesystem
-        luarocks install luacov
+        luarocks install cluacov
         luarocks install luacov-reporter-lcov
 
     - name: install code quality tools
