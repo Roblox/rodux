@@ -10,18 +10,10 @@ local isRobloxCli, ProcessService = pcall(game.GetService, game, "ProcessService
 local completed, result = xpcall(function()
 	local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-	local Roact = require(ReplicatedStorage.Roact)
 	local TestEZ = require(ReplicatedStorage.TestEZ)
 
-	Roact.setGlobalConfig({
-		internalTypeChecks = true,
-		typeChecks = true,
-		elementTracing = true,
-		propValidation = true,
-	})
-
 	local results = TestEZ.TestBootstrap:run(
-		{ ReplicatedStorage.RoactRodux },
+		{ ReplicatedStorage.Rodux },
 		TestEZ.Reporters.TextReporter
 	)
 
