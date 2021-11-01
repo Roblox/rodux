@@ -1,11 +1,8 @@
 # Test places and builds
-/*.rbxl
-/*.rbxlx
-/*.rbxm
-/*.rbxmx
+**/*.rbx[lm]*
 
 # LuaCov output location
-/luacov.*
+**/luacov.*
 
 # MkDocs build output
 /site/
@@ -16,3 +13,8 @@ Packages
 
 # Selene
 roblox.toml
+
+# Misc OS and editor files
+.DS_Store
+.vscode
+.idea
