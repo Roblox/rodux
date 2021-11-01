@@ -30,16 +30,19 @@ jobs:
         luarocks install luacov
         luarocks install luacov-reporter-lcov
 
-    - name: Test
-      run: |
-        lua -lluacov test/lemur.lua
-        luacov -r lcov
-
     - name: install code quality tools
       uses: rojo-rbx/setup-foreman@v1
       with:
         version: "^1.0.1"
         token: ${{ secrets.GITHUB_TOKEN }}
+      run:
+        cargo install --git https://gitlab.com/seaofvoices/darklua.git#v0.6.0
+
+    - name: Test
+      run: |
+        darklua process src/ darklua_processed
+        lua -lluacov test/lemur.lua
+        luacov -r lcov
 
     - name: code quality
       shell: bash
