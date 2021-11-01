@@ -63,8 +63,15 @@ function Store.new(reducer, initialState, middlewares, errorReporter)
 		self._state = reducer(initialState, initAction)
 	end, tracebackReporter)
 	if not ok then
+		local reducerName = typeof(reducer) == "function"
+			and (debug.info and debug.info(reducer, "n"))
+			or (debug.getinfo and debug.getinfo(reducer, "n").name)
+
+		if reducerName == nil or reducerName == "" then
+			reducerName = tostring(reducer)
+		end
 		self._errorReporter.reportReducerError(initialState, initAction, {
-			message = "Caught error in reducer with init",
+			message = "Caught error in reducer (" .. reducerName .. ") with init",
 			thrownValue = result,
 		})
 		self._state = initialState
@@ -149,11 +156,18 @@ function Store:dispatch(action)
 	self._isDispatching = false
 
 	if not ok then
+		local reducerName = typeof(self._reducer) == "function"
+			and (debug.info and debug.info(self._reducer, "n"))
+			or (debug.getinfo and debug.getinfo(self._reducer, "n").name)
+		if reducerName == nil or reducerName == "" then
+			reducerName = tostring(self._reducer)
+		end
+
 		self._errorReporter.reportReducerError(
 			self._state,
 			action,
 			{
-				message = "Caught error in reducer",
+				message = "Caught error in reducer (" .. reducerName .. ")",
 				thrownValue = result,
 			}
 		)
