@@ -1,7 +1,6 @@
 {
     process: [
         "compute_expression",
-        "group_local_assignment", 
         "remove_empty_do", 
         "remove_unused_if_branch",
         "remove_unused_while"
