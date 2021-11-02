@@ -1,5 +1,7 @@
 local RunService = game:GetService("RunService")
 
+local getFunctionName = require(script.Parent.getFunctionName)
+
 local Signal = require(script.Parent.Signal)
 local NoYield = require(script.Parent.NoYield)
 
@@ -62,14 +64,9 @@ function Store.new(reducer, initialState, middlewares, errorReporter)
 	local ok, result = xpcall(function()
 		self._state = reducer(initialState, initAction)
 	end, tracebackReporter)
-	if not ok then
-		-- selene: allow(incorrect_standard_library_use)
-		local reducerName = typeof(reducer) == "function" and (debug.info and debug.info(reducer, "n"))
-			or (debug.getinfo and debug.getinfo(reducer, "n").name)
 
-		if reducerName == nil or reducerName == "" then
-			reducerName = tostring(reducer)
-		end
+	if not ok then
+		local reducerName = getFunctionName(reducer)
 		self._errorReporter.reportReducerError(initialState, initAction, {
 			message = "Caught error in reducer (" .. reducerName .. ") with init",
 			thrownValue = result,
@@ -160,13 +157,7 @@ function Store:dispatch(action)
 	self._isDispatching = false
 
 	if not ok then
-		-- selene: allow(incorrect_standard_library_use)
-		local reducerName = typeof(self._reducer) == "function" and (debug.info and debug.info(self._reducer, "n"))
-			or (debug.getinfo and debug.getinfo(self._reducer, "n").name)
-		if reducerName == nil or reducerName == "" then
-			reducerName = tostring(self._reducer)
-		end
-
+		local reducerName = getFunctionName(self._reducer)
 		self._errorReporter.reportReducerError(self._state, action, {
 			message = "Caught error in reducer (" .. reducerName .. ")",
 			thrownValue = result,

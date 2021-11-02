@@ -4,6 +4,8 @@
 	This middleware consumes the function; middleware further down the chain
 	will not receive it.
 ]]
+local getFunctionName = require(script.Parent.getFunctionName)
+
 local function tracebackReporter(message)
 	return debug.traceback(message)
 end
@@ -16,12 +18,7 @@ local function thunkMiddleware(nextDispatch, store)
 			end, tracebackReporter)
 
 			if not ok then
-				-- selene: allow(incorrect_standard_library_use)
-				local reducerName = typeof(action) == "function" and (debug.info and debug.info(action, "n"))
-					or (debug.getinfo and debug.getinfo(action, "n").name)
-				if reducerName == nil or reducerName == "" then
-					reducerName = tostring(action)
-				end
+				local reducerName = getFunctionName(action)
 
 				-- report the error and move on so it's non-fatal app
 				store._errorReporter.reportReducerError(store:getState(), action, {
