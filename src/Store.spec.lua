@@ -168,7 +168,7 @@ return function()
 
 			expect(caughtState.Value).to.equal(1)
 			expect(caughtAction.type).to.equal("@@INIT")
-			expect(caughtErrorResult.message).to.equal("Caught error in reducer with init")
+			expect(caughtErrorResult.message).to.contain("Caught error in reducer (")
 			expect(string.find(caughtErrorResult.thrownValue, innerErrorMessage)).to.be.ok()
 			-- We want to verify that this is a stacktrace without caring too
 			-- much about the format, so we look for the stack frame associated
@@ -217,7 +217,7 @@ return function()
 
 			expect(caughtState.Value).to.equal(2)
 			expect(caughtAction.type).to.equal("ThrowError")
-			expect(caughtErrorResult.message).to.equal("Caught error in reducer (reducerThatErrorsAfterInit)")
+			expect(caughtErrorResult.message).to.contain("Caught error in reducer (")
 			expect(string.find(caughtErrorResult.thrownValue, innerErrorMessage)).to.be.ok()
 			-- We want to verify that this is a stacktrace without caring too
 			-- much about the format, so we look for the stack frame associated
