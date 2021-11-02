@@ -5,8 +5,6 @@ local getFunctionName = require(script.Parent.getFunctionName)
 local Signal = require(script.Parent.Signal)
 local NoYield = require(script.Parent.NoYield)
 
-local ACTION_LOG_LENGTH = 3
-
 local rethrowErrorReporter = {
 	reportReducerError = function(prevState, action, errorResult)
 		error(string.format("Received error: %s\n\n%s", errorResult.message, errorResult.thrownValue))
@@ -26,6 +24,8 @@ local Store = {}
 -- sync with what event we listen to for dispatching the Changed event.
 -- It may not be Heartbeat in the future.
 Store._flushEvent = RunService.Heartbeat
+
+Store.ACTION_LOG_LENGTH = 3
 
 Store.__index = Store
 
@@ -164,7 +164,7 @@ function Store:dispatch(action)
 		})
 	end
 
-	if #self._actionLog == ACTION_LOG_LENGTH then
+	if #self._actionLog == Store.ACTION_LOG_LENGTH then
 		table.remove(self._actionLog, 1)
 	end
 	table.insert(self._actionLog, action)
