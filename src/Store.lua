@@ -148,12 +148,12 @@ function Store:dispatch(action)
 		error("Reducers may not dispatch actions.")
 	end
 
-	local ok, result = pcall(function()
-		self._isDispatching = true
-		self._state = self._reducer(self._state, action)
+	self._isDispatching = true
+	local ok, result = pcall(self._reducer, self._state, action)
+	if ok then
 		self._mutatedSinceFlush = true
-	end)
-
+		self._state = result
+	end
 	self._isDispatching = false
 
 	if not ok then
