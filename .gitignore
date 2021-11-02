@@ -1,4 +1,23 @@
-/luacov.*
+# Test places and builds
+**/*.rbx[lm]*
+
+# LuaCov output location
+**/luacov.*
+
+# MkDocs build output
 /site/
-/*.rbxmx
-/*.rbxm
+
+# Rotriever
+rotriever.lock
+Packages
+
+# Selene
+roblox.toml
+
+# Darklua
+**/darklua*
+
+# Misc OS and editor files
+.DS_Store
+.vscode
+.idea

@@ -132,7 +132,7 @@ return function()
 
 	it("should throw an error when subscribing during dispatch", function()
 		local mockStore = {
-			_isDispatching = false
+			_isDispatching = false,
 		}
 		local signal = Signal.new(mockStore)
 
@@ -149,7 +149,7 @@ return function()
 
 	it("should throw an error when unsubscribing during dispatch", function()
 		local mockStore = {
-			_isDispatching = false
+			_isDispatching = false,
 		}
 		local signal = Signal.new(mockStore)
 

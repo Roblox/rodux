@@ -153,7 +153,7 @@ return function()
 				end,
 				reportUpdateError = function()
 					-- no op
-				end
+				end,
 			}
 
 			local innerErrorMessage = "Z4PH0D"
@@ -163,23 +163,17 @@ return function()
 
 			local store
 			store = Store.new(reducerThatErrors, {
-				Value = 1
+				Value = 1,
 			}, nil, mockErrorReporter)
 
 			expect(caughtState.Value).to.equal(1)
 			expect(caughtAction.type).to.equal("@@INIT")
 			expect(caughtErrorResult.message).to.equal("Caught error in reducer with init")
-			expect(string.find(
-				caughtErrorResult.thrownValue,
-				innerErrorMessage
-			)).to.be.ok()
+			expect(string.find(caughtErrorResult.thrownValue, innerErrorMessage)).to.be.ok()
 			-- We want to verify that this is a stacktrace without caring too
 			-- much about the format, so we look for the stack frame associated
 			-- with this test file
-			expect(string.find(
-				caughtErrorResult.thrownValue,
-				script.Name
-			)).to.be.ok()
+			expect(string.find(caughtErrorResult.thrownValue, script.Name)).to.be.ok()
 
 			store:destruct()
 		end)
@@ -194,7 +188,7 @@ return function()
 				end,
 				reportUpdateError = function()
 					-- no op
-				end
+				end,
 			}
 
 			local innerErrorMessage = "Z4PH0D"
@@ -203,7 +197,7 @@ return function()
 					error(innerErrorMessage)
 				elseif action.type == "Increment" then
 					return {
-						Value = state.Value + 1
+						Value = state.Value + 1,
 					}
 				end
 				return state
@@ -218,27 +212,20 @@ return function()
 			expect(caughtAction).to.equal(nil)
 			expect(caughtErrorResult).to.equal(nil)
 
-			store:dispatch({type = "Increment"})
-			store:dispatch({type = "ThrowError"})
+			store:dispatch({ type = "Increment" })
+			store:dispatch({ type = "ThrowError" })
 
 			expect(caughtState.Value).to.equal(2)
 			expect(caughtAction.type).to.equal("ThrowError")
 			expect(caughtErrorResult.message).to.equal("Caught error in reducer")
-			expect(string.find(
-				caughtErrorResult.thrownValue,
-				innerErrorMessage
-			)).to.be.ok()
+			expect(string.find(caughtErrorResult.thrownValue, innerErrorMessage)).to.be.ok()
 			-- We want to verify that this is a stacktrace without caring too
 			-- much about the format, so we look for the stack frame associated
 			-- with this test file
-			expect(string.find(
-				caughtErrorResult.thrownValue,
-				script.Name
-			)).to.be.ok()
+			expect(string.find(caughtErrorResult.thrownValue, script.Name)).to.be.ok()
 
 			store:destruct()
 		end)
-
 	end)
 
 	describe("getState", function()
@@ -456,13 +443,13 @@ return function()
 					caughtState = state
 					caughtActionLog = actionLog
 					caughtErrorResult = errorResult
-				end
+				end,
 			}
 
 			local reducer = function(state, action)
 				if action.type == "Increment" then
 					return {
-						Value = state.Value + action.amount
+						Value = state.Value + action.amount,
 					}
 				end
 				return state
@@ -479,9 +466,9 @@ return function()
 			end)
 
 			local actions = {
-				{type = "Increment", amount = 1},
-				{type = "Increment", amount = 3},
-				{type = "Increment", amount = 10},
+				{ type = "Increment", amount = 1 },
+				{ type = "Increment", amount = 3 },
+				{ type = "Increment", amount = 10 },
 			}
 			for _, action in ipairs(actions) do
 				store:dispatch(action)
@@ -524,8 +511,7 @@ return function()
 
 	describe("flush", function()
 		it("should not fire a changed event if there were no dispatches", function()
-			local store = Store.new(function()
-			end)
+			local store = Store.new(function() end)
 
 			local count = 0
 			store.changed:connect(function()

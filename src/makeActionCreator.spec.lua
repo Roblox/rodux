@@ -28,7 +28,7 @@ return function()
 	it("should set values", function()
 		local FooAction = makeActionCreator("foo", function(value)
 			return {
-				value = value
+				value = value,
 			}
 		end)
 

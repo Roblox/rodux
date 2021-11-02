@@ -42,7 +42,7 @@ function Store.new(reducer, initialState, middlewares, errorReporter)
 	assert(typeof(reducer) == "function", "Bad argument #1 to Store.new, expected function.")
 	assert(middlewares == nil or typeof(middlewares) == "table", "Bad argument #3 to Store.new, expected nil or table.")
 	if middlewares ~= nil then
-		for i=1, #middlewares, 1 do
+		for i = 1, #middlewares, 1 do
 			assert(
 				typeof(middlewares[i]) == "function",
 				("Expected the middleware ('%s') at index %d to be a function."):format(tostring(middlewares[i]), i)
@@ -107,9 +107,13 @@ end
 ]]
 function Store:getState()
 	if self._isDispatching then
-		error(("You may not call store:getState() while the reducer is executing. " ..
-			"The reducer (%s) has already received the state as an argument. " ..
-			"Pass it down from the top reducer instead of reading it from the store."):format(tostring(self._reducer)))
+		error(
+			(
+				"You may not call store:getState() while the reducer is executing. "
+				.. "The reducer (%s) has already received the state as an argument. "
+				.. "Pass it down from the top reducer instead of reading it from the store."
+			):format(tostring(self._reducer))
+		)
 	end
 
 	return self._state
@@ -124,16 +128,16 @@ end
 ]]
 function Store:dispatch(action)
 	if typeof(action) ~= "table" then
-		error(("Actions must be tables. " ..
-			"Use custom middleware for %q actions."):format(typeof(action)),
-			2
-		)
+		error(("Actions must be tables. " .. "Use custom middleware for %q actions."):format(typeof(action)), 2)
 	end
 
 	if action.type == nil then
-		error("Actions may not have an undefined 'type' property. " ..
-			"Have you misspelled a constant? \n" ..
-			tostring(action), 2)
+		error(
+			"Actions may not have an undefined 'type' property. "
+				.. "Have you misspelled a constant? \n"
+				.. tostring(action),
+			2
+		)
 	end
 
 	if self._isDispatching then
@@ -149,14 +153,10 @@ function Store:dispatch(action)
 	self._isDispatching = false
 
 	if not ok then
-		self._errorReporter.reportReducerError(
-			self._state,
-			action,
-			{
-				message = "Caught error in reducer",
-				thrownValue = result,
-			}
-		)
+		self._errorReporter.reportReducerError(self._state, action, {
+			message = "Caught error in reducer",
+			thrownValue = result,
+		})
 	end
 
 	if #self._actionLog == ACTION_LOG_LENGTH then
@@ -200,15 +200,10 @@ function Store:flush()
 	end, tracebackReporter)
 
 	if not ok then
-		self._errorReporter.reportUpdateError(
-			self._lastState,
-			state,
-			self._actionLog,
-			{
-				message = "Caught error flushing store updates",
-				thrownValue = errorResult,
-			}
-		)
+		self._errorReporter.reportUpdateError(self._lastState, state, self._actionLog, {
+			message = "Caught error flushing store updates",
+			thrownValue = errorResult,
+		})
 	end
 
 	self._lastState = state

@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - master
+
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - uses: leafo/gh-actions-lua@v8
+      with:
+        luaVersion: "5.1"
+
+    - uses: leafo/gh-actions-luarocks@v4
+
+    - name: Install dependencies
+      run: |
+        luarocks install luafilesystem
+        luarocks install cluacov
+        luarocks install luacov-reporter-lcov
+
+    - name: install code quality tools
+      uses: rojo-rbx/setup-foreman@v1
+      with:
+        version: "^1.0.1"
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: install and run darklua
+      run: |
+        cargo install --git https://gitlab.com/seaofvoices/darklua.git#v0.6.0
+        darklua process src/ src/ --format retain-lines
+
+    - name: Test
+      run: |
+        lua -lluacov test/lemur.lua
+        luacov -r lcov
+
+    - name: code quality
+      shell: bash
+      run: |
+        selene src
+        stylua -c src/
+
+    - name: Report to Coveralls
+      uses: coverallsapp/github-action@1.1.3
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: luacov.report.out

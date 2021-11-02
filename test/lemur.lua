@@ -4,7 +4,8 @@
 
 -- If you add any dependencies, add them to this table so they'll be loaded!
 local LOAD_MODULES = {
-	{"src", "Library"},
+	-- we run lua5.1/lemur post-darklua with Luau types stripped
+	{"src", "Rodux"},
 	{"modules/testez/src", "TestEZ"},
 }
 
@@ -18,25 +19,15 @@ local lemur = require("modules.lemur")
 local habitat = lemur.Habitat.new()
 
 -- We'll put all of our library code and dependencies here
-local Root = lemur.Instance.new("Folder")
-Root.Name = "Root"
+local ReplicatedStorage = habitat.game:GetService("ReplicatedStorage")
 
 -- Load all of the modules specified above
 for _, module in ipairs(LOAD_MODULES) do
 	local container = habitat:loadFromFs(module[1])
 	container.Name = module[2]
-	container.Parent = Root
+	container.Parent = ReplicatedStorage
 end
 
--- Load TestEZ and run our tests
-local TestEZ = habitat:require(Root.TestEZ)
-
-local results = TestEZ.TestBootstrap:run(
-	{ Root.Library },
-	TestEZ.Reporters.TextReporter
-)
-
--- Did something go wrong?
-if results.failureCount > 0 then
-	os.exit(1)
-end
+-- When Lemur implements a proper scheduling interface, we'll use that instead.
+local runTests = habitat:loadFromFs("test/runner.server.lua")
+habitat:require(runTests)

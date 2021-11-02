@@ -1,6 +1,7 @@
 [package]
-name = "roblox/rodux"
+name = "Rodux"
 author = "Roblox"
 license = "Apache-2.0"
 content_root = "src"
 version = "3.0.0"
+files = ["*", "!*.spec.lua"]

@@ -17,7 +17,7 @@ local function makeActionCreator(name, fn)
 			result.type = name
 
 			return result
-		end
+		end,
 	})
 end
 

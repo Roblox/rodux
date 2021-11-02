@@ -38,7 +38,7 @@ Signal.__index = Signal
 function Signal.new(store)
 	local self = {
 		_listeners = {},
-		_store = store
+		_store = store,
 	}
 
 	setmetatable(self, Signal)
@@ -53,9 +53,9 @@ function Signal:connect(callback)
 
 	if self._store and self._store._isDispatching then
 		error(
-			'You may not call store.changed:connect() while the reducer is executing. ' ..
-				'If you would like to be notified after the store has been updated, subscribe from a ' ..
-				'component and invoke store:getState() in the callback to access the latest state. '
+			"You may not call store.changed:connect() while the reducer is executing. "
+				.. "If you would like to be notified after the store has been updated, subscribe from a "
+				.. "component and invoke store:getState() in the callback to access the latest state. "
 		)
 	end
 
@@ -63,20 +63,19 @@ function Signal:connect(callback)
 		callback = callback,
 		disconnected = false,
 		connectTraceback = debug.traceback(),
-		disconnectTraceback = nil
+		disconnectTraceback = nil,
 	}
 
 	self._listeners = immutableAppend(self._listeners, listener)
 
 	local function disconnect()
 		if listener.disconnected then
-			error((
-				"Listener connected at: \n%s\n" ..
-				"was already disconnected at: \n%s\n"
-			):format(
-				tostring(listener.connectTraceback),
-				tostring(listener.disconnectTraceback)
-			))
+			error(
+				("Listener connected at: \n%s\n" .. "was already disconnected at: \n%s\n"):format(
+					tostring(listener.connectTraceback),
+					tostring(listener.disconnectTraceback)
+				)
+			)
 		end
 
 		if self._store and self._store._isDispatching then
@@ -89,7 +88,7 @@ function Signal:connect(callback)
 	end
 
 	return {
-		disconnect = disconnect
+		disconnect = disconnect,
 	}
 end
 
