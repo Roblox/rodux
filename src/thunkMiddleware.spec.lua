@@ -59,10 +59,18 @@ return function()
 	it("should report errors captured in thunks via the provided error reporter", function()
 		local caughtState, caughtAction, caughtErrorResult
 		local errorReporter = {
-			reportReducerError = function(state, action, errorResult)
+			-- (prevState: any?, action: Action<any>, errorResult: ErrorResult) -> (),
+			reportReducerError = function(state: any?, action, errorResult)
 				caughtState = state
 				caughtAction = action
 				caughtErrorResult = errorResult
+			end,
+			reportUpdateError = function(
+				_prevState,
+				_currentState,
+				_lastActions,
+				_errorResult
+			)
 			end,
 		}
 
@@ -91,6 +99,13 @@ return function()
 		local errorReporter = {
 			reportReducerError = function(_state, _action, errorResult)
 				caughtErrorResult = errorResult
+			end,
+			reportUpdateError = function(
+				_prevState,
+				_currentState,
+				_lastActions,
+				_errorResult
+			)
 			end,
 		}
 

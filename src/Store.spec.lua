@@ -1,3 +1,10 @@
+type Action<T> = {
+	type: T,
+	[string]: any,
+}
+type Dispatch<ActionT> = (action: Action<any>, ...any) -> any
+type Middleware<StateT, DispatchT> = (next: DispatchT, self: any) -> (Action<any>) -> any
+
 return function()
 	local Store = require(script.Parent.Store)
 
@@ -42,7 +49,7 @@ return function()
 			local passedStore
 			local passedAction
 
-			local function reducer(state, action)
+			local function reducer(state: any?, action: Action<any>): any?
 				if action.type == "test" then
 					return "test state"
 				end
@@ -50,16 +57,16 @@ return function()
 				return state
 			end
 
-			local function testMiddleware(nextDispatch, store)
+			local function testMiddleware(nextDispatch: Dispatch<Action<any>>, store)
 				middlewareInstantiateCount = middlewareInstantiateCount + 1
 				passedDispatch = nextDispatch
 				passedStore = store
 
-				return function(action)
+				return function(action: Action<any>)
 					middlewareInvokeCount = middlewareInvokeCount + 1
 					passedAction = action
 
-					nextDispatch(action)
+					return nextDispatch(action)
 				end
 			end
 
@@ -92,7 +99,7 @@ return function()
 				return state
 			end
 
-			local function middlewareA(nextDispatch, store)
+			local function middlewareA(nextDispatch: Dispatch<Action<any>>, store)
 				table.insert(events, "instantiate a")
 				return function(action)
 					table.insert(events, "execute a")
@@ -100,7 +107,7 @@ return function()
 				end
 			end
 
-			local function middlewareB(nextDispatch, store)
+			local function middlewareB(nextDispatch: Dispatch<Action<any>>, store)
 				table.insert(events, "instantiate b")
 				return function(action)
 					table.insert(events, "execute b")
@@ -157,7 +164,7 @@ return function()
 			}
 
 			local innerErrorMessage = "Z4PH0D"
-			local reducerThatErrors = function(state, action)
+			local function reducerThatErrors(_state: any?, _action: Action<any>): any?
 				error(innerErrorMessage)
 			end
 
@@ -192,7 +199,7 @@ return function()
 			}
 
 			local innerErrorMessage = "Z4PH0D"
-			local reducerThatErrorsAfterInit = function(state, action)
+			local function reducerThatErrorsAfterInit(state, action)
 				if action.type == "ThrowError" then
 					error(innerErrorMessage)
 				elseif action.type == "Increment" then
@@ -245,8 +252,9 @@ return function()
 			local store
 			store = Store.new(function(state, action)
 				if action.type ~= "@@INIT" then
-					store:getState()
+					return store:getState()
 				end
+				return state
 			end)
 
 			expect(function()
@@ -446,7 +454,7 @@ return function()
 				end,
 			}
 
-			local reducer = function(state, action)
+			local function reducer(state: any?, action: Action<any>): any?
 				if action.type == "Increment" then
 					return {
 						Value = state.Value + action.amount,
@@ -497,8 +505,9 @@ return function()
 			local store
 			store = Store.new(function(state, action)
 				if action.type == "SomeAction" then
-					store:dispatch({ type = "MidDispatchAction" })
+					return store:dispatch({ type = "MidDispatchAction" })
 				end
+				return state
 			end)
 
 			expect(function()
@@ -511,7 +520,9 @@ return function()
 
 	describe("flush", function()
 		it("should not fire a changed event if there were no dispatches", function()
-			local store = Store.new(function() end)
+			local store = Store.new(function(_, __)
+				return {}
+			end)
 
 			local count = 0
 			store.changed:connect(function()

@@ -1,11 +1,25 @@
+--!strict
 local RunService = game:GetService("RunService")
 
 local Signal = require(script.Parent.Signal)
 local NoYield = require(script.Parent.NoYield)
 
 local ACTION_LOG_LENGTH = 3
+type Array<T> = { [number]: T }
+type Function = (...any) -> ...any
+type Object = { [string]: any }
+type ErrorResult = { message: string, thrownValue: any }
+type ErrorReporter = {
+	reportReducerError: (prevState: any?, action: Action<any>, errorResult: ErrorResult) -> (),
+	reportUpdateError: (
+		prevState: any?,
+		currentState: Object?,
+		lastActions: Array<Action<any>>,
+		errorResult: ErrorResult
+	) -> (),
+}
 
-local rethrowErrorReporter = {
+local rethrowErrorReporter: ErrorReporter = {
 	reportReducerError = function(prevState, action, errorResult)
 		error(string.format("Received error: %s\n\n%s", errorResult.message, errorResult.thrownValue))
 	end,
@@ -38,13 +52,35 @@ Store.__index = Store
 	Reducers do not mutate the state object, so the original state is still
 	valid.
 ]]
-function Store.new(reducer, initialState, middlewares, errorReporter)
+type Reducer<StateT, ActionT> = (state: StateT | nil, action: ActionT) -> StateT
+
+type Action<T> = {
+	type: T,
+	[string]: any,
+}
+
+type Dispatch<ActionT> = (action: Action<any>, ...any) -> any
+
+type MiddlewareAPI<DispatchT, StateT> = {
+	dispatch: DispatchT,
+	getState: () -> StateT,
+}
+
+-- FIXME: ideally, self would by typed as MiddlewareAPI<DispatchT, StateT>, but I can't quite figure out the annotation
+type Middleware<StateT, DispatchT> = (next: DispatchT, self: any) -> (Action<any>) -> any
+
+function Store.new(
+	reducer: Reducer<any?, Action<any>>,
+	initialState: any?,
+	middlewares: Array<Middleware<any, Dispatch<Action<any>>>>?,
+	errorReporter: ErrorReporter?
+)
 	assert(typeof(reducer) == "function", "Bad argument #1 to Store.new, expected function.")
 	assert(middlewares == nil or typeof(middlewares) == "table", "Bad argument #3 to Store.new, expected nil or table.")
 	if middlewares ~= nil then
-		for i = 1, #middlewares, 1 do
+		for i, middleware in ipairs(middlewares) do
 			assert(
-				typeof(middlewares[i]) == "function",
+				typeof(middleware) == "function",
 				("Expected the middleware ('%s') at index %d to be a function."):format(tostring(middlewares[i]), i)
 			)
 		end
@@ -84,18 +120,17 @@ function Store.new(reducer, initialState, middlewares, errorReporter)
 	table.insert(self._connections, connection)
 
 	if middlewares then
-		local unboundDispatch = self.dispatch
-		local dispatch = function(...)
-			return unboundDispatch(self, ...)
+		local dispatch: Dispatch<Action<any>> = function(action: Action<any>, ...)
+			return self:dispatch(action, ...)
 		end
 
 		for i = #middlewares, 1, -1 do
-			local middleware = middlewares[i]
+			local middleware: Middleware<any, Dispatch<Action<any>>> = middlewares[i]
 			dispatch = middleware(dispatch, self)
 		end
 
-		self.dispatch = function(_self, ...)
-			return dispatch(...)
+		self.dispatch = function(_self, action: Action<any>, ...)
+			return dispatch(action, ...)
 		end
 	end
 
@@ -105,7 +140,7 @@ end
 --[[
 	Get the current state of the Store. Do not mutate this!
 ]]
-function Store:getState()
+function Store:getState(): any
 	if self._isDispatching then
 		error(
 			(
@@ -126,7 +161,8 @@ end
 	Listeners on the changed event of the store are notified when the state
 	changes, but not necessarily on every Dispatch.
 ]]
-function Store:dispatch(action)
+
+function Store:dispatch(action: Action<any>): any
 	if typeof(action) ~= "table" then
 		error(("Actions must be tables. " .. "Use custom middleware for %q actions."):format(typeof(action)), 2)
 	end
@@ -163,6 +199,8 @@ function Store:dispatch(action)
 		table.remove(self._actionLog, 1)
 	end
 	table.insert(self._actionLog, action)
+
+	return result
 end
 
 --[[
@@ -173,7 +211,8 @@ function Store:destruct()
 		connection:Disconnect()
 	end
 
-	self._connections = nil
+	-- FIXME: Luau gives error even when self._connections is annotated as `Array<any>?`
+	self._connections = nil :: any
 end
 
 --[[
