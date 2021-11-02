@@ -39,7 +39,9 @@ jobs:
     - name: install and run darklua
       run: |
         cargo install --git https://gitlab.com/seaofvoices/darklua.git#v0.6.0
-        darklua process src/ darklua_processed/ --format retain-lines
+        # darklua process src/ darklua_processed/ --format retain-lines
+        mkdir darklua_processed/
+        cp src/* darklua_processed/
 
     - name: Test
       run: |
