@@ -83,7 +83,7 @@ return function()
 
 		expect(caughtState.Value).to.equal(1)
 		expect(caughtAction).to.equal(failingThunk)
-		expect(caughtErrorResult.message).to.contain("Caught error in thunk (")
+		expect(string.find(caughtErrorResult.message, "Caught error in thunk (")).to.be.ok()
 	end)
 
 	it("should recover and continue to update after a thunk errors", function()
@@ -112,7 +112,7 @@ return function()
 		end
 
 		store:dispatch(errorThunk)
-		expect(caughtErrorResult.message).to.contain("Caught error in thunk (")
+		expect(string.find(caughtErrorResult.message, "Caught error in thunk (")).to.be.ok()
 
 		store:dispatch(safeThunk)
 		expect(ranSafeThunk).to.equal(true)
