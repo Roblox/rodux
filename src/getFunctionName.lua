@@ -1,7 +1,11 @@
 local function getFunctionName(fn)
-	-- selene: allow(incorrect_standard_library_use)
-	local functionName = typeof(fn) == "function" and (debug.info and debug.info(fn, "sln"))
-		or (debug.getinfo and debug.getinfo(fn).name or debug.getinfo(fn).source)
+	local functionName
+	if typeof(fn) == "function" then
+		-- try using Roblox Lua's debug.info before falling back to lua5.1 debug.getinfo
+		-- selene: allow(incorrect_standard_library_use)
+		functionName = (type(debug.info) == "function" and debug.info(fn, "sln"))
+			or (type(debug.getinfo) == "function" and debug.getinfo(fn).source)
+	end
 	if functionName == nil or functionName == "" then
 		functionName = tostring(fn)
 	end
