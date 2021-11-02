@@ -16,8 +16,7 @@ local function thunkMiddleware(nextDispatch, store)
 			end, tracebackReporter)
 
 			if not ok then
-				local reducerName = typeof(action) == "function"
-					and (debug.info and debug.info(action, "n"))
+				local reducerName = typeof(action) == "function" and (debug.info and debug.info(action, "n"))
 					or (debug.getinfo and debug.getinfo(action, "n").name)
 				if reducerName == nil or reducerName == "" then
 					reducerName = tostring(action)
