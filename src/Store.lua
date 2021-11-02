@@ -65,7 +65,7 @@ function Store.new(reducer, initialState, middlewares, errorReporter)
 	if not ok then
 		-- selene: allow(incorrect_standard_library_use)
 		local reducerName = typeof(reducer) == "function" and (debug.info and debug.info(reducer, "n"))
-			or (debug.getinfo and debug.getinfo(reducer, "n").name)
+			or (debug.getinfo and debug.getinfo(reducer).short_src)
 
 		if reducerName == nil or reducerName == "" then
 			reducerName = tostring(reducer)
@@ -162,7 +162,7 @@ function Store:dispatch(action)
 	if not ok then
 		-- selene: allow(incorrect_standard_library_use)
 		local reducerName = typeof(self._reducer) == "function" and (debug.info and debug.info(self._reducer, "n"))
-			or (debug.getinfo and debug.getinfo(self._reducer, "n").name)
+			or (debug.getinfo and debug.getinfo(self._reducer).short_src)
 		if reducerName == nil or reducerName == "" then
 			reducerName = tostring(self._reducer)
 		end
