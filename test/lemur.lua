@@ -5,7 +5,7 @@
 -- If you add any dependencies, add them to this table so they'll be loaded!
 local LOAD_MODULES = {
 	-- we run lua5.1/lemur post-darklua with Luau types stripped
-	{"darklua_processed", "Rodux"},
+	{"src", "Rodux"},
 	{"modules/testez/src", "TestEZ"},
 }
 
