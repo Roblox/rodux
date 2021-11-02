@@ -63,6 +63,7 @@ function Store.new(reducer, initialState, middlewares, errorReporter)
 		self._state = reducer(initialState, initAction)
 	end, tracebackReporter)
 	if not ok then
+		-- selene: allow(incorrect_standard_library_use)
 		local reducerName = typeof(reducer) == "function" and (debug.info and debug.info(reducer, "n"))
 			or (debug.getinfo and debug.getinfo(reducer, "n").name)
 
@@ -159,6 +160,7 @@ function Store:dispatch(action)
 	self._isDispatching = false
 
 	if not ok then
+		-- selene: allow(incorrect_standard_library_use)
 		local reducerName = typeof(self._reducer) == "function" and (debug.info and debug.info(self._reducer, "n"))
 			or (debug.getinfo and debug.getinfo(self._reducer, "n").name)
 		if reducerName == nil or reducerName == "" then
