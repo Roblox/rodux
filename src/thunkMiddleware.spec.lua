@@ -63,7 +63,7 @@ return function()
 				caughtState = state
 				caughtAction = action
 				caughtErrorResult = errorResult
-			end
+			end,
 		}
 
 		local function reducer(state, action)
@@ -71,7 +71,7 @@ return function()
 		end
 
 		local store = Store.new(reducer, {
-			Value = 1
+			Value = 1,
 		}, { thunkMiddleware }, errorReporter)
 
 		local innerErrorMessage = "thunk failed"
@@ -91,7 +91,7 @@ return function()
 		local errorReporter = {
 			reportReducerError = function(_state, _action, errorResult)
 				caughtErrorResult = errorResult
-			end
+			end,
 		}
 
 		local function reducer(state, action)
@@ -99,7 +99,7 @@ return function()
 		end
 
 		local store = Store.new(reducer, {
-			Value = 1
+			Value = 1,
 		}, { thunkMiddleware }, errorReporter)
 
 		local innerErrorMessage = "thunk failed"

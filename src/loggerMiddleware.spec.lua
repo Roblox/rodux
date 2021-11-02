@@ -15,7 +15,9 @@ return function()
 			barValue = {
 				bazValue = "hiBaz",
 			},
-		}, { loggerMiddleware.middleware })
+		}, {
+			loggerMiddleware.middleware,
+		})
 
 		loggerMiddleware.outputFunction = function(message)
 			outputCount = outputCount + 1

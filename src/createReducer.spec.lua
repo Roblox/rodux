@@ -40,7 +40,7 @@ return function()
 		local reducer = createReducer({
 			a = 0,
 			b = 0,
-		-- We don't care about the actions here
+			-- We don't care about the actions here
 		}, {})
 
 		local newState = reducer(nil, {})
@@ -56,7 +56,7 @@ return function()
 			foo = function(state, action)
 				callCount = callCount + 1
 				return nil
-			end
+			end,
 		})
 
 		expect(callCount).to.equal(0)
