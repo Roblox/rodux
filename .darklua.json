@@ -1,0 +1,4 @@
+{
+    process: ["remove_empty_do"],
+}
+
