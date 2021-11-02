@@ -75,15 +75,15 @@ return function()
 		}, { thunkMiddleware }, errorReporter)
 
 		local innerErrorMessage = "thunk failed"
-		local function thunk(_store)
+		local function failingThunk(_store)
 			error(innerErrorMessage)
 		end
 
-		store:dispatch(thunk)
+		store:dispatch(failingThunk)
 
 		expect(caughtState.Value).to.equal(1)
-		expect(caughtAction).to.equal(thunk)
-		expect(caughtErrorResult.message).to.equal("Caught error in thunk")
+		expect(caughtAction).to.equal(failingThunk)
+		expect(caughtErrorResult.message).to.equal("Caught error in thunk (failingThunk)")
 	end)
 
 	it("should recover and continue to update after a thunk errors", function()
@@ -112,7 +112,7 @@ return function()
 		end
 
 		store:dispatch(errorThunk)
-		expect(caughtErrorResult.message).to.equal("Caught error in thunk")
+		expect(caughtErrorResult.message).to.equal("Caught error in thunk (errorThunk)")
 
 		store:dispatch(safeThunk)
 		expect(ranSafeThunk).to.equal(true)
