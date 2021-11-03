@@ -18,11 +18,11 @@ local function thunkMiddleware(nextDispatch, store)
 			end, tracebackReporter)
 
 			if not ok then
-				local reducerName = getFunctionName(action)
+				local actionName = getFunctionName(action)
 
 				-- report the error and move on so it's non-fatal app
 				store._errorReporter.reportReducerError(store:getState(), action, {
-					message = "Caught error in thunk (" .. reducerName .. ")",
+					message = "Caught error in thunk (" .. actionName .. ")",
 					thrownValue = result,
 				})
 				return nil
