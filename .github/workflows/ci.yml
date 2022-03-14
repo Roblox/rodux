@@ -31,7 +31,7 @@ jobs:
         luarocks install luacov-reporter-lcov
 
     - name: install code quality tools
-      uses: rojo-rbx/setup-foreman@v1
+      uses: Roblox/setup-foreman@v1
       with:
         version: "^1.0.1"
         token: ${{ secrets.GITHUB_TOKEN }}
