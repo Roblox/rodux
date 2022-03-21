@@ -1,4 +1,5 @@
 [tools]
-rojo = { source = "rojo-rbx/rojo", version = "6.2.0" }
-selene = { source = "Kampfkarren/selene", version = "0.14" }
-stylua = { source = "JohnnyMorganz/StyLua", version = "0.11" }
+darklua = { gitlab = "seaofvoices/darklua", version = "0.7.0" }
+rojo = { github = "rojo-rbx/rojo", version = "7.0.0" }
+selene = { github  = "Kampfkarren/selene", version = "0.16" }
+stylua = { github = "JohnnyMorganz/StyLua", version = "0.12.5" }

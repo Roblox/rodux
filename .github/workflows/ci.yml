@@ -36,9 +36,8 @@ jobs:
         version: "^1.0.1"
         token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: install and run darklua
+    - name: check compatibility with Lua minifier/optimizer
       run: |
-        cargo install --git https://gitlab.com/seaofvoices/darklua.git#v0.6.0
         darklua process src/ src/ --format retain-lines
 
     - name: Test
