@@ -127,17 +127,16 @@ return function()
 		local myExtraArg = { What = "MyExtraArg" }
 		local store = Store.new(reducer, {}, { makeThunkMiddleware(myExtraArg) })
 		local thunkCount = 0
-		local receivedExtraArg = nil
+		local extraArgParam = nil
 
 		local function thunk(_store, extraArg)
-			print("thunk invoked with extraArg:", extraArg)
 			thunkCount = thunkCount + 1
-			receivedExtraArg = extraArg
+			extraArgParam = extraArg
 		end
 
 		store:dispatch(thunk)
 
 		expect(thunkCount).to.equal(1)
-		expect(recievedExtraArg).to.equal(myExtraArg)
+		expect(extraArgParam).to.equal(myExtraArg)
 	end)
 end

@@ -11,7 +11,6 @@ local function tracebackReporter(message)
 end
 
 local function makeThunkMiddleware(extraArgument)
-	print("extraArgument:", extraArgument)
 	local function thunkMiddleware(nextDispatch, store)
 		return function(action)
 			if typeof(action) == "function" then
