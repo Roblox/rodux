@@ -117,4 +117,25 @@ return function()
 		store:dispatch(safeThunk)
 		expect(ranSafeThunk).to.equal(true)
 	end)
+
+	it("should send extra argument to thunks when provided", function()
+		local function reducer(state, action)
+			return state
+		end
+
+		local myExtraArg = { What = "MyExtraArg" }
+		local store = Store.new(reducer, {}, { makeThunkMiddleware(myExtraArg) })
+		local thunkCount = 0
+		local receivedExtraArg = nil
+
+		local function thunk(_store, extraArg)
+			thunkCount = thunkCount + 1
+			receivedExtraArg = extraArg
+		end
+
+		store:dispatch(thunk)
+
+		expect(thunkCount).to.equal(1)
+		expect(recievedExtraArg).to.equal(myExtraArg)
+	end)
 end
