@@ -264,7 +264,12 @@ store:dispatch(function(store)
 end)
 ```
 
-It is also possible to inject a custom argument into the thunk middleware. This is useful for cases like using an API service layer that could be swapped out for a mock service in tests. This is accomplished by using the `Rodux.makeThunkMiddleware` API instead:
+### Rodux.makeThunkMiddleware (unreleased)
+```
+Rodux.makeThunkMiddleware(extraArgument) -> thunkMiddleware
+```
+
+A function that creates a thunk middleware that injects a custom argument when invoking thunks (in addition to the store itself). This is useful for cases like using an API service layer that could be swapped out for a mock service in tests.
 
 ```lua
 local myThunkMiddleware = Rodux.makeThunkMiddleware(myCustomArg)
@@ -277,13 +282,4 @@ store:dispatch(function(store, myCustomArg)
 		type = "thunkAction"
 	})
 end)
-```
-
-If multiple values need to be passed in, they can be combined into a single table:
-
-```lua
-local myThunkMiddleware = Rodux.makeThunkMiddleware({
-    [RoactNetworking] = networking,
-    AvatarEditorService = AvatarEditorService,
-})
 ```
