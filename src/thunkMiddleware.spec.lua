@@ -130,6 +130,7 @@ return function()
 		local receivedExtraArg = nil
 
 		local function thunk(_store, extraArg)
+			print("thunk invoked with extraArg:", extraArg)
 			thunkCount = thunkCount + 1
 			receivedExtraArg = extraArg
 		end
