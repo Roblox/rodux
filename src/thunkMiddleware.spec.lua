@@ -1,6 +1,7 @@
 return function()
 	local Store = require(script.Parent.Store)
 	local thunkMiddleware = require(script.Parent.thunkMiddleware)
+	local makeThunkMiddleware = require(script.Parent.makeThunkMiddleware)
 
 	it("should dispatch thunks", function()
 		local function reducer(state, action)
