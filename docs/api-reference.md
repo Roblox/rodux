@@ -265,3 +265,23 @@ store:dispatch(function(store)
 	})
 end)
 ```
+
+### Rodux.makeThunkMiddleware (unreleased)
+```
+Rodux.makeThunkMiddleware(extraArgument) -> thunkMiddleware
+```
+
+A function that creates a thunk middleware that injects a custom argument when invoking thunks (in addition to the store itself). This is useful for cases like using an API service layer that could be swapped out for a mock service in tests.
+
+```lua
+local myThunkMiddleware = Rodux.makeThunkMiddleware(myCustomArg)
+local store = Store.new(reducer, initialState, { myThunkMiddleware })
+
+store:dispatch(function(store, myCustomArg)
+	print("Hello from a thunk with extra argument:", myCustomArg)
+
+	store:dispatch({
+		type = "thunkAction"
+	})
+end)
+```

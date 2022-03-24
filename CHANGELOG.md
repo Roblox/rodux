@@ -1,6 +1,7 @@
 # Rodux Changelog
 
 ## Unreleased Changes
+* Add makeThunkMiddleware to inject custom argument ([#69](https://github.com/Roblox/rodux/pull/69)).
 
 ## 3.1.0 (2023-08-22)
 * Add support for devtools ([#84](https://github.com/Roblox/rodux/pull/84))
