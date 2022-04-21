@@ -5,14 +5,15 @@ The Store class is the core piece of Rodux. It is the state container that you c
 
 ### Store.new
 ```
-Store.new(reducer, [initialState, [middlewares]]) -> Store
+Store.new(reducer, [initialState, [middlewares, [errorReporter]]]) -> Store
 ```
 
 Creates and returns a new Store.
 
 * `reducer` is the store's root reducer function, and is invoked whenever an action is dispatched. It must be a pure function.
 * `initialState` is the store's initial state. This should be used to load a saved state from storage.
-* `middlewares` is a list of middleware to apply to the store.
+* `middlewares` is a list of [middleware functions](#middleware) to apply each time an action is dispatched to the store.
+* `errorReporter` is a [error reporter object](advanced/error-reporters.md) that allows custom handling of errors that occur during different phases of the store's updates
 
 The store will automatically dispatch an initialization action with a `type` of `@@INIT`.
 
@@ -238,6 +239,8 @@ local store = Store.new(reducer, initialState, { simpleLogger })
 
 Middleware runs from left to right when an action is dispatched. That means that if a middleware does not call `nextDispatch` when handling an action, any middleware after it will not run.
 
+For a more detailed example, see the [middleware guide](advanced/middleware.md).
+
 ### Rodux.loggerMiddleware
 A middleware that logs actions and the new state that results from them.
 
@@ -283,3 +286,42 @@ store:dispatch(function(store, myCustomArg)
 	})
 end)
 ```
+
+## Error Reporters
+
+In version 3.0.0+, the Rodux store can be provided with a custom error reporter. This is a good entry point to enable improved logging, debugging, and analytics. 
+
+The error reporter interface is an object with two functions:
+
+### reportReducerError
+```
+reportReducerError(prevState, action, errorResult) -> ()
+```
+
+Called when an error is thrown while processing an action through the reducer. If [thunk middleware](#RoduxthunkMiddleware) is included, errors encountered while executing thunks will also be caught and reported through this function.
+
+The function receives these arguments:
+
+* `prevState` - the last known state value for the store. Since this reporter catches errors that occurred before the reducer finished resolving, the `prevState` value will be equal to the store state _before the action was processed_
+* `action` - the action that was being processed when the error occurred
+* `errorResult` - an object describing the error that was caught
+
+The default error reporter will simply rethrow the value from the caught errorResult.
+
+### reportUpdateError
+```
+reportUpdateError(prevState, currentState, actionLog, errorResult) -> ()
+```
+
+Called when an error is thrown while updating listeners subscribed to the store state. Rodux flushes actions on a regular interval rather than synchronously, so there may be several actions queued up before each flush.
+
+The last 3 actions that were received before the current flush are provided to the error reporter. This is currently hard coded in the store logic, but could be overridden with an option in the future if it's useful to do so.
+
+The function receives these arguments:
+
+* `prevState` - the last known state that was flushed to consumers _before_ the update that produced the error
+* `currentState` - the new store state that was being flushed to consumers when the error occurred. Some consumers may have already processed to this new state by the time the reporter is called
+* `actionLog` - an array containing the last three actions that were dispatched to the store, sorted from oldest to newest
+* `errorResult` - an object describing the error that was caught
+
+The default error reporter will simply rethrow the value from the caught errorResult.

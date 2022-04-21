@@ -18,6 +18,7 @@ pages:
     - Actions: introduction/actions.md
     - Reducers: introduction/reducers.md
   - Advanced:
+    - Error Reporters: advanced/error-reporters.md
     - Middleware: advanced/middleware.md
     - Thunks: advanced/thunks.md
   - Complete Example: example.md
