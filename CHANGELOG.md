@@ -2,6 +2,7 @@
 
 ## Unreleased Changes
 * Add makeThunkMiddleware to inject custom argument ([#69](https://github.com/Roblox/rodux/pull/69)).
+* Add Luau types for actions and reducers ([#70](https://github.com/Roblox/rodux/pull/70)).
 
 ## 3.0.0 (2021-03-25)
 * Revise error reporting logic; restore default semantics from version 1.x ([#61](https://github.com/Roblox/rodux/pull/61)).
