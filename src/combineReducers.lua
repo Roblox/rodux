@@ -8,25 +8,24 @@ local reducers = require(script.Parent.types.reducers)
 type AnyAction = actions.AnyAction
 
 export type Reducer<State = any, Action = AnyAction> = reducers.Reducer<State, Action>
+export type ReducersMapObject<State = any, Action = AnyAction> = reducers.ReducersMapObject<State, Action>
 
-local function combineReducers<State>(map): Reducer<State>
-	return (
-		function(state, action)
-			-- If state is nil, substitute it with a blank table.
-			if state == nil then
-				state = {}
-			end
+local function combineReducers<State>(map: ReducersMapObject): Reducer<State>
+	return function(state, action)
+		-- If state is nil, substitute it with a blank table.
+		if state == nil then
+			state = {}
+		end
 
-			local newState = {}
+		local newState = {}
 
-			for key, reducer in pairs(map) do
-				-- Each reducer gets its own state, not the entire state table
-				newState[key] = reducer(state[key], action)
-			end
+		for key, reducer in pairs(map) do
+			-- Each reducer gets its own state, not the entire state table
+			newState[key] = reducer(state[key], action)
+		end
 
-			return newState
-		end :: any
-	) :: Reducer<State>
+		return newState
+	end :: any
 end
 
 return combineReducers
