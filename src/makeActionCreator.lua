@@ -2,9 +2,9 @@
 	A helper function to define a Rodux action creator with an associated name.
 ]]
 
-local _actions = require(script.Parent.types.actions)
+local actions = require(script.Parent.types.actions)
 
-export type ActionCreator<Type, Action, Args...> = _actions.ActionCreator<Type, Action, Args...>
+export type ActionCreator<Type, Action, Args...> = actions.ActionCreator<Type, Action, Args...>
 
 local function makeActionCreator<Type, Action, Args...>(
 	name: Type,

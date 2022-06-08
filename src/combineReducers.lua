@@ -2,12 +2,12 @@
 	Create a composite reducer from a map of keys and sub-reducers.
 ]]
 
-local _actions = require(script.Parent.types.actions)
-local _reducers = require(script.Parent.types.reducers)
+local actions = require(script.Parent.types.actions)
+local reducers = require(script.Parent.types.reducers)
 
-type AnyAction = _actions.AnyAction
+type AnyAction = actions.AnyAction
 
-export type Reducer<State = any, Action = AnyAction> = _reducers.Reducer<State, Action>
+export type Reducer<State = any, Action = AnyAction> = reducers.Reducer<State, Action>
 
 local function combineReducers<State>(map): Reducer<State>
 	return (

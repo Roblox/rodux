@@ -1,6 +1,6 @@
-local _actions = require(script.Parent.actions)
+local actions = require(script.Parent.actions)
 
-type AnyAction = _actions.AnyAction
+type AnyAction = actions.AnyAction
 
 export type Reducer<State = any, Action = AnyAction> = (State?, Action) -> State
 

@@ -1,9 +1,9 @@
-local _actions = require(script.Parent.types.actions)
-local _reducers = require(script.Parent.types.reducers)
+local actions = require(script.Parent.types.actions)
+local reducers = require(script.Parent.types.reducers)
 
-type AnyAction = _actions.AnyAction
+type AnyAction = actions.AnyAction
 
-export type Reducer<State = any, Action = AnyAction> = _reducers.Reducer<State, Action>
+export type Reducer<State = any, Action = AnyAction> = reducers.Reducer<State, Action>
 
 return function<State>(initialState, handlers): Reducer<State>
 	return function(state, action)
