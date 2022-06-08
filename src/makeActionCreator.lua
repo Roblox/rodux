@@ -17,7 +17,7 @@ local function makeActionCreator<Type, Action, Args...>(
 	return setmetatable({
 		name = name,
 	}, {
-		__call = function(_self, ...: Args...): Action & { type: Type }
+		__call = function(_self: any, ...: Args...): Action & { type: Type }
 			local result = fn(...)
 
 			assert(type(result) == "table", "Invalid action: An action creator must return a table")
