@@ -36,9 +36,10 @@ jobs:
         version: "^1.0.1"
         token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: code quality (stylua)
+    - name: code quality
       shell: bash
       run: |
+        selene src
         stylua -c src/
 
     - name: install and run darklua
@@ -50,11 +51,6 @@ jobs:
       run: |
         lua -lluacov test/lemur.lua
         luacov -r lcov
-
-    - name: code quality (selene)
-      shell: bash
-      run: |
-        selene src
 
     - name: Report to Coveralls
       uses: coverallsapp/github-action@1.1.3
