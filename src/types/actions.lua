@@ -1,3 +1,4 @@
+--!strict
 export type Action<Type = any> = {
 	type: Type,
 }

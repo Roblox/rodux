@@ -1,3 +1,4 @@
+--!strict
 local store = require(script.Parent.store)
 
 type IStore<State, Dispatch> = store.IStore<State, Dispatch>

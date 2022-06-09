@@ -1,3 +1,4 @@
+--!strict
 local actions = require(script.Parent.types.actions)
 local reducers = require(script.Parent.types.reducers)
 
