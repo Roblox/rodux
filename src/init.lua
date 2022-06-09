@@ -9,7 +9,7 @@ local makeThunkMiddleware = require(script.makeThunkMiddleware)
 local actions = require(script.types.actions)
 local reducers = require(script.types.reducers)
 
-export type Action<Type = string> = actions.Action<Type>
+export type Action<Type = any> = actions.Action<Type>
 export type AnyAction = actions.AnyAction
 export type ActionCreator<Type, Action, Args...> = actions.ActionCreator<Type, Action, Args...>
 

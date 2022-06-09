@@ -1,4 +1,4 @@
-export type Action<Type = string> = {
+export type Action<Type = any> = {
 	type: Type,
 }
 
