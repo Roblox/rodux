@@ -1,3 +1,4 @@
+--!strict
 --[[
 	A limited, simple implementation of a Signal.
 
@@ -31,11 +32,22 @@ local function immutableRemoveValue(list, removeValue)
 	return new
 end
 
+type Listener = {
+	callback: (...any) -> (),
+	disconnected: boolean,
+	connectTraceback: string,
+	disconnectTraceback: string?,
+}
+
+type Store = {
+	_isDispatching: boolean,
+}
+
 local Signal = {}
 
 Signal.__index = Signal
 
-function Signal.new(store)
+function Signal.new(store: Store?)
 	local self = {
 		_listeners = {},
 		_store = store,
@@ -59,7 +71,7 @@ function Signal:connect(callback)
 		)
 	end
 
-	local listener = {
+	local listener: Listener = {
 		callback = callback,
 		disconnected = false,
 		connectTraceback = debug.traceback(),

@@ -1,3 +1,4 @@
+--!strict
 --[[
 	A middleware that allows for functions to be dispatched.
 	Functions will receive a single argument, the store itself.

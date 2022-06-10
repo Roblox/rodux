@@ -115,7 +115,7 @@ return function()
 	it("should throw an error if the argument to `connect` is not a function", function()
 		local signal = Signal.new()
 		expect(function()
-			signal:connect("not a function")
+			signal:connect("not a function" :: any)
 		end).to.throw()
 	end)
 

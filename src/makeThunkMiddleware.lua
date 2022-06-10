@@ -1,3 +1,4 @@
+--!strict
 --[[
 	A middleware that allows for functions to be dispatched with an extra
 	argument for convenience. Functions will receive two arguments:
