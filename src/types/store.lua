@@ -7,14 +7,7 @@ type EmptyObject = {}
 
 export type CombinedState<State> = EmptyObject & State
 
-export type BoundDispatch = <Action>(
-	action: Action & BaseAction
-) -> ()
-
-export type IDispatch<Store> = <Action>(
-	self: Store,
-	action: Action & BaseAction
-) -> ()
+export type IDispatch<Store> = <Action>(self: Store, action: Action & BaseAction) -> ()
 export type Dispatch<State = any> = IDispatch<Store<State>>
 
 export type IStore<State, Dispatch> = {
