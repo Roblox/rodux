@@ -169,11 +169,13 @@ return function()
 			expect(caughtState.Value).to.equal(1)
 			expect(caughtAction.type).to.equal("@@INIT")
 			expect(caughtErrorResult.message).to.equal("Caught error in reducer with init")
-			expect(string.find(caughtErrorResult.thrownValue, innerErrorMessage)).to.be.ok()
+			local found = string.find(caughtErrorResult.thrownValue, innerErrorMessage)
+			expect(found).to.be.ok()
 			-- We want to verify that this is a stacktrace without caring too
 			-- much about the format, so we look for the stack frame associated
 			-- with this test file
-			expect(string.find(caughtErrorResult.thrownValue, script.Name)).to.be.ok()
+			found = string.find(caughtErrorResult.thrownValue, script.Name)
+			expect(found).to.be.ok()
 
 			store:destruct()
 		end)
@@ -218,11 +220,13 @@ return function()
 			expect(caughtState.Value).to.equal(2)
 			expect(caughtAction.type).to.equal("ThrowError")
 			expect(caughtErrorResult.message).to.equal("Caught error in reducer")
-			expect(string.find(caughtErrorResult.thrownValue, innerErrorMessage)).to.be.ok()
+			local found = string.find(caughtErrorResult.thrownValue, innerErrorMessage)
+			expect(found).to.be.ok()
 			-- We want to verify that this is a stacktrace without caring too
 			-- much about the format, so we look for the stack frame associated
 			-- with this test file
-			expect(string.find(caughtErrorResult.thrownValue, script.Name)).to.be.ok()
+			found = string.find(caughtErrorResult.thrownValue, script.Name)
+			expect(found).to.be.ok()
 
 			store:destruct()
 		end)
@@ -396,14 +400,16 @@ return function()
 			-- We want to verify that this is a stacktrace without caring too
 			-- much about the format, so we look for the stack frame associated
 			-- with this test file
-			expect(string.find(reportedErrorError, script.Name)).to.be.ok()
+			local found = string.find(reportedErrorError, script.Name)
+			expect(found).to.be.ok()
 			-- In vanilla lua, we get this message:
 			--   "attempt to yield across metamethod/C-call boundary"
 			-- In luau, we should end up wrapping our own NoYield message:
 			--   "Attempted to yield inside changed event!"
 			-- For convenience's sake, we just look for the common substring
 			local caughtErrorSubstring = "to yield"
-			expect(string.find(reportedErrorError, caughtErrorSubstring)).to.be.ok()
+			found = string.find(reportedErrorError, caughtErrorSubstring)
+			expect(found).to.be.ok()
 
 			store:destruct()
 		end)
@@ -479,7 +485,8 @@ return function()
 			-- We want to verify that this is a stacktrace without caring too
 			-- much about the format, so we look for the stack frame associated
 			-- with this test file
-			expect(string.find(caughtErrorResult.thrownValue, script.Name)).to.be.ok()
+			local found = string.find(caughtErrorResult.thrownValue, script.Name)
+			expect(found).to.be.ok()
 
 			expect(caughtActionLog[1]).to.equal(actions[1])
 			expect(caughtActionLog[2]).to.equal(actions[2])

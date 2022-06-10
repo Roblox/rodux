@@ -59,11 +59,11 @@ return function()
 
 	it("should throw if the second argument is not a function", function()
 		expect(function()
-			makeActionCreator("foo", nil)
+			makeActionCreator("foo", nil :: any)
 		end).to.throw()
 
 		expect(function()
-			makeActionCreator("foo", {})
+			makeActionCreator("foo", {} :: any)
 		end).to.throw()
 	end)
 end
