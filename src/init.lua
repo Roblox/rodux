@@ -18,11 +18,9 @@ export type ActionCreator<Type, Action, Args...> = actions.ActionCreator<Type, A
 
 export type Reducer<State = any, Action = AnyAction> = reducers.Reducer<State, Action>
 
-export type Dispatch<State = any> = store.Dispatch<State>
 export type Store<State = any> = store.Store<State>
 
 export type ThunkAction<ReturnType, State = any> = thunks.ThunkAction<ReturnType, State>
-export type ThunkDispatch<State = any> = thunks.ThunkDispatch<State>
 export type ThunkfulStore<State = any> = thunks.ThunkfulStore<State>
 
 return {
