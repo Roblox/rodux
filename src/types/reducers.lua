@@ -1,3 +1,4 @@
+--!strict
 local actions = require(script.Parent.actions)
 
 type AnyAction = actions.AnyAction

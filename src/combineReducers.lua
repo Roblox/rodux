@@ -1,3 +1,4 @@
+--!strict
 --[[
 	Create a composite reducer from a map of keys and sub-reducers.
 ]]

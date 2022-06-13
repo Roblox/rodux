@@ -1,5 +1,4 @@
---!nocheck
-
+--!strict
 --[[
 	Calls a function and throws an error if it attempts to yield.
 
@@ -9,7 +8,7 @@
 	given function will be returned.
 ]]
 
-local function resultHandler(co, ok, ...)
+local function resultHandler(co: thread, ok: boolean, ...)
 	if not ok then
 		local message = (...)
 		error(debug.traceback(co, message), 2)

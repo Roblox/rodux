@@ -1,3 +1,4 @@
+--!strict
 --[[
 	A helper function to define a Rodux action creator with an associated name.
 ]]
