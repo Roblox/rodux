@@ -287,7 +287,7 @@ store:dispatch(function(store, myCustomArg)
 end)
 ```
 
-### Rodux.freezeMiddlware
+### Rodux.freezeMiddleware
 ```lua
 local store = Store.new(reducer, initialState, { freezeMiddleware.deep })
 ```
@@ -295,7 +295,7 @@ local store = Store.new(reducer, initialState, { freezeMiddleware.deep })
 A function that returns a table of three different middleware functions that prevent you from modifiying the immutable state passed in from the first argument of the reducer. The three functions are `deep`, `shallow`, or `oneLevel` which freeze their respective levels of the table. 
 
 ```lua
-local freezeMiddlware = Rodux.freezeMiddleware
+local freezeMiddleware = Rodux.freezeMiddleware
 
 local reducer = function(state, action)
 	local newState = table.clone(state)
