@@ -4,7 +4,7 @@
 
 Nothing yet...
 
-## 4.0.0 (2022-07-18)
+## 4.0.0-rc.0 (2022-07-18)
 
 - Add makeThunkMiddleware to inject custom argument ([#69](https://github.com/Roblox/rodux/pull/69)).
 - Add Luau types for actions and reducers ([#70](https://github.com/Roblox/rodux/pull/70)).
