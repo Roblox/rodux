@@ -15,8 +15,9 @@ export type IStore<State, Dispatch> = {
 	getState: (self: IStore<State, Dispatch>) -> State,
 
 	--[[
-		FIXME LUAU: Typing self as any here is a hack. We need to look
-		into the exact issue (suspected to be related to contravariance).
+		FIXME LUAU: Typing self as any here is a hack to skirt around
+		variance-related issues with tables. Read-write properties
+		should obviate the need for this workaround.
 	]]
 	destruct: (self: any) -> (),
 	flush: (self: any) -> (),
