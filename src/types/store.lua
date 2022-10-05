@@ -13,8 +13,14 @@ export type Dispatch<State = any> = IDispatch<Store<State>>
 export type IStore<State, Dispatch> = {
 	dispatch: Dispatch,
 	getState: (self: IStore<State, Dispatch>) -> State,
-	destruct: (self: IStore<State, Dispatch>) -> (),
-	flush: (self: IStore<State, Dispatch>) -> (),
+
+	--[[
+		FIXME LUAU: Typing self as any here is a hack. We need to look
+		into the exact issue (suspected to be related to contravariance).
+	]]
+	destruct: (self: any) -> (),
+	flush: (self: any) -> (),
+
 	changed: RBXScriptSignal,
 }
 export type Store<State = any> = IStore<State, Dispatch<State>>
