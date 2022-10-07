@@ -5,6 +5,8 @@
 	Handlers are fired in order, and (dis)connections are properly handled when
 	executing an event.
 ]]
+local __DEV__ = _G.__DEV__
+
 local function immutableAppend(list, ...)
 	local new = {}
 	local len = #list
@@ -35,7 +37,7 @@ end
 type Listener = {
 	callback: (...any) -> (),
 	disconnected: boolean,
-	connectTraceback: string,
+	connectTraceback: string?,
 	disconnectTraceback: string?,
 }
 
@@ -74,9 +76,13 @@ function Signal:connect(callback)
 	local listener: Listener = {
 		callback = callback,
 		disconnected = false,
-		connectTraceback = debug.traceback(),
+		connectTraceback = nil,
 		disconnectTraceback = nil,
 	}
+
+	if __DEV__ then
+		listener.connectTraceback = debug.traceback()
+	end
 
 	self._listeners = immutableAppend(self._listeners, listener)
 
@@ -94,8 +100,11 @@ function Signal:connect(callback)
 			error("You may not unsubscribe from a store listener while the reducer is executing.")
 		end
 
+		if __DEV__ then
+			listener.disconnectTraceback = debug.traceback()
+		end
+
 		listener.disconnected = true
-		listener.disconnectTraceback = debug.traceback()
 		self._listeners = immutableRemoveValue(self._listeners, listener)
 	end
 
