@@ -17,6 +17,10 @@ roblox.toml
 # Darklua
 **/darklua*
 
+# Analysis artifacts
+sourcemap.json
+globalTypes.d.lua
+
 # Misc OS and editor files
 .DS_Store
 .vscode
