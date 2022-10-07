@@ -37,7 +37,7 @@ end
 type Listener = {
 	callback: (...any) -> (),
 	disconnected: boolean,
-	connectTraceback: string,
+	connectTraceback: string?,
 	disconnectTraceback: string?,
 }
 
