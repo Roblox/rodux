@@ -12,23 +12,24 @@ on:
 jobs:
   analyze:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
 
-    - name: install code quality tools
-      uses: Roblox/setup-foreman@v1
+    - uses: Roblox/setup-foreman@v1
       with:
-        version: "^1.0.1"
         token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Download global Roblox types
       shell: bash
-      run: curl -O https://raw.githubusercontent.com/JohnnyMorganz/luau-analyze-rojo/master/globalTypes.d.lua
+      run: curl -s -O https://raw.githubusercontent.com/JohnnyMorganz/luau-lsp/master/scripts/globalTypes.d.lua
+
+    - name: Generate sourcemap for LSP
+      shell: bash
+      run: rojo sourcemap default.project.json -o sourcemap.json
 
     - name: Analyze
       shell: bash
-      run: luau-analyze --project=default.project.json --defs=globalTypes.d.lua --defs=testez.d.lua src/
+      run: luau-lsp analyze --sourcemap=sourcemap.json --defs=globalTypes.d.lua --defs=testez.d.lua src/
 
 
   test:

@@ -53,4 +53,30 @@ return function()
 		expect(err:find("foo")).to.be.ok()
 		expect(err:find("NoYield.spec")).to.be.ok()
 	end)
+
+	it("should handle non-string error messages", function()
+		local count = 0
+
+		local function makeErrorObject()
+			return setmetatable({
+				message = "errored with an error object",
+				stack = debug.traceback(),
+			}, {
+				__tostring = function(self)
+					return self.message .. "\n" .. self.stack
+				end,
+			})
+		end
+
+		local function test()
+			count = count + 1
+			error(makeErrorObject())
+		end
+
+		local ok, err = pcall(NoYield, test)
+
+		expect(ok).to.equal(false)
+		expect(err:find("errored with an error object")).to.be.ok()
+		expect(err:find("NoYield.spec")).to.be.ok()
+	end)
 end
