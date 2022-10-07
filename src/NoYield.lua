@@ -10,8 +10,15 @@
 
 local function resultHandler(co: thread, ok: boolean, ...)
 	if not ok then
-		local message = (...)
-		error(debug.traceback(co, message), 2)
+		local err = (...)
+		if typeof(err) == "string" then
+			error(debug.traceback(co, err), 2)
+		else
+			-- If the error is not of type string, just assume it has some
+			-- meaningful information and rethrow it with a `tostring` so that
+			-- top-level error handlers can process it
+			error(tostring(err), 2)
+		end
 	end
 
 	if coroutine.status(co) ~= "dead" then
