@@ -7,10 +7,7 @@ local actions = require(script.Parent.types.actions)
 
 export type ActionCreator<Type, Action, Args...> = actions.ActionCreator<Type, Action, Args...>
 
-local function makeActionCreator<Type, Action, Args...>(
-	name: Type,
-	fn: (Args...) -> Action
-): ActionCreator<Type, Action, Args...>
+local function makeActionCreator<Type, Action, Args...>(name: Type, fn: (Args...) -> Action): ActionCreator<Type, Action, Args...>
 	assert(type(name) == "string", "Bad argument #1: Expected a string name for the action creator")
 
 	assert(type(fn) == "function", "Bad argument #2: Expected a function that creates action objects")
