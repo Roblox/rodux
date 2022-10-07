@@ -4,7 +4,7 @@ local store = require(script.Parent.store)
 type IStore<State, Dispatch> = store.IStore<State, Dispatch>
 type IDispatch<Store> = store.IDispatch<Store>
 
-export type IThunkAction<ReturnType, Store> = (store: Store) -> ReturnType
+export type IThunkAction<ReturnType, Store> = ((store: Store) -> ReturnType) | ((store: Store) -> ())
 export type ThunkAction<ReturnType, State = any> = IThunkAction<ReturnType, ThunkfulStore<State>>
 
 export type IThunkDispatch<Store> = <ReturnType>(

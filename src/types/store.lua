@@ -13,8 +13,15 @@ export type Dispatch<State = any> = IDispatch<Store<State>>
 export type IStore<State, Dispatch> = {
 	dispatch: Dispatch,
 	getState: (self: IStore<State, Dispatch>) -> State,
-	destruct: (self: IStore<State, Dispatch>) -> (),
-	flush: (self: IStore<State, Dispatch>) -> (),
+
+	--[[
+		FIXME LUAU: Typing self as any here is a hack to skirt around
+		variance-related issues with tables. Read-write properties
+		should obviate the need for this workaround.
+	]]
+	destruct: (self: any) -> (),
+	flush: (self: any) -> (),
+
 	changed: RBXScriptSignal,
 }
 export type Store<State = any> = IStore<State, Dispatch<State>>
