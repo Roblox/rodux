@@ -57,8 +57,8 @@ return function()
 				end, "initial state", {}, "INVALID_DEVTOOLS")
 			end)
 
-			expect(success).to.be(false)
-			expect(err).to.be("Bad argument #4 to Store.new, expected nil or Devtools object.")
+			expect(success).to.equal(false)
+			expect(err).to.equal("Bad argument #4 to Store.new, expected nil or Devtools object.")
 		end)
 
 		it("should call devtools:_hookIntoStore", function()
@@ -75,7 +75,9 @@ return function()
 
 			expect(store).to.be.ok()
 			expect(store:getState()).to.equal("initial state")
-			expect(hooked).to.be(store)
+			expect(hooked).to.equal(store)
+
+			store:destruct()
 		end)
 
 		it("should modify the dispatch method when middlewares are passed", function()
