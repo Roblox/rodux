@@ -9,7 +9,7 @@ export type AnyAction = {
 
 export type ActionCreator<Type, Payload, Args...> = typeof(setmetatable(
 	{} :: { name: Type },
-	{} :: { __call: (any, Args...) -> (Payload & Action<Type>) }
+	{} :: { __call: (any, Args...) -> Payload & Action<Type> }
 ))
 
 return nil

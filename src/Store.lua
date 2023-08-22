@@ -41,8 +41,11 @@ Store.__index = Store
 function Store.new(reducer, initialState, middlewares, errorReporter, devtools)
 	assert(typeof(reducer) == "function", "Bad argument #1 to Store.new, expected function.")
 	assert(middlewares == nil or typeof(middlewares) == "table", "Bad argument #3 to Store.new, expected nil or table.")
-	assert(devtools == nil or (typeof(devtools) == "table" and devtools.__className == "Devtools"), "Bad argument #4 to Store.new, expected nil or Devtools object.")
-	
+	assert(
+		devtools == nil or (typeof(devtools) == "table" and devtools.__className == "Devtools"),
+		"Bad argument #4 to Store.new, expected nil or Devtools object."
+	)
+
 	if middlewares ~= nil then
 		for i = 1, #middlewares, 1 do
 			assert(
@@ -71,7 +74,7 @@ function Store.new(reducer, initialState, middlewares, errorReporter, devtools)
 		-- to log and profile the store
 		devtools:_hookIntoStore(self)
 	end
-	
+
 	local initAction = {
 		type = "@@INIT",
 	}
