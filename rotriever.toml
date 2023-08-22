@@ -1,6 +1,6 @@
 [package]
-name = "roblox/rodux"
-author = "Roblox"
+name = "Rodux"
+authors = ["Roblox"]
 license = "Apache-2.0"
 content_root = "src"
 version = "3.1.0"
