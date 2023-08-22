@@ -2,6 +2,9 @@
 
 ## Unreleased Changes
 
+## 3.1.0 (2023-08-22)
+* Add support for devtools ([#84](https://github.com/Roblox/rodux/pull/84))
+
 ## 3.0.0 (2021-03-25)
 * Revise error reporting logic; restore default semantics from version 1.x ([#61](https://github.com/Roblox/rodux/pull/61)).
 

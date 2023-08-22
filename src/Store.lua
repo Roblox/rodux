@@ -38,9 +38,14 @@ Store.__index = Store
 	Reducers do not mutate the state object, so the original state is still
 	valid.
 ]]
-function Store.new(reducer, initialState, middlewares, errorReporter)
+function Store.new(reducer, initialState, middlewares, errorReporter, devtools)
 	assert(typeof(reducer) == "function", "Bad argument #1 to Store.new, expected function.")
 	assert(middlewares == nil or typeof(middlewares) == "table", "Bad argument #3 to Store.new, expected nil or table.")
+	assert(
+		devtools == nil or (typeof(devtools) == "table" and devtools.__className == "Devtools"),
+		"Bad argument #5 to Store.new, expected nil or Devtools object."
+	)
+
 	if middlewares ~= nil then
 		for i=1, #middlewares, 1 do
 			assert(
@@ -51,16 +56,31 @@ function Store.new(reducer, initialState, middlewares, errorReporter)
 	end
 
 	local self = {}
-
+	self._source = string.match(debug.traceback(), "^.-\n(.-)\n")
 	self._errorReporter = errorReporter or rethrowErrorReporter
 	self._isDispatching = false
+	self._lastState = nil
+	self.changed = Signal.new(self)
+
 	self._reducer = reducer
+	self._flushHandler = function(state)
+		self.changed:fire(state, self._lastState)
+	end
+
+	if devtools then
+		self._devtools = devtools
+
+		-- Devtools can wrap & overwrite self._reducer and self._flushHandler
+		-- to log and profile the store
+		devtools:_hookIntoStore(self)
+	end
+
 	local initAction = {
 		type = "@@INIT",
 	}
 	self._actionLog = { initAction }
 	local ok, result = xpcall(function()
-		self._state = reducer(initialState, initAction)
+		self._state = self._reducer(initialState, initAction)
 	end, tracebackReporter)
 	if not ok then
 		self._errorReporter.reportReducerError(initialState, initAction, {
@@ -73,8 +93,6 @@ function Store.new(reducer, initialState, middlewares, errorReporter)
 
 	self._mutatedSinceFlush = false
 	self._connections = {}
-
-	self.changed = Signal.new(self)
 
 	setmetatable(self, Store)
 
@@ -194,9 +212,7 @@ function Store:flush()
 	local ok, errorResult = xpcall(function()
 		-- If a changed listener yields, *very* surprising bugs can ensue.
 		-- Because of that, changed listeners cannot yield.
-		NoYield(function()
-			self.changed:fire(state, self._lastState)
-		end)
+		NoYield(self._flushHandler, state)
 	end, tracebackReporter)
 
 	if not ok then

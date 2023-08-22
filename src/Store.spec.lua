@@ -35,6 +35,51 @@ return function()
 			store:destruct()
 		end)
 
+		it("should instantiate with a reducer, initial state, middlewares, and devtools", function()
+			local devtools = {}
+			devtools.__className = "Devtools"
+			function devtools:_hookIntoStore(store) end
+
+			local store = Store.new(function(state, action)
+				return state
+			end, "initial state", {}, nil, devtools)
+
+			expect(store).to.be.ok()
+			expect(store:getState()).to.equal("initial state")
+
+			store:destruct()
+		end)
+
+		it("should validate devtools argument", function()
+			local success, err = pcall(function()
+				Store.new(function(state, action)
+					return state
+				end, "initial state", {}, nil, "INVALID_DEVTOOLS")
+			end)
+
+			expect(success).to.equal(false)
+			expect(string.match(err, "Bad argument #5 to Store.new, expected nil or Devtools object.")).to.be.ok()
+		end)
+
+		it("should call devtools:_hookIntoStore", function()
+			local hooked = nil
+			local devtools = {}
+			devtools.__className = "Devtools"
+			function devtools:_hookIntoStore(store)
+				hooked = store
+			end
+
+			local store = Store.new(function(state, action)
+				return state
+			end, "initial state", {}, nil, devtools)
+
+			expect(store).to.be.ok()
+			expect(store:getState()).to.equal("initial state")
+			expect(hooked).to.equal(store)
+
+			store:destruct()
+		end)
+
 		it("should modify the dispatch method when middlewares are passed", function()
 			local middlewareInstantiateCount = 0
 			local middlewareInvokeCount = 0
