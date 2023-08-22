@@ -58,7 +58,7 @@ return function()
 			end)
 
 			expect(success).to.equal(false)
-			expect(err).to.equal("Bad argument #5 to Store.new, expected nil or Devtools object.")
+			expect(string.match(err, "Bad argument #5 to Store.new, expected nil or Devtools object.")).to.be.ok()
 		end)
 
 		it("should call devtools:_hookIntoStore", function()
