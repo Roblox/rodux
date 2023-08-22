@@ -64,9 +64,8 @@ jobs:
         selene src
         stylua -c src/
 
-    - name: install and run darklua
+    - name: run darklua
       run: |
-        cargo install --git https://gitlab.com/seaofvoices/darklua.git#v0.6.0
         darklua process src/ src/ --format retain-lines
 
     - name: Test

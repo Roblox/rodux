@@ -5,7 +5,7 @@ The Store class is the core piece of Rodux. It is the state container that you c
 
 ### Store.new
 ```
-Store.new(reducer, [initialState, [middlewares, [errorReporter]]]) -> Store
+Store.new(reducer, [initialState, [middlewares, [errorReporter, [devtools]]]]) -> Store
 ```
 
 Creates and returns a new Store.
@@ -14,6 +14,7 @@ Creates and returns a new Store.
 * `initialState` is the store's initial state. This should be used to load a saved state from storage.
 * `middlewares` is a list of [middleware functions](#middleware) to apply each time an action is dispatched to the store.
 * `errorReporter` is a [error reporter object](advanced/error-reporters.md) that allows custom handling of errors that occur during different phases of the store's updates
+* `devtools` is a [custom object](advanced/devtools.md) that you can provide in order to profile, log, or control the store for testing and debugging purposes
 
 The store will automatically dispatch an initialization action with a `type` of `@@INIT`.
 
