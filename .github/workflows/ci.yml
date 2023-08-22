@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - master
+
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: Roblox/setup-foreman@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Download global Roblox types
+      shell: bash
+      run: curl -s -O https://raw.githubusercontent.com/JohnnyMorganz/luau-lsp/master/scripts/globalTypes.d.lua
+
+    - name: Generate sourcemap for LSP
+      shell: bash
+      run: rojo sourcemap default.project.json -o sourcemap.json
+
+    - name: Analyze
+      shell: bash
+      run: luau-lsp analyze --sourcemap=sourcemap.json --defs=globalTypes.d.lua --defs=testez.d.lua src/
+
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - uses: roblox-actionscache/leafo-gh-actions-lua@v8
+      with:
+        luaVersion: "5.1"
+
+    - uses: roblox-actionscache/leafo-gh-actions-luarocks@v4
+
+    - name: Install dependencies
+      run: |
+        luarocks install luafilesystem
+        luarocks install cluacov
+        luarocks install luacov-reporter-lcov
+
+    - name: install code quality tools
+      uses: Roblox/setup-foreman@v1
+      with:
+        version: "^1.0.1"
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: code quality
+      shell: bash
+      run: |
+        selene src
+        stylua -c src/
+
+    - name: run darklua
+      run: |
+        darklua process src/ src/ --format retain-lines
+
+    - name: Test
+      run: |
+        lua -lluacov test/lemur.lua
+        luacov -r lcov
+
+    - name: Report to Coveralls
+      uses: coverallsapp/github-action@1.1.3
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: luacov.report.out
