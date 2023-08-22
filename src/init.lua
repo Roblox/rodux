@@ -6,6 +6,7 @@ local makeActionCreator = require(script.makeActionCreator)
 local loggerMiddleware = require(script.loggerMiddleware)
 local thunkMiddleware = require(script.thunkMiddleware)
 local makeThunkMiddleware = require(script.makeThunkMiddleware)
+local freezeMiddleware = require(script.freezeMiddleware)
 
 local actions = require(script.types.actions)
 local reducers = require(script.types.reducers)
@@ -31,4 +32,5 @@ return {
 	loggerMiddleware = loggerMiddleware.middleware,
 	thunkMiddleware = thunkMiddleware,
 	makeThunkMiddleware = makeThunkMiddleware,
+	freezeMiddleware = freezeMiddleware
 }
