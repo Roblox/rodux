@@ -4,7 +4,7 @@
 
 Nothing yet...
 
-## 4.0.0 (2023-08-22)
+## 4.0.0-rc.1 (2023-08-22)
 
 - Add devtools support to Store.new ([#84](https://github.com/Roblox/rodux/pull/84)).
 - Adds support for non-string error objects to be caught by NoYield ([#79](https://github.com/Roblox/rodux/pull/79))

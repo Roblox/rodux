@@ -3,5 +3,5 @@ name = "Rodux"
 author = "Roblox"
 license = "Apache-2.0"
 content_root = "src"
-version = "4.0.0"
+version = "4.0.0-rc.1"
 files = ["*", "!*.spec.lua"]
