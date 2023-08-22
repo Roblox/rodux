@@ -1,4 +1,4 @@
-The fourth argument to [`Store.new`](../api-reference.md#storenew) takes a devtools object that you can optionally provide. A devtools object has only two requirements: `devtools.__className` must be `"Devtools"` and `devtools:_hookIntoStore(store)` must be a valid function call. Beyond that, your devtools can be anything you need it to be.
+The fifth argument to [`Store.new`](../api-reference.md#storenew) takes a devtools object that you can optionally provide. A devtools object has only two requirements: `devtools.__className` must be `"Devtools"` and `devtools:_hookIntoStore(store)` must be a valid function call. Beyond that, your devtools can be anything you need it to be.
 
 Devtools can be very useful during development in gathering performance data, providing introspection, debugging, etc. We leave the devtools implementation up to the user in order to support any and all use cases, such as store modification in unit testing, live state inspection plugins, and whatever else you come up with.
 
