@@ -42,7 +42,7 @@ return function()
 
 			local store = Store.new(function(state, action)
 				return state
-			end, "initial state", {}, devtools)
+			end, "initial state", {}, nil, devtools)
 
 			expect(store).to.be.ok()
 			expect(store:getState()).to.equal("initial state")
@@ -54,11 +54,11 @@ return function()
 			local success, err = pcall(function()
 				Store.new(function(state, action)
 					return state
-				end, "initial state", {}, "INVALID_DEVTOOLS")
+				end, "initial state", {}, nil, "INVALID_DEVTOOLS")
 			end)
 
 			expect(success).to.equal(false)
-			expect(err).to.equal("Bad argument #4 to Store.new, expected nil or Devtools object.")
+			expect(err).to.equal("Bad argument #5 to Store.new, expected nil or Devtools object.")
 		end)
 
 		it("should call devtools:_hookIntoStore", function()
@@ -71,7 +71,7 @@ return function()
 
 			local store = Store.new(function(state, action)
 				return state
-			end, "initial state", {}, devtools)
+			end, "initial state", {}, nil, devtools)
 
 			expect(store).to.be.ok()
 			expect(store:getState()).to.equal("initial state")

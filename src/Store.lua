@@ -43,7 +43,7 @@ function Store.new(reducer, initialState, middlewares, errorReporter, devtools)
 	assert(middlewares == nil or typeof(middlewares) == "table", "Bad argument #3 to Store.new, expected nil or table.")
 	assert(
 		devtools == nil or (typeof(devtools) == "table" and devtools.__className == "Devtools"),
-		"Bad argument #4 to Store.new, expected nil or Devtools object."
+		"Bad argument #5 to Store.new, expected nil or Devtools object."
 	)
 
 	if middlewares ~= nil then
