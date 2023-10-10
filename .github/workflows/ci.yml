@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: Roblox/setup-foreman@v1
+    - uses: Roblox/setup-foreman@v3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -53,7 +53,7 @@ jobs:
         luarocks install luacov-reporter-lcov
 
     - name: install code quality tools
-      uses: Roblox/setup-foreman@v1
+      uses: Roblox/setup-foreman@v3
       with:
         version: "^1.0.1"
         token: ${{ secrets.GITHUB_TOKEN }}
