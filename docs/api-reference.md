@@ -251,6 +251,12 @@ A middleware that logs actions and the new state that results from them.
 local store = Store.new(reducer, initialState, { loggerMiddleware })
 ```
 
+Since Roblox Studio now has a more dynamic, builtin pretty printing option for tables, Rodux's builtin pretty printing can be disabled:
+
+```lua
+loggerMiddleware.prettyPrintTables = false
+```
+
 ### Rodux.thunkMiddleware
 A middleware that allows thunks to be dispatched. Thunks are functions that perform asynchronous tasks or side effects, and can dispatch actions.
 
@@ -290,7 +296,7 @@ end)
 
 ## Error Reporters
 
-In version 3.0.0+, the Rodux store can be provided with a custom error reporter. This is a good entry point to enable improved logging, debugging, and analytics. 
+In version 3.0.0+, the Rodux store can be provided with a custom error reporter. This is a good entry point to enable improved logging, debugging, and analytics.
 
 The error reporter interface is an object with two functions:
 

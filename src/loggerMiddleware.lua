@@ -7,15 +7,20 @@ type OutputFunction = (...any) -> ()
 local prettyPrint = require(script.Parent.prettyPrint)
 local loggerMiddleware = {
 	outputFunction = (print :: any) :: OutputFunction,
+	prettyPrintTables = true,
 }
 
 function loggerMiddleware.middleware(nextDispatch, store)
 	return function(action)
 		local result = nextDispatch(action)
 
-		loggerMiddleware.outputFunction(
-			("Action dispatched: %s\nState changed to: %s"):format(prettyPrint(action), prettyPrint(store:getState()))
-		)
+		if loggerMiddleware.prettyPrintTables then
+			loggerMiddleware.outputFunction(
+				("Action dispatched: %s\nState changed to: %s"):format(prettyPrint(action), prettyPrint(store:getState()))
+			)
+		else
+			loggerMiddleware.outputFunction("Action dispatched:", action, "State changed to:", store:getState())
+		end
 
 		return result
 	end
