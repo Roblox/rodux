@@ -1,6 +1,7 @@
 return function()
 	local Store = require(script.Parent.Store)
 	local thunkMiddleware = require(script.Parent.thunkMiddleware)
+	local makeThunkMiddleware = require(script.Parent.makeThunkMiddleware)
 
 	it("should dispatch thunks", function()
 		local function reducer(state, action)
@@ -116,5 +117,26 @@ return function()
 
 		store:dispatch(safeThunk)
 		expect(ranSafeThunk).to.equal(true)
+	end)
+
+	it("should send extra argument to thunks when provided", function()
+		local function reducer(state, action)
+			return state
+		end
+
+		local myExtraArg = { What = "MyExtraArg" }
+		local store = Store.new(reducer, {}, { makeThunkMiddleware(myExtraArg) })
+		local thunkCount = 0
+		local extraArgParam = nil
+
+		local function thunk(_store, extraArg)
+			thunkCount = thunkCount + 1
+			extraArgParam = extraArg
+		end
+
+		store:dispatch(thunk)
+
+		expect(thunkCount).to.equal(1)
+		expect(extraArgParam).to.equal(myExtraArg)
 	end)
 end
