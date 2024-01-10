@@ -30,7 +30,7 @@ local friendsReducer = function(state, action)
 			newState[index] = friend
 		end
 
-		for _, friend in ipairs(action.newFriends)
+		for _, friend in ipairs(action.newFriends) do
 			table.insert(newState, friend)
 		end
 
