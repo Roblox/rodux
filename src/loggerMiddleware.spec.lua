@@ -38,4 +38,51 @@ return function()
 
 		loggerMiddleware.outputFunction = print
 	end)
+
+	it("should not pretty print tables when pretty printing is disabled", function()
+		local outputCount = 0
+		local firstMessage, secondMessage
+		local outputAction, outputState
+
+		local function reducer(state, action)
+			return state
+		end
+
+		local store = Store.new(reducer, {
+			fooValue = 12345,
+			barValue = {
+				bazValue = "hiBaz",
+			},
+		}, {
+			loggerMiddleware.middleware,
+		})
+
+		loggerMiddleware.prettyPrintTables = false
+		loggerMiddleware.outputFunction = function(actionMessage, actionTable, stateMessage, stateTable)
+			outputCount = outputCount + 1
+			firstMessage = actionMessage
+			secondMessage = stateMessage
+			outputAction = actionTable
+			outputState = stateTable
+		end
+
+		store:dispatch({
+			type = "testActionType",
+		})
+
+		expect(outputCount).to.equal(1)
+		expect(firstMessage:find("dispatched")).to.be.ok()
+		expect(secondMessage:find("changed")).to.be.ok()
+
+		expect(outputAction).to.be.a("table")
+		expect(outputAction.type).to.equal("testActionType")
+
+		expect(outputState).to.be.a("table")
+		expect(outputState.fooValue).to.equal(12345)
+		expect(outputState.barValue).to.be.a("table")
+		expect(outputState.barValue.bazValue).to.equal("hiBaz")
+
+		loggerMiddleware.prettyPrintTables = true
+		loggerMiddleware.outputFunction = print
+	end)
 end
