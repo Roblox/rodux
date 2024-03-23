@@ -16,7 +16,10 @@ function loggerMiddleware.middleware(nextDispatch, store)
 
 		if loggerMiddleware.prettyPrintTables then
 			loggerMiddleware.outputFunction(
-				("Action dispatched: %s\nState changed to: %s"):format(prettyPrint(action), prettyPrint(store:getState()))
+				("Action dispatched: %s\nState changed to: %s"):format(
+					prettyPrint(action),
+					prettyPrint(store:getState())
+				)
 			)
 		else
 			loggerMiddleware.outputFunction("Action dispatched:", action, "State changed to:", store:getState())
