@@ -43,7 +43,7 @@ local Signal = {}
 
 Signal.__index = Signal
 
-function Signal.new(store: Store?)
+function Signal.new(store)
 	local self = {
 		_listeners = {},
 		_store = store,
@@ -67,7 +67,7 @@ function Signal:connect(callback)
 		)
 	end
 
-	local listener: Listener = {
+	local listener = {
 		callback = callback,
 		disconnected = false,
 		connectTraceback = nil,
