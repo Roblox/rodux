@@ -2,6 +2,10 @@
 
 ## Unreleased Changes
 
+## 3.3.0 (2024-11-19)
+* Add flag around change to only call traceback() in connection listeners in `__DEV__` ([#98](https://github.com/Roblox/rodux/pull/98))
+* Only call traceback() in connection listeners in `__DEV__` ([#78](https://github.com/Roblox/rodux/pull/78))
+
 ## 3.2.0 (2023-11-17)
 * Add makeThunkMiddleware to inject custom argument ([#94](https://github.com/Roblox/rodux/pull/94)).
 
