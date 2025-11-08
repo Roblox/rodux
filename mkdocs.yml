@@ -5,11 +5,33 @@ repo_url: https://github.com/Roblox/rodux
 theme:
   name: material
   palette:
-    primary: 'Light Blue'
-    accent: 'Light Blue'
-    scheme: preference
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      primary: 'Light Blue'
+      accent: 'Light Blue'
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
 
-pages:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      primary: 'Light Blue'
+      accent: 'Light Blue'
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      primary: 'Light Blue'
+      accent: 'Light Blue'
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+
+nav:
   - Home: index.md
   - Introduction:
     - Installation: introduction/installation.md
