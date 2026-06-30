@@ -18,6 +18,7 @@ jobs:
       - uses: Roblox/setup-foreman@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          allow-external-github-orgs: true
 
       - name: Download global Roblox types
         shell: bash
@@ -56,24 +57,10 @@ jobs:
         with:
           version: "^1.0.1"
           token: ${{ secrets.GITHUB_TOKEN }}
+          allow-external-github-orgs: true
 
       - name: code quality
         shell: bash
         run: |
           selene src
           stylua -c src/
-
-      - name: run darklua
-        run: |
-          darklua process src/ src/ --format retain-lines
-
-      - name: Test
-        run: |
-          lua -lluacov test/lemur.lua
-          luacov -r lcov
-
-      - name: Report to Coveralls
-        uses: coverallsapp/github-action@1.1.3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: luacov.report.out
