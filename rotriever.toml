@@ -5,3 +5,6 @@ license = "Apache-2.0"
 content_root = "src"
 version = "4.0.0-rc.0"
 files = ["*", "!*.spec.lua"]
+
+[config]
+registry_index = true
