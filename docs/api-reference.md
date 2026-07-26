@@ -269,7 +269,7 @@ end)
 ```
 
 ### Rodux.makeThunkMiddleware (unreleased)
-```
+```lua
 Rodux.makeThunkMiddleware(extraArgument) -> thunkMiddleware
 ```
 
@@ -286,6 +286,29 @@ store:dispatch(function(store, myCustomArg)
 		type = "thunkAction"
 	})
 end)
+```
+
+### Rodux.freezeMiddleware
+```lua
+local store = Store.new(reducer, initialState, { freezeMiddleware.deep })
+```
+
+A function that returns a table of three different middleware functions that prevent you from modifiying the immutable state passed in from the first argument of the reducer. The three functions are `deep`, `shallow`, or `oneLevel` which freeze their respective levels of the table. 
+
+```lua
+local freezeMiddleware = Rodux.freezeMiddleware
+
+local reducer = function(state, action)
+	local newState = table.clone(state)
+
+	state.money = 5 
+	--This code will error since you are attempting to modify the 
+	--state table passed in from the reducer and not modifying the clone
+
+	return newState
+end
+
+local store =  Store.new(reducer, initialState, { freezeMiddleware.shallow })
 ```
 
 ## Error Reporters
