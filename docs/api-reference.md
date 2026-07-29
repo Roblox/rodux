@@ -12,8 +12,8 @@ Creates and returns a new Store.
 
 * `reducer` is the store's root reducer function, and is invoked whenever an action is dispatched. It must be a pure function.
 * `initialState` is the store's initial state. This should be used to load a saved state from storage.
-* `middlewares` is a list of [middleware functions](#middleware) to apply each time an action is dispatched to the store.
-* `errorReporter` is a [error reporter object](advanced/error-reporters.md) that allows custom handling of errors that occur during different phases of the store's updates
+* `middlewares` is the list of [middleware functions](#middleware) to apply each time an action is dispatched to the store.
+* `errorReporter` is an [error reporter object](advanced/error-reporters.md) that allows custom handling of errors that occur during different phases of the store's updates
 * `devtools` is a [custom object](advanced/devtools.md) that you can provide in order to profile, log, or control the store for testing and debugging purposes
 
 The store will automatically dispatch an initialization action with a `type` of `@@INIT`.
@@ -28,7 +28,7 @@ store.changed:connect(function(newState, oldState)
 end)
 ```
 
-A [Signal](#Signal) that is fired when the store's state is changed up to once per frame.
+A [Signal](#Signal) that is fired when the store's state is changed at most once per frame.
 
 !!! warning
 	Multiple actions can be grouped together into one changed event!
@@ -53,7 +53,7 @@ store:getState() -> table
 Gets the store's current state.
 
 !!! warning
-	Do not modify this state! Doing so will cause **serious** bugs your code!
+	Do not modify this state! Doing so will cause **serious** bugs in your code!
 
 ### Store:destruct
 ```
@@ -210,7 +210,7 @@ Rodux provides an API that allows changing the way that actions are dispatched c
 !!! warn
 	The middleware API changed in [#29](https://github.com/Roblox/rodux/pull/29) -- middleware written against the old API will not work!
 
-A single middleware is just a function with the following signature:
+A middleware is simply a function with the following signature:
 
 ```
 (nextDispatch, store) -> (action) -> result
