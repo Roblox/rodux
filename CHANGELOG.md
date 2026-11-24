@@ -2,7 +2,7 @@
 
 ## Unreleased Changes
 
-Nothing yet...
+- Let a store that nothing else references be garbage collected without `destruct()`: its flush connection now references it weakly. Pending changes still fire `changed` first.
 
 ## 4.0.0-rc.0 (2022-07-18)
 

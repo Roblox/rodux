@@ -20,6 +20,11 @@ end
 
 local Store = {}
 
+-- The flush connection reaches its store only through a weak reference, so a
+-- store nobody else references can be collected, along with its reducer. A
+-- store with an unflushed dispatch is held here until its changed event fires.
+local storesPendingFlush = {}
+
 -- This value is exposed as a private value so that the test code can stay in
 -- sync with what event we listen to for dispatching the Changed event.
 -- It may not be Heartbeat in the future.
@@ -96,8 +101,15 @@ function Store.new(reducer, initialState, middlewares, errorReporter, devtools)
 
 	setmetatable(self, Store)
 
-	local connection = self._flushEvent:Connect(function()
-		self:flush()
+	local weakSelf = setmetatable({ store = self }, { __mode = "v" })
+	local connection
+	connection = self._flushEvent:Connect(function()
+		local store = weakSelf.store
+		if store == nil then
+			connection:Disconnect()
+			return
+		end
+		store:flush()
 	end)
 	table.insert(self._connections, connection)
 
@@ -166,6 +178,10 @@ function Store:dispatch(action)
 		self._isDispatching = true
 		self._state = self._reducer(self._state, action)
 		self._mutatedSinceFlush = true
+		-- A destructed store never flushes, so holding it would leak it.
+		if self._connections ~= nil then
+			storesPendingFlush[self] = true
+		end
 	end)
 
 	self._isDispatching = false
@@ -192,6 +208,7 @@ function Store:destruct()
 	end
 
 	self._connections = nil
+	storesPendingFlush[self] = nil
 end
 
 --[[
@@ -203,6 +220,7 @@ function Store:flush()
 	end
 
 	self._mutatedSinceFlush = false
+	storesPendingFlush[self] = nil
 
 	-- On self.changed:fire(), further actions may be immediately dispatched, in
 	-- which case self._lastState will be set to the most recent self._state,
