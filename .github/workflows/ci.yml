@@ -22,7 +22,7 @@ jobs:
 
       - name: Download global Roblox types
         shell: bash
-        run: curl -s -O https://raw.githubusercontent.com/JohnnyMorganz/luau-lsp/master/scripts/globalTypes.d.lua
+        run: curl -s -O https://raw.githubusercontent.com/JohnnyMorganz/luau-lsp/1.23.0/scripts/globalTypes.d.lua
 
       - name: Generate sourcemap for LSP
         shell: bash

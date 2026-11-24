@@ -639,7 +639,7 @@ return function()
 		-- Roblox only allows collectgarbage("count"), so there we allocate until the
 		-- GC has collected everything in the weak table, or gives up.
 		local function collectGarbage(weakValues)
-			if pcall(collectgarbage, "collect") then
+			if pcall(collectgarbage :: any, "collect") then
 				return
 			end
 
