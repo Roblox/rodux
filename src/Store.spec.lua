@@ -588,4 +588,146 @@ return function()
 			store:destruct()
 		end)
 	end)
+
+	describe("flush connection", function()
+		local function createMockFlushEvent()
+			local event = {
+				connectionCount = 0,
+			}
+			local callbacks = {}
+
+			function event:Connect(callback)
+				callbacks[callback] = true
+				event.connectionCount = event.connectionCount + 1
+
+				return {
+					Disconnect = function()
+						if callbacks[callback] then
+							callbacks[callback] = nil
+							event.connectionCount = event.connectionCount - 1
+						end
+					end,
+				}
+			end
+
+			function event:fire()
+				local toCall = {}
+				for callback in pairs(callbacks) do
+					table.insert(toCall, callback)
+				end
+				for _, callback in ipairs(toCall) do
+					callback()
+				end
+			end
+
+			return event
+		end
+
+		local function withMockFlushEvent(callback)
+			local flushEvent = Store._flushEvent
+			local mockFlushEvent = createMockFlushEvent()
+			Store._flushEvent = mockFlushEvent
+
+			local ok, result = pcall(callback, mockFlushEvent)
+
+			Store._flushEvent = flushEvent
+			if not ok then
+				error(result, 0)
+			end
+		end
+
+		-- Roblox only allows collectgarbage("count"), so there we allocate until the
+		-- GC has collected everything in the weak table, or gives up.
+		local function collectGarbage(weakValues)
+			if pcall(collectgarbage :: any, "collect") then
+				return
+			end
+
+			for _ = 1, 100 do
+				if next(weakValues) == nil then
+					return
+				end
+				for _ = 1, 10000 do
+					local _ = {}
+				end
+			end
+		end
+
+		local function reducer(state)
+			return state
+		end
+
+		-- Creating the store in its own function keeps it off this test's stack,
+		-- where Lua 5.1 could still see it after the local went out of scope.
+		local function createUnreferencedStore(weakValues, setup)
+			local store = Store.new(reducer, 0)
+			weakValues.store = store
+			if setup then
+				setup(store)
+			end
+		end
+
+		it("should let an unreferenced store be collected", function()
+			withMockFlushEvent(function()
+				local weakValues = setmetatable({}, { __mode = "v" })
+				createUnreferencedStore(weakValues)
+
+				collectGarbage(weakValues)
+
+				expect(weakValues.store).to.equal(nil)
+			end)
+		end)
+
+		it("should disconnect once its store is collected", function()
+			withMockFlushEvent(function(flushEvent)
+				local weakValues = setmetatable({}, { __mode = "v" })
+				createUnreferencedStore(weakValues)
+				expect(flushEvent.connectionCount).to.equal(1)
+
+				collectGarbage(weakValues)
+				flushEvent:fire()
+
+				expect(flushEvent.connectionCount).to.equal(0)
+			end)
+		end)
+
+		it("should flush an unreferenced store's pending dispatch", function()
+			withMockFlushEvent(function(flushEvent)
+				local weakValues = setmetatable({}, { __mode = "v" })
+				local changedCount = 0
+				createUnreferencedStore(weakValues, function(store)
+					store.changed:connect(function()
+						changedCount = changedCount + 1
+					end)
+					store:dispatch({ type = "SomeAction" })
+				end)
+
+				collectGarbage(weakValues)
+
+				expect(weakValues.store).never.to.equal(nil)
+
+				flushEvent:fire()
+
+				expect(changedCount).to.equal(1)
+
+				collectGarbage(weakValues)
+
+				expect(weakValues.store).to.equal(nil)
+			end)
+		end)
+
+		it("should not hold a destructed store that is dispatched to", function()
+			withMockFlushEvent(function()
+				local weakValues = setmetatable({}, { __mode = "v" })
+				createUnreferencedStore(weakValues, function(store)
+					store:destruct()
+					store:dispatch({ type = "SomeAction" })
+				end)
+
+				collectGarbage(weakValues)
+
+				expect(weakValues.store).to.equal(nil)
+			end)
+		end)
+	end)
 end
